@@ -10,8 +10,8 @@
     "mongoose": "^5.10.15",
     "nodemon": "^2.0.6"
   },
-  "name": "advanced-lab",
-  "description": "Advanced-lab",
+  "name": "advanced-lab-project",
+  "description": "Advanced-Lab-Project",
   "version": "0.0.0",
   "main": "index.js",
   "nodemonConfig": {
@@ -25,12 +25,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KareemSarhan/Advanced-lab.git"
+    "url": "git+https://github.com/KareemSarhan/Advanced-Lab-Project.git"
   },
   "author": "KareemSarhan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/KareemSarhan/Advanced-lab/issues"
+    "url": "https://github.com/KareemSarhan/Advanced-Lab-Project/issues"
   },
-  "homepage": "https://github.com/KareemSarhan/Advanced-lab#readme"
+  "homepage": "https://github.com/KareemSarhan/Advanced-Lab-Project#readme"
 }
