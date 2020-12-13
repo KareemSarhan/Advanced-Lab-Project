@@ -15,6 +15,8 @@ MemberRouter.route('/login')
     //verify that the needed credentials are given
     //verify that there is a user with the email given in the body
     //if found verify that the password is correct using bcrypt
+    //if this is the first login prompt the user to change password
+    //use the prompt col in the member table
 });
 
 MemberRouter.route('/logout')
@@ -43,6 +45,7 @@ MemberRouter.route('/resetPassword')
     //authenticate
     //hash the password
     //update the corresponding record
+    //make the prompt col value = false
 });
 
 MemberRouter.route('/signIn')
