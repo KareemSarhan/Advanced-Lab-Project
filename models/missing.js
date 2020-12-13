@@ -5,15 +5,15 @@ const memberSchema = require('./members');
 
 require('mongoose-currency').loadType(mongoose);
 
-const attendanceLogSchema = new mongoose.Schema({
+const missingSchema = new mongoose.Schema({
     
     Memberid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'memberSchema'},
-    signIn: Date,
-    signOut: Date,
-    duration: Number
-    //this can be calculated from signin and signout
+    missingHours: number,
+    remainingHours: number,
+    missingDays: number,
+    remainingHours: number
 });
 
-module.exports = mongoose.model('Attendance', attendanceLogSchema);
+module.exports = mongoose.model('missing', missingSchema);

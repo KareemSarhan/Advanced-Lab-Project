@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-//const courseSchema = require('./course');
+const academicMemberSchema = require('./academicMember');
 
 const slotSchema = new mongoose.Schema({
     
@@ -20,10 +20,11 @@ const slotSchema = new mongoose.Schema({
     timing: {
         type: String,
         required: true
-    }
+    },
 
-    //academicMember
-    //date
+    memberID:{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema'}
 });
 
 module.exports = mongoose.model('Slot', slotSchema);

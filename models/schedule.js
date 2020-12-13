@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const slotSchema = require('./slot');
+const academicMemberSchema = require('./academicMember');
 
 const scheduleSchema = new mongoose.Schema({
     
-    //academic member id
+    memberID:{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema'},
+
     Saturday: {
         type: [slotSchema]
     },

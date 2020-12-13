@@ -61,6 +61,8 @@ MemberRouter.route('/signOut')
     //authenticate
     //update the last record in the attendace collection with the id from params with an empty signOut
     // with a new date created once signed out
+    //update the hours remaining and missing in the log table
+    //update the remaining days if the number of hours spent satisfies the day
 });
 
 MemberRouter.route('/viewAllAttendance')

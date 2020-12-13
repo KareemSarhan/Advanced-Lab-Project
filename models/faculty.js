@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const departmentSchema = require('./department');
+const academicMemberSchema = require('./academicMember');
 
 const facultySchema = new mongoose.Schema({
 
@@ -12,7 +13,8 @@ const facultySchema = new mongoose.Schema({
 
     departments: [departmentSchema],
     
-    //academic members in this faculty
+    teachingAssistants: [academicMemberSchema],
+    instructors: [academicMemberSchema],
 });
 
 module.exports = mongoose.model('Faculty', facultySchema);

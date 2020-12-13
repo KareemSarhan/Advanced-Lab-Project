@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const courseSchema = require('./course');
+const academicMemberSchema = require('./academicMember');
 
 const departmentSchema = new mongoose.Schema({
 
@@ -17,9 +18,12 @@ const departmentSchema = new mongoose.Schema({
     },
 
     courses: [courseSchema],
+    headOfDep: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema'},
 
-    //headOfDep: academic member of the same faculty 
-    //academic members of this department must be of the same faculty
+    teachingAssistants: [academicMemberSchema],
+    instructors: [academicMemberSchema]
 });
 
 module.exports = mongoose.model('Department', departmentSchema);

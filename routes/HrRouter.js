@@ -156,3 +156,37 @@ HrRouter.route('/deleteStaffMember/:id')
     //verify that there is a member with this id
     //delete this member
 });
+
+HrRouter.route('/addSignInorOut/:id')
+.put((req,res,next) =>{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    //verify that there is a member with this id and is not the same as the doer
+    //get the date from the body
+    //add signin or signout that is missing
+    //decrement the missing days
+});
+
+HrRouter.route('/viewAttendance/:id')
+.get((req,res,next) =>{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    //verify that there is a member with this id
+    //view the attendance record of this member
+});
+
+HrRouter.route('/viewMissing')
+.get((req,res,next) =>{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    //view members with missings more than 0
+});
+
+HrRouter.route('/updateSalary/:id')
+.get((req,res,next) =>{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    //verify that there is a member with this id
+    //compute the deductions using the missings table
+});
+

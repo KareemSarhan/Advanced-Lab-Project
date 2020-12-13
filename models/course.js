@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const slotSchema = require('./slot');
+const academicMemberSchema = require('./academicMember');
 
 const courseSchema = new mongoose.Schema({
 
@@ -16,7 +17,12 @@ const courseSchema = new mongoose.Schema({
         unique: true
     },
 
-    numberOfSlots: {
+    numberOfSlotsNeeded: {
+        type: number,
+        required: true
+    },
+
+    numberOfSlotsAssigned: {
         type: number,
         required: true
     },
@@ -26,11 +32,15 @@ const courseSchema = new mongoose.Schema({
         required: true
     },
 
-    coverage: number 
+    coverage: number ,
     //can be calculated from the number of assigned slots and number of slots
 
-    //teaching assistants
-    //instructors
+    teachingAssistants: [academicMemberSchema],
+    instructors: [academicMemberSchema],
+
+    courseCoordinator:{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema'}
 });
 
 module.exports = mongoose.model('Course', courseSchema);
