@@ -8,6 +8,14 @@ const MaternityLeavesSchema  = new mongoose.Schema({
     document : {
      type : text,
      required:true
+    },
+    Status:{
+        type: String,
+        default:"Accepted"
+    },
+    dateOfLeave : {
+        type:date,
+        required:true 
     }
     
 });

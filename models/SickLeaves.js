@@ -17,7 +17,12 @@ const SickLeavesSchema  = new mongoose.Schema({
     dateOfdocument:{
         type:date
 
+    },
+    Status:{
+        type: String,
+        default:"pending"
     }
+    
     
 });
 

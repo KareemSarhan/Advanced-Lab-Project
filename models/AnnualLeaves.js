@@ -11,13 +11,17 @@ const AnnualLavesSchema  = new mongoose.Schema({
         required: true,
     },
 
-    HOD:{
+    Status:{
         type: String,
         default:"pending"
     },
     replacement : {
         type : [replacementSchema],
         required:true
+    },
+    dateOfLeave : {
+        type : date ,
+        required : ture 
     }
 
     
