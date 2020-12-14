@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 
 const AcademicMemberRouter = express.Router();
@@ -116,3 +116,5 @@ AcademicMemberRouter.route('/cancelReq')
     //if the request is still pending just delete the record
     //if the request got accepted but its day did not come reverse any taken action
 });
+
+module.exports = AcademicMemberRouter;

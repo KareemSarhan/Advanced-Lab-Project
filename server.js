@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const AcademicMemberRouter = require('./routes/AcademicMemberRouter');
 const CourseCoordinatorRouter = require('./routes/CourseCoordinatorRouter');
-const CourseInstructorRouter = require('./routes/CourseInstructorRouter');
+const CourseInstRouter = require('./routes/CourseInstRouter');
 const HodRouter = require('./routes/HodRouter');
 const HrRouter = require('./routes/HrRouter');
 const MemberRouter = require('./routes/MemberRouter');
@@ -18,7 +18,7 @@ connection.once('open', function() {
     app.use(bodyParser.json());
     app.use('/AM', AcademicMemberRouter);
     app.use('/CC', CourseCoordinatorRouter);
-    app.use('/CI', CourseInstructorRouter);
+    app.use('/CI', CourseInstRouter);
     app.use('/Hod', HodRouter);
     app.use('/Hr', HrRouter);
     app.use('/Member', MemberRouter);

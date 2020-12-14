@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 
 const CourseCoordinatorRouter = express.Router();
@@ -69,3 +69,5 @@ CourseCoordinatorRouter.route('deleteSlot')
 });
 
 //update academic members schedules with slots changed
+
+module.exports = CourseCoordinatorRouter;

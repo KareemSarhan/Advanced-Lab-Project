@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 
 const HodRouter = express.Router();
@@ -152,3 +152,5 @@ HodRouter.route('/viewSlotAssignments/:cID')
     //get the course from params
     //show all slots for this course (which accordingly show the academic members assigned)
 });
+
+module.exports = HodRouter;

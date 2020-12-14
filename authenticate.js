@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 const app = express();
 
@@ -25,3 +25,5 @@ function authenticate(req,res,next){
 //authorize as HR
 //authorize as Instructor
 //authorize as course coordinator
+
+module.exports = authenticate;

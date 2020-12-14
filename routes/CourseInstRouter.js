@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 
 const CourseInstRouter = express.Router();
@@ -82,3 +82,5 @@ CourseInstRouter.route('/assignCoordinator/:cID')
     //update the CC field of course to this member
     //update the type of this member
 });
+
+module.exports = CourseInstRouter;

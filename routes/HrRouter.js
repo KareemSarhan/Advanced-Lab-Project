@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 
 const HrRouter = express.Router();
@@ -189,4 +189,6 @@ HrRouter.route('/updateSalary/:id')
     //verify that there is a member with this id
     //compute the deductions using the missings table
 });
+
+module.exports = HrRouter;
 

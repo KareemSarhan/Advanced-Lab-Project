@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 
 const MemberRouter = express.Router();
@@ -95,3 +95,4 @@ MemberRouter.route('/viewHours')
     //compute the number of hours missing shown in negative /extra shown in positive
 });
 
+module.exports = MemberRouter;
