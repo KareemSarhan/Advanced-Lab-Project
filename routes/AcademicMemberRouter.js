@@ -8,9 +8,9 @@ const key = 'shawerma';
 
 const AcademicMemberRouter = express.Router();
 
-AcademicMemberRouterRouter.use(bodyParser.json());
+AcademicMemberRouter.use(bodyParser.json());
 
-AcademicMemberRouterRouter.route('/viewSchedule')
+AcademicMemberRouter.route('/viewSchedule')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -18,14 +18,14 @@ AcademicMemberRouterRouter.route('/viewSchedule')
     //view schedule of this member and check replacements model to add extra slots
 });
 
-AcademicMemberRouterRouter.route('/viewReplacementReq')
+AcademicMemberRouter.route('/viewReplacementReq')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
     //get the replacements in the replacement table
 });
 
-AcademicMemberRouterRouter.route('/sendReplacementReq')
+AcademicMemberRouter.route('/sendReplacementReq')
 .post((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -34,7 +34,7 @@ AcademicMemberRouterRouter.route('/sendReplacementReq')
     //create a new request and add it to the table 
 });
 
-AcademicMemberRouterRouter.route('/sendSlotLinkReq')
+AcademicMemberRouter.route('/sendSlotLinkReq')
 .post((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -45,7 +45,7 @@ AcademicMemberRouterRouter.route('/sendSlotLinkReq')
     //create a new request in the slot linking requests table
 });
 
-AcademicMemberRouterRouter.route('/sendChangeDayOffReq')
+AcademicMemberRouter.route('/sendChangeDayOffReq')
 .post((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -56,7 +56,7 @@ AcademicMemberRouterRouter.route('/sendChangeDayOffReq')
     //create a new request in the dayOff table requests table
 });
 
-AcademicMemberRouterRouter.route('/sendLeaveReq')
+AcademicMemberRouter.route('/sendLeaveReq')
 .post((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -67,7 +67,7 @@ AcademicMemberRouterRouter.route('/sendLeaveReq')
     //if this is a maternity leave check that the member is a female
 });
 
-AcademicMemberRouterRouter.route('/notification')
+AcademicMemberRouter.route('/notification')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -75,7 +75,7 @@ AcademicMemberRouterRouter.route('/notification')
     //get notified when a request of his got accepted or rejected
 });
 
-AcademicMemberRouterRouter.route('/viewAllReq')
+AcademicMemberRouter.route('/viewAllReq')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -83,7 +83,7 @@ AcademicMemberRouterRouter.route('/viewAllReq')
     //I do not know if this route should show only his requests or all?
 });
 
-AcademicMemberRouterRouter.route('/viewAcceptedReq')
+AcademicMemberRouter.route('/viewAcceptedReq')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -91,7 +91,7 @@ AcademicMemberRouterRouter.route('/viewAcceptedReq')
     //I do not know if this route should show only his requests or all?
 });
 
-AcademicMemberRouterRouter.route('/viewPendingReq')
+AcademicMemberRouter.route('/viewPendingReq')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -99,7 +99,7 @@ AcademicMemberRouterRouter.route('/viewPendingReq')
     //I do not know if this route should show only his requests or all?
 });
 
-AcademicMemberRouterRouter.route('/viewRejectedReq')
+AcademicMemberRouter.route('/viewRejectedReq')
 .get((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
@@ -107,7 +107,7 @@ AcademicMemberRouterRouter.route('/viewRejectedReq')
     //I do not know if this route should show only his requests or all?
 });
 
-AcademicMemberRouterRouter.route('/cancelReq')
+AcademicMemberRouter.route('/cancelReq')
 .delete((req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a AM member
