@@ -5,7 +5,7 @@ const academicMemberSchema = require('./academicMember');
 const slotLinkReqSchema = new mongoose.Schema({
 
     requestID:{
-        type: number
+        type: Number
     },
     memberID:{ 
         type: mongoose.Schema.Types.ObjectId,

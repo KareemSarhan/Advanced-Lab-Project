@@ -14,7 +14,7 @@ const facultySchema = new mongoose.Schema({
     departments: [departmentSchema],
     
     teachingAssistants: [academicMemberSchema],
-    instructors: [academicMemberSchema],
+    instructors: [academicMemberSchema]
 });
 
 module.exports = mongoose.model('Faculty', facultySchema);

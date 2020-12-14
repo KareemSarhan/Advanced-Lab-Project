@@ -20,10 +20,6 @@ function authenticate(req,res,next){
     catch(err){
         res.status(403).send("kda a8lat");
     }
-}
-
-//authorize as HR
-//authorize as Instructor
-//authorize as course coordinator
-
+};
 module.exports = authenticate;
+

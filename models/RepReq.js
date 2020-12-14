@@ -5,7 +5,7 @@ const academicMemberSchema = require('./academicMember');
 const RepReqSchema = new mongoose.Schema({
 
     requestID:{
-        type: number
+        type: Number
     },
     memberID:{ //asking for the request
         type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +13,7 @@ const RepReqSchema = new mongoose.Schema({
         required: true},
 
     requestedID:{ //member to send the request to
-        type: number,
+        type: Number,
         required: true
     },
     requestedDay: {

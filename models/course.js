@@ -18,12 +18,12 @@ const courseSchema = new mongoose.Schema({
     },
 
     numberOfSlotsNeeded: {
-        type: number,
+        type: Number,
         required: true
     },
 
     numberOfSlotsAssigned: {
-        type: number,
+        type: Number,
         required: true
     },
 
@@ -32,7 +32,7 @@ const courseSchema = new mongoose.Schema({
         required: true
     },
 
-    coverage: number ,
+    coverage: Number ,
     //can be calculated from the number of assigned slots and number of slots
 
     teachingAssistants: [academicMemberSchema],

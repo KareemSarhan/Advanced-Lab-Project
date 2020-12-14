@@ -5,10 +5,13 @@ var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const key = 'shawerma';
+//const authenticate = require('../authenticate.js');
+const faculty = require('../models/faculty');
 
 const HrRouter = express.Router();
 
 HrRouter.use(bodyParser.json());
+HrRouter.use(express.json());
 
 HrRouter.route('/addLocation')
 .post((req,res,next) =>{
@@ -39,8 +42,14 @@ HrRouter.route('/deleteLocation/:id')
 });
 
 HrRouter.route('/addFaculty')
-.post((req,res,next) =>{
+.post(async (req,res,next) =>{
     //authenticate that this is a valid member
+  // authenticate();
+    // const f = new faculty({
+    //     name: req.body.name
+    // });
+    // await f.save();
+    // res.send("bravo");
     //authorize that this is a Hr member
     //verify that the needed credentials are given
     //add a new faculty

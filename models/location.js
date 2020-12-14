@@ -10,7 +10,7 @@ const locationSchema = new mongoose.Schema({
     },
 
     capacity: {
-        type: number,
+        type: Number,
         required: true},
     
     type: String

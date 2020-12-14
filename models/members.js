@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-require('mongoose-currency').loadType(mongoose);
-const Currency = mongoose.Types.Currency;
+//require('mongoose-currency').loadType(mongoose);
+//const Currency = mongoose.Types.Currency;
 //const attendanceLog = require('./attendance');
 
 const memberSchema = new mongoose.Schema({
@@ -30,7 +30,7 @@ const memberSchema = new mongoose.Schema({
         //make sure it is an office
     },
     salary:{
-        type: Currency,
+        type: Number,
         required: true
     },
     prompt:{
