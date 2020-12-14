@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const memberSchema = require('./members');
 
-
-
 const ReplacementSchema  = new mongoose.Schema({
     StaffID:{    // the staff who sent the request 
         type: mongoose.Schema.Types.ObjectId,

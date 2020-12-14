@@ -12,7 +12,9 @@ const academicMemberSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'memberSchema'},
    schedule: scheduleSchema,
-   type: String,
+   type: {
+       type: String,
+        required: true},
    courses: [courseSchema],
    faculty: {
        type: String

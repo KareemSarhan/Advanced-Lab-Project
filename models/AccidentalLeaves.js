@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const AccedntalLeavesSchema  = new mongoose.Schema({
+const AccidntalLeavesSchema  = new mongoose.Schema({
 
     numberOfdays: {
         type: number ,
         required: true,
-       default : 6 
+        max:6
     }
     
 });
 
-module.exports = mongoose.model('AccedntalLeavesSchema', AccedntalLeavesSchema);
+module.exports = mongoose.model('AccidntalLeavesSchema', AccidntalLeavesSchema);
