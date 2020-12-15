@@ -2,16 +2,40 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
+const jwt_decode = require('jwt-decode'); 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const key = 'shawerma';
-
+const members = require('../models/members')
 const MemberRouter = express.Router();
-
 MemberRouter.use(bodyParser.json());
 
 MemberRouter.route('/login')
-.post((req,res,next) =>{
+.post(async(req,res,next) =>{
+    try {
+        const {email,password}=req.body;
+        if(!email|| !password){
+            return res.status(400).json({msg:"please enter email or password"})
+        }
+        const existingUser = await members.findOne({email:email});
+        if(!existingUser)
+        {
+            return res.status(400).json({msg:"Not found Member."})
+        }
+        const isMatched = await bcrypt.compare(password,existingUser.password);
+        if(!isMatched){
+            return res.status(400).json({msg:"inavalid password"})
+        }
+        const token = jwt.sign({id:existingUser.id},key);
+       
+        res.header("auth-token",token);
+        res.send("Logged in sucssefully ")
+
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
+
     //verify that the needed credentials are given
     //verify that there is a user with the email given in the body
     //if found verify that the password is correct using bcrypt
@@ -41,11 +65,34 @@ MemberRouter.route('/updateProfile')
 });
 
 MemberRouter.route('/resetPassword')
-.post((req,res,next) =>{
-    //authenticate
-    //hash the password
-    //update the corresponding record
-    //make the prompt col value = false
+.post(async(req,res,next) =>{
+    try{
+    console.log("hello")
+    const NewPassword = req.body.NewPassword;
+    const token  = req.header('auth-token');
+    const DecodeToken = jwt_decode(token);
+    const id = DecodeToken.id;
+    const existingUser = await members.findOne({id:id});
+    const salt = await bcrypt.genSalt();
+    const hasedPassword = await bcrypt.hash(NewPassword,salt);
+    if(!existingUser){
+    res.send("not authenticated ");
+    }
+    members.updateOne({id:id},{password:hasedPassword} , function(err, res) {
+        if (err) throw err;
+        console.log("document updated");
+      });
+      members.updateOne({id:id},{prompt:false} , function(err, res) {
+        if (err) throw err;
+        console.log("document updated");
+      });
+      res.send("Password Updated sucssefully.")
+   
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
+
 });
 
 MemberRouter.route('/signIn')
