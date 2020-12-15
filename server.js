@@ -22,6 +22,7 @@ const slot = require('./models/slot');
 const department = require('./models/department');
 const faculty = require('./models/faculty');
 const members = require('./models/members.js');
+const course = require('./models/course');
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
 //connection.once('open', function() {
@@ -61,10 +62,15 @@ app.post('/login',async(req,res)=>{
         //     o3 = o2[0]._id;
         // }
         // console.log(o3);
+        // const c = (await course.find({}))[0];
+        // let ta = await academicMember.find({$or:[{"type": "academic member"}, {"type": "CourseCoordinator"}]});
+        // let doc = await academicMember.find({"type": "CourseInstructor"});
+        // await department.findOneAndUpdate({"name": "CS"}, {"courses": c , "teachingAssistants": ta, "instructors":doc});
+        // console.log("updated");
         };
 
     console.log("check9");
-    //da5lData();
+   // da5lData();
     console.log("check10");
 
     //encrypt passwords of existing members

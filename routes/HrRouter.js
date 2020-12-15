@@ -20,9 +20,9 @@ HrRouter.route('/addLocation')
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
-    console.log(payload.id);
+    //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
-        console.log(payload.id);
+        //console.log(payload.id);
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
@@ -65,6 +65,31 @@ HrRouter.route('/addLocation')
     
 });
 
+HrRouter.route('/deleteLocation/:name')
+.delete(async(req,res,next) =>{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a location with the name = id
+        const loc = await location.find({"name": req.params.name});
+        if(!loc){
+            return res.status(400).send("name of location is not found");
+        }
+        else{
+             //delete the existing location with all slots in this location and ask what should happen to the offices
+           await Location.findOneAndDelete({"name": req.params.name});
+            res.send("loc deleted");
+        }
+        
+    }
+    
+});
+
 HrRouter.route('/updateLocation/:id')
 .put((req,res,next) =>{
     //authenticate that this is a valid member
@@ -74,14 +99,7 @@ HrRouter.route('/updateLocation/:id')
     //update the existing location
 });
 
-HrRouter.route('/deleteLocation/:id')
-.delete((req,res,next) =>{
-    //authenticate that this is a valid member
-    //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a location with the name = id
-    //delete the existing location
-});
+
 
 HrRouter.route('/addFaculty')
 .post(async (req,res,next) =>{
