@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const AccidntalLeavesSchema  = new mongoose.Schema({
+const AccidentalLeavesSchema  = new mongoose.Schema({
 
     numberOfdays: {
         type: number ,
@@ -12,5 +12,5 @@ const AccidntalLeavesSchema  = new mongoose.Schema({
     
 });
 
-module.exports = mongoose.model('AccidntalLeavesSchema', AccidntalLeavesSchema);
-module.exports.AccidntalLeavesSchema = AccidntalLeavesSchema;
+module.exports = mongoose.model('AccidentalLeavesSchema', AccidentalLeavesSchema);
+module.exports.AccidentalLeavesSchema = AccidentalLeavesSchema;
