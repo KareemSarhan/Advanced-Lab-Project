@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//require('mongoose-currency').loadType(mongoose);
-//const Currency = mongoose.Types.Currency;
-//const attendanceLog = require('./attendance');
-
 const memberSchema = new mongoose.Schema({
     
     name: {
@@ -26,7 +22,8 @@ const memberSchema = new mongoose.Schema({
     },
     officeLocation: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'locationSchema'
+        ref: 'locationSchema',
+        required: true
         //make sure it is an office
     },
     salary:{
@@ -43,3 +40,4 @@ const memberSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Member', memberSchema);
+module.exports.memberSchema = memberSchema;

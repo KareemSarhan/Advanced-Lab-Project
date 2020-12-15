@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const academicMemberSchema = require('./academicMember');
 
 const slotSchema = new mongoose.Schema({
     
@@ -28,3 +27,4 @@ const slotSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Slot', slotSchema);
+module.exports.slotSchema = slotSchema;

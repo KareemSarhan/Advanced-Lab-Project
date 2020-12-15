@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const academicMemberSchema = require('./academicMember');
 
 const RepReqSchema = new mongoose.Schema({
 
@@ -13,11 +12,11 @@ const RepReqSchema = new mongoose.Schema({
         required: true},
 
     requestedID:{ //member to send the request to
-        type: Number,
+        type: String,
         required: true
     },
     requestedDay: {
-        type: String,
+        type: Date,
         required: true},
 
     requestedSlot: {
@@ -33,3 +32,4 @@ const RepReqSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('RepReq', RepReqSchema);
+module.exports.RepReqSchema = RepReqSchema;

@@ -17,4 +17,5 @@ const locationSchema = new mongoose.Schema({
     //whether it is and office, room, lab, or hall
 });
 
-module.exports = mongoose.model('Loction', locationSchema);
+module.exports = mongoose.model('Location', locationSchema);
+module.exports.locationSchema = locationSchema;

@@ -13,3 +13,4 @@ const AccidntalLeavesSchema  = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('AccidntalLeavesSchema', AccidntalLeavesSchema);
+module.exports.AccidntalLeavesSchema = AccidntalLeavesSchema;

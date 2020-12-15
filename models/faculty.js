@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const departmentSchema = require('./department');
-const academicMemberSchema = require('./academicMember');
+const departmentSchemaModel = require('./department');
+const departmentSchema = departmentSchemaModel.departmentSchema;
+const academicMemberSchemaModel = require('./academicMember');
+const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 
 const facultySchema = new mongoose.Schema({
 
@@ -11,10 +13,11 @@ const facultySchema = new mongoose.Schema({
         unique: true
     },
 
-    departments: [departmentSchema],
+   departments: [departmentSchema],
     
     teachingAssistants: [academicMemberSchema],
     instructors: [academicMemberSchema]
 });
 
 module.exports = mongoose.model('Faculty', facultySchema);
+module.exports.facultySchema = facultySchema;

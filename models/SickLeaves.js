@@ -10,12 +10,12 @@ const SickLeavesSchema  = new mongoose.Schema({
      required : true
     },
     dateOfLeave :{
-        type:date,
+        type: Date,
         required:true
 
     },
     dateOfdocument:{
-        type:date
+        type: Date
 
     },
     Status:{
@@ -27,3 +27,4 @@ const SickLeavesSchema  = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('SickLeavesSchema', SickLeavesSchema);
+module.exports.SickLeavesSchema = SickLeavesSchema;

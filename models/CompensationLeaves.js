@@ -6,12 +6,12 @@ const Schema = mongoose.Schema;
 const CompensationLeavesSchema  = new mongoose.Schema({
 
     dateOfabsence : {
-        type: date,
+        type: Date,
         required:ture
     },
 
     dateOfcompensation : {  // to compare and see if it is in the same month of absence or not and whether it is a day off or not 
-        type: date,
+        type: Date,
         required:ture
     },
     reason : {
@@ -26,3 +26,4 @@ const CompensationLeavesSchema  = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('CompensationLeavesSchema',  CompensationLeavesSchema);
+module.exports.CompensationLeavesSchema = CompensationLeavesSchema;

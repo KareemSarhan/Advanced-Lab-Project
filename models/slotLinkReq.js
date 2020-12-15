@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const academicMemberSchema = require('./academicMember');
 
 const slotLinkReqSchema = new mongoose.Schema({
 
@@ -30,3 +29,4 @@ const slotLinkReqSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('SlotLinkReq', slotLinkReqSchema);
+module.exports.slotLinkReqSchema = slotLinkReqSchema;

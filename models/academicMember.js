@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const scheduleSchema = require('./schedule');
-const courseSchema = require('./course');
-
-//require('mongoose-currency').loadType(mongoose);
-//const Currency = mongoose.Types.Currency;
+const courseSchemaModel = require('./course');
+const courseSchema = courseSchemaModel.courseSchema;
+const slotSchemaModel = require('./slot');
+const slotSchema = slotSchemaModel.slotSchema;
 
 const academicMemberSchema = new mongoose.Schema({
 
     Memberid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'memberSchema'},
-   schedule: scheduleSchema,
+   schedule: [slotSchema],
    type: {
        type: String,
         required: true},
-   courses: [courseSchema],
+   courses: [{type: mongoose.Schema.Types.ObjectId,
+            ref: 'courseSchema'}],
    faculty: {
        type: String
    },
@@ -25,3 +25,4 @@ const academicMemberSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('AcademicMember', academicMemberSchema);
+module.exports.academicMemberSchema = academicMemberSchema;

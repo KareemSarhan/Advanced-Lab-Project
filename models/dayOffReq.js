@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const academicMemberSchema = require('./academicMember');
+const academicMemberSchemaModel = require('./academicMember');
+const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 
 const dayOffReqSchema = new mongoose.Schema({
 
@@ -25,3 +26,4 @@ const dayOffReqSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('DayOffReq', dayOffReqSchema);
+module.exports.dayOffReqSchema = dayOffReqSchema;

@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const courseSchema = require('./course');
-const academicMemberSchema = require('./academicMember');
+const courseSchemaModel = require('./course');
+const courseSchema = courseSchemaModel.courseSchema;
+const academicMemberSchemaModel = require('./academicMember');
+const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 
 const departmentSchema = new mongoose.Schema({
 
@@ -17,13 +19,14 @@ const departmentSchema = new mongoose.Schema({
         unique: true
     },
 
-    courses: [courseSchema],
-    headOfDep: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema'},
+   courses: [courseSchema],
+   headOfDep: {
+       type: mongoose.Schema.Types.ObjectId,
+       ref: 'academicMemberSchema'},
 
-    teachingAssistants: [academicMemberSchema],
-    instructors: [academicMemberSchema]
+   teachingAssistants: [academicMemberSchema],
+   instructors: [academicMemberSchema]
 });
 
 module.exports = mongoose.model('Department', departmentSchema);
+module.exports.departmentSchema = departmentSchema;

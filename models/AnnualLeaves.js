@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const replacementSchema = require('./Replacement');
+const replacementSchemaModel = require('./Replacement');
+const replacementSchema = replacementSchemaModel.replacementSchema;
 
 const AnnualLeavesSchema  = new mongoose.Schema({
 
@@ -27,3 +28,4 @@ const AnnualLeavesSchema  = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('AnnualLeavesSchema', AnnualLeavesSchema);
+module.exports.AnnualLeavesSchema = AnnualLeavesSchema;

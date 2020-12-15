@@ -21,3 +21,4 @@ const MaternityLeavesSchema  = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('MaternityLeavesSchema', MaternityLeavesSchema);
+module.exports.MaternityLeavesSchema = MaternityLeavesSchema;

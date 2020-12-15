@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const slotSchema = require('./slot');
-const academicMemberSchema = require('./academicMember');
+const academicMemberSchemaModel = require('./academicMember');
+const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
+const slotSchemaModel = require('./slot');
+const slotSchema = slotSchemaModel.slotSchema;
 
 const courseSchema = new mongoose.Schema({
 
@@ -27,10 +29,7 @@ const courseSchema = new mongoose.Schema({
         required: true
     },
 
-    slots: {
-        type: [slotSchema],
-        required: true
-    },
+    slots: [slotSchema],
 
     coverage: Number ,
     //can be calculated from the number of assigned slots and number of slots
@@ -44,3 +43,4 @@ const courseSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Course', courseSchema);
+module.exports.courseSchema = courseSchema;
