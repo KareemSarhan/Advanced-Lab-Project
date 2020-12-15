@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const ReplacementSchema  = new mongoose.Schema({
     StaffID:{    // the staff who sent the request 
         type: mongoose.Schema.Types.ObjectId,
+        required:true,
         ref: 'memberSchema'
     },
 

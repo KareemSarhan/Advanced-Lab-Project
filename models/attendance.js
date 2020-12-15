@@ -6,7 +6,9 @@ const attendanceLogSchema = new mongoose.Schema({
     
     Memberid: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'memberSchema'},
+        required : true,
+        ref: 'memberSchema'
+    },
     signIn: Date,
     signOut: Date,
     duration: Number

@@ -16,6 +16,7 @@ const CompensationLeaves = CompensationLeavesModel.CompensationLeavesSchema;
 const Leaves  = new mongoose.Schema({
  StaffID : {
     type: mongoose.Schema.Types.ObjectId,
+    required:true,
     ref: 'memberSchema'
  },
  AnnualLeave: {
