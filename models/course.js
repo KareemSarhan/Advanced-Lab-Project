@@ -33,8 +33,10 @@ const courseSchema = new mongoose.Schema({
     coverage: Number ,
     //can be calculated from the number of assigned slots and number of slots
 
-    teachingAssistants: [academicMemberSchema],
-    instructors: [academicMemberSchema],
+    teachingAssistants: [{type: mongoose.Schema.Types.ObjectId,
+                         ref: 'academicMemberSchema'}],
+    instructors: [{type: mongoose.Schema.Types.ObjectId,
+            ref: 'academicMemberSchema'}],
 
     courseCoordinator:{ 
         type: mongoose.Schema.Types.ObjectId,
