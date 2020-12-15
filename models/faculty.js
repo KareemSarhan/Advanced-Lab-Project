@@ -13,7 +13,7 @@ const facultySchema = new mongoose.Schema({
         unique: true
     },
 
-   departments: [departmentSchema],
+    departments: [departmentSchema],
     
     teachingAssistants: [academicMemberSchema],
     instructors: [academicMemberSchema]

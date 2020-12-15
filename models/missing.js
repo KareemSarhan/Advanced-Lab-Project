@@ -6,6 +6,7 @@ const missingSchema = new mongoose.Schema({
     
     Memberid: {
         type: mongoose.Schema.Types.ObjectId,
+        required:true,
         ref: 'memberSchema'},
     missingHours: Number,
     remainingHours: Number,

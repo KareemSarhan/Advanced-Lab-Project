@@ -8,11 +8,13 @@ const slotSchema = new mongoose.Schema({
 
     course:{
         type: mongoose.Schema.Types.ObjectId,
+        required:true,
         ref: 'courseSchema'
     },
 
     location:{
         type: mongoose.Schema.Types.ObjectId,
+        required:true,
         ref: 'locationSchema'
     },
 
