@@ -21,7 +21,7 @@ const Leaves  = new mongoose.Schema({
  AnnualLeave: {
     type: [AnnualLeaves]
 },
-AccedentalLeave: {
+AccidentalLeave: {
     type: [AccidentalLeaves]
 },
 SickLeave: {

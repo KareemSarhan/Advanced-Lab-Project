@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const key = 'shawerma';
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const AcademicMemberRouter = require('./routes/AcademicMemberRouter');
@@ -16,11 +19,34 @@ const Location = require('./models/location.js');
 const academicMember = require('./models/academicMember');
 const Course = require('./models/course');
 const slot = require('./models/slot');
+const department = require('./models/department');
+const faculty = require('./models/faculty');
+const members = require('./models/members.js');
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
 //connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
     app.use(bodyParser.json());
+
+    //This is to be removed later on because the token should have been made by login
+app.post('/login',async(req,res)=>{
+    const u = await members.findOne({"id": req.body.id});
+    if (!u){
+        return res.status(403).send("3eeeb");
+    }
+    const check = await bcrypt.compare(req.body.password, u.password);
+    if (!check){
+        return res.status(403).send("3eeeeeeeeeb");
+    }
+    const payload = {
+        id: u.id,
+        type: u.userType
+    };
+    const token = jwt.sign(payload, key);
+    res.header('auth-token', token);
+    res.send("login successful");
+});
+
     app.use('/AM', AcademicMemberRouter);
     app.use('/CC', CourseCoordinatorRouter);
     app.use('/CI', CourseInstRouter);
@@ -38,8 +64,13 @@ const slot = require('./models/slot');
         };
 
     console.log("check9");
-    da5lData();
+    //da5lData();
     console.log("check10");
+
+    //encrypt passwords of existing members
+    //add  schedule for members
+    //add members to department
+    //add members to faculty
 
 
 module.exports= app

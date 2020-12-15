@@ -9,7 +9,8 @@ const academicMemberSchema = new mongoose.Schema({
 
     Memberid: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'memberSchema'},
+        ref: 'memberSchema',
+        unique: true},
    schedule: [slotSchema],
    type: {
        type: String,

@@ -7,20 +7,62 @@ const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 //const authenticate = require('../authenticate.js');
 const faculty = require('../models/faculty');
+const Location = require('../models/location.js');
 
 const HrRouter = express.Router();
 
 HrRouter.use(bodyParser.json());
 HrRouter.use(express.json());
+HrRouter.use(authenticate);
 
 HrRouter.route('/addLocation')
-.post((req,res,next) =>{
+.post( async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that the capacity matches the type 
-    //e.g if a lab or room capacity <= 25
-    //make a new location 
+    const payload = jwt.verify(req.header('auth-token'),key);
+    console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of location should be given in body");
+        }else if (req.body.capacity == null){
+            return res.status(400).send("capacity of location should be given in body");
+        }else if (req.body.type == null){
+            return res.status(400).send("capacity of location should be given in body");
+        }else{
+            //all data required are given
+            //verify that the capacity matches the type 
+            //e.g if a lab or room capacity <= 25
+            const cap = req.body.capacity;
+            let maxCap = 0;
+            if (req.body.type == "Lab" || req.body.type == "Room"){
+                maxCap = 25;
+            }else if (req.body.type == "Lecture Hall"){
+                maxCap = 250;
+            }else{
+                //it is an office
+                maxCap = 5;
+            }
+            if (cap > maxCap){
+                return res.status(400).send("capacity of location exceeds limit");
+            }else{
+                //make a new location 
+                const loc = new Location({
+                    name: req.body.name,
+                    capacity : req.body.capacity,
+                    type: req.body.type
+                });
+                await loc.save();
+                console.log("Location added");
+            }
+            
+        }
+        
+    }
+    
 });
 
 HrRouter.route('/updateLocation/:id')

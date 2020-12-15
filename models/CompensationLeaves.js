@@ -20,7 +20,7 @@ const CompensationLeavesSchema  = new mongoose.Schema({
     },
     valid : {  // when he compensate in a day off within the month he was absent in , it will be true
         type : Boolean,
-        require : true
+        required : true
     }
     
 });

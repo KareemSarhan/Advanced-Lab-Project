@@ -13,7 +13,9 @@ const locationSchema = new mongoose.Schema({
         type: Number,
         required: true},
     
-    type: String
+    type: {
+        type: String,
+        required: true}
     //whether it is and office, room, lab, or hall
 });
 
