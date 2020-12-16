@@ -13,10 +13,16 @@ const facultySchema = new mongoose.Schema({
         unique: true
     },
 
-    departments: [departmentSchema],
+    departments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'departmentSchema'}],
     
-    teachingAssistants: [academicMemberSchema],
-    instructors: [academicMemberSchema]
+    teachingAssistants: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema'}],
+    instructors: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema'}]
 });
 
 module.exports = mongoose.model('Faculty', facultySchema);

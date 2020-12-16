@@ -1,7 +1,24 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const replacementSchemaModel = require('./Replacement');
-const replacementSchema = replacementSchemaModel.replacementSchema;
+//const replacementSchemaModel = require('./Replacement');
+//const replacementSchema = replacementSchemaModel.replacementSchema;
+
+const ReplacementSchema  = new mongoose.Schema({
+    StaffID:{    // the staff who sent the request 
+        type: mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref: 'memberSchema'
+    },
+
+   ReplacementID :{//this represents the TA that will replace the Ta whos sent the request
+    type : String
+   }, 
+   found :{
+       type : Boolean,
+   }
+
+    
+});
 
 const AnnualLeavesSchema  = new mongoose.Schema({
 
@@ -10,7 +27,7 @@ const AnnualLeavesSchema  = new mongoose.Schema({
         required: true,
     },
     replacement : {
-        type : [replacementSchema],
+        type : [ReplacementSchema],
         //required:true
     },
     

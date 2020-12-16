@@ -28,7 +28,9 @@ const courseSchema = new mongoose.Schema({
         required: true
     },
 
-    slots: [slotSchema],
+    slots: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'slotSchema'}],
 
     coverage: Number ,
     //can be calculated from the number of assigned slots and number of slots

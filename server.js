@@ -39,15 +39,24 @@ const course = require('./models/course');
         //     o3 = o2[0]._id;
         // }
         // console.log(o3);
-        // const c = (await course.find({}))[0];
-        // let ta = await academicMember.find({$or:[{"type": "academic member"}, {"type": "CourseCoordinator"}]});
-        // let doc = await academicMember.find({"type": "CourseInstructor"});
-        // await department.findOneAndUpdate({"name": "CS"}, {"courses": c , "teachingAssistants": ta, "instructors":doc});
-        // console.log("updated");
+         //const c = (await course.find({}))[0];
+         const d = (await department.find())[0];
+         let ta = await academicMember.find({$or:[{"type": "CourseCoordinator"}, {"type": "academic member"}]});
+         let doc = await academicMember.find({$or:[{"type": "CourseInstructor"}, {"type": "HeadOfDepartment"}]});
+         let tA = [];
+         for (let i = 0 ; i < ta.length; i++){
+            tA.push(ta[i]._id);
+         }
+         let docA = [];
+         for (let j = 0 ; j < doc.length; j++){
+            docA.push(doc[j]._id);
+         }
+        // await faculty.findOneAndUpdate({"name": "MET"}, {"departments": d , "teachingAssistants": tA , "instructors": docA});
+         console.log("updated");
         };
 
     console.log("check9");
-   // da5lData();
+    //da5lData();
     console.log("check10");
 
 

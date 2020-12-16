@@ -18,13 +18,19 @@ const departmentSchema = new mongoose.Schema({
         unique: true
     },
 
-   courses: [courseSchema],
+   courses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'courseSchema'}],
    headOfDep: {
        type: mongoose.Schema.Types.ObjectId,
        ref: 'academicMemberSchema'},
 
-   teachingAssistants: [academicMemberSchema],
-   instructors: [academicMemberSchema]
+   teachingAssistants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'academicMemberSchema'}],
+   instructors: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'academicMemberSchema'}]
 });
 
 module.exports = mongoose.model('Department', departmentSchema);
