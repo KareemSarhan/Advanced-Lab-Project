@@ -129,6 +129,12 @@ async function da5lData() {
     // const day = d.getDay();
     // console.log(day);
 
+    // const s = "safa";
+    // const a = "fa"
+    // if ({ s: { $in: [a ]}}){
+    //     console.log("ddddddddddd")
+    // }
+
 
 
 module.exports = app

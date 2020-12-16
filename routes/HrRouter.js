@@ -13,6 +13,7 @@ const { memberSchema } = require('../models/members');
 const members = require('../models/members');
 const slot = require('../models/slot');
 const department = require('../models/department');
+const e = require('express');
 
 const HrRouter = express.Router();
 
@@ -257,13 +258,74 @@ HrRouter.route('/deleteFaculty/:name')
 });
 
 HrRouter.route('/addDepartment')
-.post((req,res,next) =>{
+.post(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //add a new department to this faculty
-    //make sure this department does not exist in other faculties
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of department should be given in body");
+        }else if (req.body.faculty == null){
+            return res.status(400).send("name of faculty should be given in body");
+        }else if (req.body.headOfDepartment == null){
+            return res.status(400).send("name of head of department should be given in body");
+        }else{
+            //all data required are given
+             //make sure this department does not exist in other faculties
+             const otherDep = (await department.find({"name": req.body.name}));
+             if (otherDep.length != 0){
+                 return res.status(400).send("there exists a department with this name");
+             }else{
+            let c = "";
+            if (req.body.code != null){
+                c = req.body.code;
+            }
+            let f = null;
+            const fa = (await faculty.find({"name": req.body.faculty}));
+            if(fa.length == 0){
+                return res.status(400).send("there does not exist a faculty with this name");
+            }else{
+                f = fa[0];
+                const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+            
+            if(!h1){
+                return res.status(400).send("there does not exist an instructor with this id");
+            }
+            else{
+                const h = (await academicMember.find({"Memberid": h1._id}))[0]
+                const d = new department({
+                    name: req.body.name,
+                    code: c,
+                    facultyName: req.body.faculty,
+                    headOfDep: h._id
+                });
+                //add a new department to this faculty
+                await d.save();
+                console.log("dep added");
+                const dN = (await department.find({"name": req.body.name}))[0];
+                //console.log(dN);
+                
+                let x = [];
+                x = f.departments;
+                x.push(dN._id);
+                //console.log(x);
+                await faculty.findByIdAndUpdate(f._id, {"departments" : x});
+                console.log("dep added to faculty");
+                res.send("department added");
+            }
+            
+            }
+            
+            }
+        }
+           
+    }
+        
 });
 
 HrRouter.route('/updateDepartment/:id')
