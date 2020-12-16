@@ -25,7 +25,8 @@ const academicMemberSchema = new mongoose.Schema({
    },
    department: {
        type: String
-   }
+   },
+   officeHourse  :String
 });
 
 module.exports = mongoose.model('AcademicMember', academicMemberSchema);
