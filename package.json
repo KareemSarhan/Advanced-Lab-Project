@@ -1,37 +1,37 @@
 {
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "jwt-decode": "^3.1.2",
-    "mongodb": "^3.6.3",
-    "mongoose": "^5.10.15",
-    "nodemon": "^2.0.6"
-  },
-  "name": "advanced-lab-project",
-  "description": "Advanced-Lab-Project",
-  "version": "0.0.0",
-  "main": "index.js",
-  "nodemonConfig": {
-    "verbose": true,
-    "ignore": [
-      "*.json"
-    ]
-  },
-  "scripts": {
-    "start": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/KareemSarhan/Advanced-Lab-Project.git"
-  },
-  "author": "KareemSarhan",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/KareemSarhan/Advanced-Lab-Project/issues"
-  },
-  "homepage": "https://github.com/KareemSarhan/Advanced-Lab-Project#readme"
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "jwt-decode": "^3.1.2",
+        "mongodb": "^3.6.3",
+        "mongoose": "^5.10.15",
+        "nodemon": "^2.0.6"
+    },
+    "name": "advanced-lab-project",
+    "description": "Advanced-Lab-Project",
+    "version": "0.0.0",
+    "main": "index.js",
+    "nodemonConfig": {
+        "verbose": true,
+        "ignore": [
+            "*.json"
+        ]
+    },
+    "scripts": {
+        "start": "nodemon index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KareemSarhan/Advanced-Lab-Project.git"
+    },
+    "author": "KareemSarhan",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/KareemSarhan/Advanced-Lab-Project/issues"
+    },
+    "homepage": "https://github.com/KareemSarhan/Advanced-Lab-Project#readme"
 }
