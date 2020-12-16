@@ -64,5 +64,7 @@ const course = require('./models/course');
     const day = d.getDay();
     console.log(day);
 
+    
+   
 
 module.exports= app

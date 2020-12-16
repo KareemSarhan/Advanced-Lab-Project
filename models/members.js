@@ -35,6 +35,8 @@ const memberSchema = new mongoose.Schema({
         default: true
         //change to false if user changed password on the first time
     },
+    phoneNumber :Number,
+    SecondayMail : String,
     gender: String,
     dayOff: String
 });

@@ -7,6 +7,11 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const key = 'shawerma';
 const members = require('../models/members')
+const location = require('../models/location')
+const AM = require('../models/academicMember')
+var token = "";
+
+
 const MemberRouter = express.Router();
 MemberRouter.use(bodyParser.json());
 
@@ -26,7 +31,7 @@ MemberRouter.route('/login')
         if(!isMatched){
             return res.status(400).json({msg:"inavalid password"})
         }
-        const token = jwt.sign({id:existingUser.id},key);
+         token = jwt.sign({id:existingUser.id},key);
        
         res.header("auth-token",token);
         res.send("Logged in sucssefully ")
@@ -44,20 +49,97 @@ MemberRouter.route('/login')
 });
 
 MemberRouter.route('/logout')
-.post((req,res,next) =>{
+.get((req,res,next) =>{
+     token = "" ;
+     res.header("auth-token",token);
+    res.send("logged out ")
+
     //verify that the needed credentials are given
     //I think delete the token
 });
 
 MemberRouter.route('/viewProfile')
-.get((req,res,next) =>{
-    //authenticate
-    //check member type;
-    //if academic member show courses details
+.get(async(req,res,next) =>{
+    try{
+    const token  = req.header('auth-token');
+    const DecodeToken = jwt_decode(token);
+    const id = DecodeToken.id;
+    const existingUser = await members.findOne({id:id});
+    if(!existingUser){
+        res.send("not Authenticated")
+    }
+    if(id.includes('ac')){
+    const academicMember = await AM.findOne({Memberid :existingUser._id});
+     const OfficeID = existingUser.officeLocation;
+     const OfficeName = await location.findOne({_id:OfficeID});
+     const course = academicMember.course;
+    res.json({
+        Member :{
+            name :existingUser.name,
+            email:existingUser.email,
+            faculty :academicMember.faculty,
+            department: academicMember.department,
+            dayOff:existingUser.dayOff,
+            Office : OfficeName.name,
+            course : course
+        }
+    })
+    //res.send(course)
+}
+else{
+res.json({
+    Member :{
+        name :existingUser.name,
+        email:existingUser.email,
+        Office : OfficeName.name
+    }
+});
+}
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
 });
 
 MemberRouter.route('/updateProfile')
-.put((req,res,next) =>{
+.post(async(req,res,next) =>{
+    try{
+    const {NewSecondaryEmail,NewPhonenumber, NewOfficehours} = req.body;
+    const token  = req.header('auth-token');
+    const DecodeToken = jwt_decode(token);
+    const id = DecodeToken.id;
+    const existingUser = await members.findOne({id:id});
+    if(!existingUser){
+        res.send("Not authenticated");
+    }
+    if(NewSecondaryEmail){
+    members.updateOne({id:id},{SecondayMail:NewSecondaryEmail} , function(err, res) {
+        if (err) throw err;
+        console.log("document updated 1");
+      });
+    }
+      if(NewPhonenumber){
+      members.updateOne({id:id},{phoneNumber:NewPhonenumber} , function(err, res) {
+        if (err) throw err;
+        console.log("document updated 2");
+      });
+    }
+      if(id.includes('ac')){
+          if(NewOfficehours){
+            AM.updateOne({Memberid:existingUser._id},{officeHourse:NewOfficehours} , function(err, res) {
+                if (err) throw err;
+                console.log("document updated 2");
+              });
+  
+          }
+      }
+      res.send("Updated Successfully .")
+
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+
+    }
     //authenticate
     //refuse to update name or id
     //check member type;
@@ -67,8 +149,11 @@ MemberRouter.route('/updateProfile')
 MemberRouter.route('/resetPassword')
 .post(async(req,res,next) =>{
     try{
-    console.log("hello")
+    //console.log("hello")
     const NewPassword = req.body.NewPassword;
+    if(NewPassword.length < 7 ){
+       res.send("Password must be atleast 8 characters ")
+    }
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
@@ -95,8 +180,16 @@ MemberRouter.route('/resetPassword')
 
 });
 
+
 MemberRouter.route('/signIn')
-.post((req,res,next) =>{
+.put(async(req,res,next) =>{
+    try{
+      //  const nowDate = new Date();
+        
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
     //does he has to be logged in?
     //authenticate
     //add a record in the attendace collection with the id from params with a new date created once signed in
@@ -113,7 +206,14 @@ MemberRouter.route('/signOut')
 });
 
 MemberRouter.route('/viewAllAttendance')
-.get((req,res,next) =>{
+.get(async(req,res,next) =>{
+    try{
+
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
+
     //authenticate
     //get all the records with the id from params 
 });
