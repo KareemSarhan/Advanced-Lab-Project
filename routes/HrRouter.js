@@ -8,6 +8,10 @@ const key = 'shawerma';
 //const authenticate = require('../authenticate.js');
 const faculty = require('../models/faculty');
 const Location = require('../models/location.js');
+const academicMember = require('../models/academicMember');
+const { memberSchema } = require('../models/members');
+const members = require('../models/members');
+const slot = require('../models/slot');
 
 const HrRouter = express.Router();
 
@@ -76,13 +80,28 @@ HrRouter.route('/deleteLocation/:name')
         return res.status(401).send("not authorized");
     }else{
         //verify that there is a location with the name = id
-        const loc = await location.find({"name": req.params.name});
+        const loc = await Location.find({"name": req.params.name});
         if(!loc){
             return res.status(400).send("name of location is not found");
         }
         else{
-             //delete the existing location with all slots in this location and ask what should happen to the offices
-           await Location.findOneAndDelete({"name": req.params.name});
+             //delete the existing location with all slots in this location and offices
+            if (loc.type == "office"){
+                //make the office locations of academic members inside this office N/A
+                const staff = await members.find({"officeLocation": loc._id});
+                for (let i = 0 ; i < staff.length; i++){
+                    members.findByIdAndUpdate(staff[i]._id, {"officeLocation": null});
+                    res.send("office is nullified");
+                }
+            }else{
+                 //make the slot locations N/A
+                 const s = await slot.find({"location": loc._id});
+                 for (let j = 0 ; j < staff.length; j++){
+                     slot.findByIdAndUpdate(s[j]._id, {"location": null});
+                     res.send("slot location is nullified");
+                 }
+            }
+            await Location.findOneAndDelete({"name": req.params.name});
             res.send("loc deleted");
         }
         
@@ -90,13 +109,48 @@ HrRouter.route('/deleteLocation/:name')
     
 });
 
-HrRouter.route('/updateLocation/:id')
-.put((req,res,next) =>{
+//test this
+HrRouter.route('/updateLocation/:name')
+.put( async(req,res,next) =>{
+    //update the existing location
+
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a location with the name = id
-    //update the existing location
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a location with the name = id
+        const loc = await Location.find({"name": req.params.name});
+        if(!loc){
+            return res.status(400).send("name of location is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.capacity != null){
+                 //check that the capacity is suitable
+                 const cap = req.body.capacity;
+                 let maxCap = 0;
+                 if (loc.type == "Lab" || loc.type == "Room"){
+                     maxCap = 25;
+                 }else if (loc.type == "Lecture Hall"){
+                     maxCap = 250;
+                 }else{
+                     //it is an office
+                     maxCap = 5;
+                 }
+                 if (req.body.capacity > maxCap){
+                    return res.status(400).send("this new capacity exceeds the max capacity of the location");
+                 }else{
+                     await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
+                     res.send("location capacity is updated")
+                 }
+             }
+        }
+        
+    }
 });
 
 

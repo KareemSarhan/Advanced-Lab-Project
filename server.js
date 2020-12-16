@@ -39,25 +39,30 @@ const course = require('./models/course');
         //     o3 = o2[0]._id;
         // }
         // console.log(o3);
-         //const c = (await course.find({}))[0];
+         const c = (await course.find({}))[0];
+         console.log(c._id);
          const d = (await department.find())[0];
-         let ta = await academicMember.find({$or:[{"type": "CourseCoordinator"}, {"type": "academic member"}]});
-         let doc = await academicMember.find({$or:[{"type": "CourseInstructor"}, {"type": "HeadOfDepartment"}]});
-         let tA = [];
-         for (let i = 0 ; i < ta.length; i++){
-            tA.push(ta[i]._id);
-         }
-         let docA = [];
-         for (let j = 0 ; j < doc.length; j++){
-            docA.push(doc[j]._id);
-         }
-        // await faculty.findOneAndUpdate({"name": "MET"}, {"departments": d , "teachingAssistants": tA , "instructors": docA});
+         //let ta = await academicMember.find({$or:[{"type": "CourseCoordinator"}, {"type": "academic member"}]});
+         let doc = (await academicMember.find({"type": "CourseCoordinator"}));
+         let s = (await slot.find({"type": "Tutorial"}))[0]; 
+        //  let tA = [];
+        //  for (let i = 0 ; i < ta.length; i++){
+        //     tA.push(ta[i]._id);
+        //  }
+        //  let docA = [];
+        //  for (let j = 0 ; j < doc.length; j++){
+        //     docA.push(doc[j]._id);
+        //  }
+        //await academicMember.findOneAndUpdate({"type": "HeadOfDepartment"}, {"schedule" :[], "courses":[]});
          console.log("updated");
         };
 
     console.log("check9");
     //da5lData();
     console.log("check10");
+    const d = new Date();
+    const day = d.getDay();
+    console.log(day);
 
 
 module.exports= app
