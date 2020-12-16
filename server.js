@@ -26,14 +26,45 @@ const key = 'shawerma';
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
 //connection.once('open', function() {
-    console.log("MongoDB database connection established successfully");
-    app.use(bodyParser.json());
-    app.use('/AM', AcademicMemberRouter);
-    app.use('/CC', CourseCoordinatorRouter);
-    app.use('/CI', CourseInstRouter);
-    app.use('/Hod', HodRouter);
-    app.use('/Hr', HrRouter);
-    app.use('/Member', MemberRouter);
+console.log("MongoDB database connection established successfully");
+app.use(bodyParser.json());
+app.use('/AM', AcademicMemberRouter);
+app.use('/CC', CourseCoordinatorRouter);
+app.use('/CourseInstructor', CourseInstRouter);
+app.use('/Hod', HodRouter);
+app.use('/Hr', HrRouter);
+app.use('/Member', MemberRouter);
+async function PopulateCourses() {
+    course.collection.insertOne({
+        name: "batee5",
+        code: "bat300",
+        numberOfSlotsNeeded: 8,
+        numberOfSlotsAssigned: 5,
+        coverage: 0.6
+    });
+}
+async function da5lData() {
+    // const o2 = await Location.find({"name": "c3.217"});
+    // let o3;
+    // if (o2 != null){
+    //     o3 = o2[0]._id;
+    // }
+    // console.log(o3);
+    //const c = (await course.find({}))[0];
+    const d = (await department.find())[0];
+    let ta = await academicMember.find({ $or: [{ "type": "CourseCoordinator" }, { "type": "academic member" }] });
+    let doc = await academicMember.find({ $or: [{ "type": "CourseInstructor" }, { "type": "HeadOfDepartment" }] });
+    let tA = [];
+    for (let i = 0; i < ta.length; i++) {
+        tA.push(ta[i]._id);
+    }
+    let docA = [];
+    for (let j = 0; j < doc.length; j++) {
+        docA.push(doc[j]._id);
+    }
+    // await faculty.findOneAndUpdate({"name": "MET"}, {"departments": d , "teachingAssistants": tA , "instructors": docA});
+    console.log("updated")
+};
 
     async function da5lData(){
         // const o2 = await Location.find({"name": "c3.217"});
@@ -98,7 +129,6 @@ const key = 'shawerma';
     // const day = d.getDay();
     // console.log(day);
 
-    
-   
 
-module.exports= app
+
+module.exports = app
