@@ -66,7 +66,7 @@ async function da5lData() {
     console.log("updated")
 };
 
-    async function da5lData(){
+    async function da5lData2(){
         // const o2 = await Location.find({"name": "c3.217"});
         // let o3;
         // if (o2 != null){
@@ -123,7 +123,7 @@ async function da5lData() {
         };
 
     console.log("check9");
-   // da5lData();
+   // da5lData2();
     console.log("check10");
     // const d = new Date();
     // const day = d.getDay();
