@@ -12,6 +12,7 @@ const academicMember = require('../models/academicMember');
 const { memberSchema } = require('../models/members');
 const members = require('../models/members');
 const slot = require('../models/slot');
+const department = require('../models/department');
 
 const HrRouter = express.Router();
 
@@ -233,7 +234,7 @@ HrRouter.route('/deleteFaculty/:name')
         return res.status(401).send("not authorized");
     }else{
         //verify that there is a faculty with the name = :name
-        const fac = (await Location.find({"name": req.params.name}))[0];
+        const fac = await faculty.find({"name": req.params.name});
         if(fac.length == 0){
             return res.status(400).send("name of faculty is not found");
         }
@@ -243,8 +244,12 @@ HrRouter.route('/deleteFaculty/:name')
             for (let i = 0 ; i < m.length; i++){
                 await academicMember.findByIdAndUpdate(m[i]._id, {"faculty": "N/A"});
             }
+            const d = await department.find({"facultyName": req.params.name});
+            for (let j = 0 ; j < d.length; j++){
+                await department.findByIdAndUpdate(d[j]._id, {"facultyName": "N/A"});
+            }
             await faculty.findOneAndDelete({"name": req.params.name});
-            res.send("faculty deleted");
+            res.send("faculty deleted ,faculty name at corresponding department is removed ,faculty name for corresponding academic members is removed" );
         }
         
     }

@@ -17,6 +17,7 @@ const departmentSchema = new mongoose.Schema({
         type: String,
         //unique: true
     },
+    facultyName: String,
 
    courses: [{
     type: mongoose.Schema.Types.ObjectId,

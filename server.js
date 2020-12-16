@@ -80,14 +80,19 @@ const key = 'shawerma';
     //     });
     //    // await s.save();
     //     console.log("new slot");
-        const d = (await department.find({"name": "BIDep"}))[0];
-       // await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
-        //await d.save();
+    // const dep = new department({
+    //     name: "BIDep",
+    //     facultyName: "BI"
+    // })
+    // await dep.save();
+    // console.log("dep added");
+        //const d = (await department.find({"name": "BIDep"}))[0];
+        //await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
         console.log("fac updated");
         };
 
     console.log("check9");
-    //da5lData();
+   // da5lData();
     console.log("check10");
     // const d = new Date();
     // const day = d.getDay();
