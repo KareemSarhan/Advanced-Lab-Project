@@ -9,13 +9,13 @@ const departmentSchema = new mongoose.Schema({
 
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
+        //unique: true
     },
 
     code:{
         type: String,
-        unique: true
+        //unique: true
     },
 
    courses: [{
