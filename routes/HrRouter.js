@@ -384,14 +384,46 @@ HrRouter.route('/updateDepartment/:name')
     }
 });
 
-HrRouter.route('/deleteDepartment/:id')
-.delete((req,res,next) =>{
+HrRouter.route('/deleteDepartment/:name')
+.delete(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a department with the name = id
-    //delete the existing department 
-    //update the academic members table by removing the HOD fieldn of the corresponding head
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a department with the name = :name
+        const dep = await department.find({"name": req.params.name});
+        if(dep.length == 0){
+            return res.status(400).send("name of department is not found");
+        }
+        else{
+            //delete the existing department 
+            //update the academic members table by removing the HOD field of the corresponding head
+            const m = await academicMember.find({"department": req.params.name});
+            for (let i = 0 ; i < m.length; i++){
+                await academicMember.findByIdAndUpdate(m[i]._id, {"department": "N/A" });
+            }
+            const head = dep[0].headOfDep;
+            await academicMember.findByIdAndUpdate(head, {"type": "CourseInstructor"});
+            const f = await faculty.find({"name": dep[0].facultyName});
+            const fd = f[0].departments;
+            for (let j = 0 ; j < fd.length; j++){
+                if (fd[j] == dep[0]._id +""){
+                    fd.splice(j,1);
+                }
+            }
+            console.log(f[0]);
+            console.log(fd);
+            await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
+            await department.findOneAndDelete({"name": req.params.name});
+            res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
+        }
+        
+    }
+    
 });
 
 HrRouter.route('/addCourse')
