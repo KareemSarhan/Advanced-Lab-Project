@@ -5,9 +5,14 @@ var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const key = 'shawerma';
-//const authenticate = require('../authenticate.js');
 const faculty = require('../models/faculty');
 const Location = require('../models/location.js');
+const academicMember = require('../models/academicMember');
+const { memberSchema } = require('../models/members');
+const members = require('../models/members');
+const slot = require('../models/slot');
+const department = require('../models/department');
+const course = require('../models/course');
 
 const HrRouter = express.Router();
 
@@ -56,13 +61,11 @@ HrRouter.route('/addLocation')
                     type: req.body.type
                 });
                 await loc.save();
+                res.send("location added");
                 console.log("Location added");
-            }
-            
+            }   
         }
-        
     }
-    
 });
 
 HrRouter.route('/deleteLocation/:name')
@@ -76,124 +79,503 @@ HrRouter.route('/deleteLocation/:name')
         return res.status(401).send("not authorized");
     }else{
         //verify that there is a location with the name = id
-        const loc = await location.find({"name": req.params.name});
-        if(!loc){
+        const loc = (await Location.find({"name": req.params.name}))[0];
+      //  console.log(loc);
+        if(loc.length == 0){
             return res.status(400).send("name of location is not found");
         }
         else{
-             //delete the existing location with all slots in this location and ask what should happen to the offices
-           await Location.findOneAndDelete({"name": req.params.name});
+             //delete the existing location with all slots in this location and offices
+            if (loc.type == "office"){
+                //make the office locations of academic members inside this office N/A
+                const staff = await members.find({"officeLocation": loc._id});
+                for (let i = 0 ; i < staff.length; i++){
+                   await  members.findByIdAndUpdate(staff[i]._id, {"officeLocation": null});
+                    //res.send("office is nullified");
+                    console.log("office is nullified");
+                }
+            }else{
+                 //make the slot locations N/A
+                 //console.log(loc._id);
+
+                 const s = await slot.find({"location": loc._id});
+                 for (let j = 0 ; j < s.length; j++){
+                     await slot.findByIdAndUpdate(s[j]._id, {"location": null});
+                     //res.send("slot location is nullified");
+                     console.log("slot location is nullified");
+                 }
+            }
+            await Location.findOneAndDelete({"name": req.params.name});
             res.send("loc deleted");
-        }
-        
+        }  
     }
-    
 });
 
-HrRouter.route('/updateLocation/:id')
-.put((req,res,next) =>{
+HrRouter.route('/updateLocation/:name')
+.put( async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a location with the name = id
-    //update the existing location
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a location with the name = id
+        const loc = await Location.find({"name": req.params.name});
+        if(loc.length == 0){
+            return res.status(400).send("name of location is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.capacity != null){
+                 //check that the capacity is suitable
+                 const cap = req.body.capacity;
+                 let maxCap = 0;
+                 if (loc.type == "Lab" || loc.type == "Room"){
+                     maxCap = 25;
+                 }else if (loc.type == "Lecture Hall"){
+                     maxCap = 250;
+                 }else{
+                     //it is an office
+                     maxCap = 5;
+                 }
+                 if (req.body.capacity > maxCap){
+                    return res.status(400).send("this new capacity exceeds the max capacity of the location");
+                 }else{
+                       //update the existing location
+                     await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
+                     res.send("location capacity is updated")
+                 }
+             }
+        }  
+    }
 });
-
-
 
 HrRouter.route('/addFaculty')
 .post(async (req,res,next) =>{
     //authenticate that this is a valid member
-  // authenticate();
-    // const f = new faculty({
-    //     name: req.body.name
-    // });
-    // await f.save();
-    // res.send("bravo");
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //add a new faculty
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of faculty should be given in body");
+        }else{
+            //all data required are given
+            const n = await faculty.find({"name": req.body.name});
+            if (n != 0){
+                return res.status(400).send("there exists a faculty with this name");
+            }else{
+            //add a new faculty
+                const f = new faculty({
+                    name: req.body.name,
+                    departments: [],
+                    teachingAssistants:[],
+                    instructors:[]
+                });
+               // console.log(f);
+                await f.save();
+                res.send("faculty added");
+            }
+        }       
+    }
 });
 
-HrRouter.route('/updateFaculty/:id')
-.put((req,res,next) =>{
-    //authenticate that this is a valid member
+HrRouter.route('/updateFaculty/:name')
+.put(async (req,res,next) =>{
+ //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a faculty with the name = id
-    //update the existing faculty
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        console.log(req.params.name);
+        //verify that there is a faculty with the name = :name
+        const fac = await faculty.find({"name": req.params.name});
+        console.log(fac);
+        if(fac.length == 0){
+            return res.status(400).send("name of faculty is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.number != null){
+                    //update the existing faculty
+                     await faculty.findOneAndUpdate({"name": req.params.name}, {"numberOfYears": req.body.number});
+                     res.send("faculty number of years is updated")
+             }
+        }
+    }
 });
 
-HrRouter.route('/deleteFaculty/:id')
-.delete((req,res,next) =>{
+HrRouter.route('/deleteFaculty/:name')
+.delete(async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a faculty with the name = id
-    //delete the existing faculty with the corresponding departments
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a faculty with the name = :name
+        const fac = await faculty.find({"name": req.params.name});
+        if(fac.length == 0){
+            return res.status(400).send("name of faculty is not found");
+        }
+        else{
+            //delete the existing faculty and handle academic members
+            const m = await academicMember.find({"faculty": req.params.name});
+            for (let i = 0 ; i < m.length; i++){
+                await academicMember.findByIdAndUpdate(m[i]._id, {"faculty": "N/A"});
+            }
+            const d = await department.find({"facultyName": req.params.name});
+            for (let j = 0 ; j < d.length; j++){
+                await department.findByIdAndUpdate(d[j]._id, {"facultyName": "N/A"});
+            }
+            await faculty.findOneAndDelete({"name": req.params.name});
+            res.send("faculty deleted ,faculty name at corresponding department is removed ,faculty name for corresponding academic members is removed" );
+        }   
+    }
 });
 
 HrRouter.route('/addDepartment')
-.post((req,res,next) =>{
+.post(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //add a new department to this faculty
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of department should be given in body");
+        }else if (req.body.faculty == null){
+            return res.status(400).send("name of faculty should be given in body");
+        }else if (req.body.headOfDepartment == null){
+            return res.status(400).send("name of head of department should be given in body");
+        }else{
+            //all data required are given
+             //make sure this department does not exist in other faculties
+             const otherDep = (await department.find({"name": req.body.name}));
+             if (otherDep.length != 0){
+                 return res.status(400).send("there exists a department with this name");
+             }else{
+                let c = "";
+                if (req.body.code != null){
+                    c = req.body.code;
+                }
+                let f = null;
+                const fa = (await faculty.find({"name": req.body.faculty}));
+                if(fa.length == 0){
+                    return res.status(400).send("there does not exist a faculty with this name");
+                }else{
+                    f = fa[0];
+                    const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+                
+                    if(!h1){
+                        return res.status(400).send("there does not exist an instructor with this id");
+                    }
+                    else{
+                        const h = (await academicMember.find({"Memberid": h1._id}))[0]
+                        const d = new department({
+                            name: req.body.name,
+                            code: c,
+                            facultyName: req.body.faculty,
+                            headOfDep: h._id
+                        });
+                        //add a new department to this faculty
+                        await d.save();
+                        console.log("dep added");
+                        const dN = (await department.find({"name": req.body.name}))[0];
+                        //console.log(dN);
+                        
+                        let x = [];
+                        x = f.departments;
+                        x.push(dN._id);
+                        //console.log(x);
+                        await faculty.findByIdAndUpdate(f._id, {"departments" : x});
+                        console.log("dep added to faculty");
+                        res.send("department added");
+                        }
+                    }
+                }
+            }
+        }      
 });
 
-HrRouter.route('/updateDepartment/:id')
-.put((req,res,next) =>{
+HrRouter.route('/updateDepartment/:name')
+.put( async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //verify that there is a department with the name = id
-    //update the existing department
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //console.log(req.params.name);
+        //verify that there is a department with the name = :name
+        const dep = await department.find({"name": req.params.name});
+        //console.log(fac);
+        if(dep.length == 0){
+            return res.status(400).send("name of department is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.code != null){
+                    //update the existing faculty
+                     await department.findOneAndUpdate({"name": req.params.name}, {"code": req.body.code});
+                     console.log("code updated");
+             }
+             if (req.body.headOfDepartment != null){
+                const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+                if (h1){
+                    //console.log(h1);
+                    const h = (await academicMember.find({"Memberid": h1._id}))[0];
+                    //console.log(dep);
+                    if (h.faculty == dep[0].facultyName){
+                        //console.log(h.faculty);
+                        //the proposed head is of the same faculty
+                        const prevHead = ((await department.find({"name": req.params.name}))[0]).headOfDep;
+                        //console.log(prevHead);
+                        //return the previous head back to being a course instructor
+                        await academicMember.findByIdAndUpdate(prevHead, {"type": "CourseInstructor"});
+                        console.log("prev head updated");
+                        await academicMember.findByIdAndUpdate(h._id, {"type": "HeadOfDepartment"});
+                        console.log("new head updated");
+                        await department.findOneAndUpdate({"name": req.params.name}, {"headOfDep": h._id});
+                        console.log("new head assigned to department");
+                    }
+                    else{
+                        return res.status(400).send("this academic member does not belong to the same faculty");
+                    }
+                }else{
+                    return res.status(400).send("there is no academic member of this id");
+                }
+             }
+             res.send("department updated");
+        }  
+    }
 });
 
-HrRouter.route('/deleteDepartment/:id')
-.delete((req,res,next) =>{
+HrRouter.route('/deleteDepartment/:name')
+.delete(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //verify that there is a department with the name = id
-    //delete the existing department 
-    //update the academic members table by removing the HOD fieldn of the corresponding head
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a department with the name = :name
+        const dep = await department.find({"name": req.params.name});
+        if(dep.length == 0){
+            return res.status(400).send("name of department is not found");
+        }
+        else{
+            //delete the existing department 
+            //update the academic members table by removing the HOD field of the corresponding head
+            const m = await academicMember.find({"department": req.params.name});
+            for (let i = 0 ; i < m.length; i++){
+                await academicMember.findByIdAndUpdate(m[i]._id, {"department": "N/A" });
+            }
+            const head = dep[0].headOfDep;
+            await academicMember.findByIdAndUpdate(head, {"type": "CourseInstructor"});
+            const f = await faculty.find({"name": dep[0].facultyName});
+            const fd = f[0].departments;
+            for (let j = 0 ; j < fd.length; j++){
+                if (fd[j] == dep[0]._id +""){
+                    fd.splice(j,1);
+                }
+            }
+            console.log(f[0]);
+            console.log(fd);
+            await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
+            await department.findOneAndDelete({"name": req.params.name});
+            res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
+        }  
+    }   
 });
 
 HrRouter.route('/addCourse')
-.post((req,res,next) =>{
+.post(async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //get the department from the body
-    //verify that the department and faculty exist
-    //add a new course to this department
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of course should be given in body");
+        }else if (req.body.code == null){
+            return res.status(400).send("course  code should be given in body");
+        }else if (req.body.numberOfSlotsNeeded == null){
+            return res.status(400).send("name of head of department should be given in body");
+        }else if (req.body.creditHours == null){
+            return res.status(400).send("credit hours of course should be given in body");
+        }else if (req.body.department== null){
+            return res.status(400).send("name of department should be given in body");
+        }else{
+            //all data required are given
+            //verify that the department exist
+            //console.log(req.body.department);
+             const dep = (await department.find({"name": req.body.department}));
+            if (dep.length == 0){
+                return res.status(400).send("there does not exist a department with this name");
+            }else{
+                //check that there does not exist a course with this name or code
+                const otherC = await course.find({$or:[{"name": req.body.name}, {"code": req.body.code}]});
+                if (otherC.length != 0){
+                    return res.status(400).send("there exists a course with this name and/or code");
+                }else{
+                    const cour = new course({
+                    name: req.body.name,
+                    code: req.body.code,
+                    numberOfSlotsNeeded: req.body.numberOfSlotsNeeded,
+                    slots: [],
+                    coverage: 0,
+                    teachingAssistants: [],
+                    instructors: [],
+                    courseCoordinator: null,
+                    creditHours: req.body.creditHours
+                });
+                //add a new course
+                await cour.save();
+                console.log("course added");
+                //add the new course to this department
+                const nC = (await course.find({"name": req.body.name}))[0];
+                coursesInDep = dep[0].courses;
+                coursesInDep.push(nC._id);
+                await department.findByIdAndUpdate(dep[0]._id, {"courses" : coursesInDep});
+                console.log("course added to department");
+                res.send("course added to department");
+                }
+            }
+        }       
+    }    
 });
 
-HrRouter.route('/updateCourse/:id')
-.put((req,res,next) =>{
+HrRouter.route('/updateCourse/:name')
+.put(async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //get the department from the body
-    //verify that there exists a faculty and department and course
-    //update the course with code = id
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //console.log(req.params.name);
+        //verify that there is a course with the name = :name
+        const cour = await course.find({"name": req.params.name});
+        if(cour.length == 0){
+            return res.status(400).send("name of course is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.creditHours != null){
+                    //update the existing course
+                     await course.findOneAndUpdate({"name": req.params.name}, {"creditHours": req.body.creditHours});
+                     //res.send("course credit hours is updated")
+             }
+             if (req.body.numberOfSlotsNeeded != null){
+                //update the existing course
+                 await course.findOneAndUpdate({"name": req.params.name}, {"numberOfSlotsNeeded": req.body.numberOfSlotsNeeded});
+                 //res.send("course number of needed slots is updated")
+         }
+         res.send("course updated");
+        }
+    }
 });
 
-HrRouter.route('/deleteCourse/:id')
-.delete((req,res,next) =>{
-    //authenticate that this is a valid member
+HrRouter.route('/deleteCourse/:name')
+.delete(async(req,res,next) =>{
+     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //get the department from the body
-    //verify that there exists a faculty and department and course
-    //delete the course with code = id
-    //delete the slots with this course
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a department with the name = :name
+        const cour = await course.find({"name": req.params.name});
+        if(cour.length == 0){
+            return res.status(400).send("name of course is not found");
+        }
+        else{
+            //get the department from the body
+            if (req.body.department == null){
+                return res.status(400).send("name of department should be given in the body");
+            }else{
+                //check if there exists a department with this name
+                const dep = await department.find({"name": req.body.department});
+                if (dep.length == 0){
+                    return res.status(400).send("name of department is not found");
+                }else{
+                    //delete the slots with this course
+                    const s = await slot.find({});
+                    //console.log(s);
+                    for (let i = 0 ; i < s.length ; i++){
+                        if (s[i].course == cour._id + ""){
+                            //console.log(s[i]);
+                            const teacher = s[i].memberid;
+                            const corTeacher = await academicMember.findById(teacher);
+                            const sched = corTeacher.schedule;
+                            for (let q = 0 ; q < sched.length; q++){
+                                if (sched[q]._id == s[i]._id + ""){
+                                    sched.splice(q,1);
+                                }
+                            }
+                            await academicMember.findByIdAndUpdate(teacher, {"schedule": sched});
+                            console.log("slot deleted from member schedule");
+                            await slot.findByIdAndDelete(s[i]._id);
+                            console.log("slot deleted");
+                        }  
+                    }
+                    //delete the course from academic members and make the coordinator back to academic member
+                    const coordinator = cour.courseCoordinator;
+                    const m = await academicMember.find({});
+                    for (let j = 0 ; j < m.length ; j++){
+                        const mC = m[j].courses;
+                        for (let z = 0 ; z < mC.length; z++){
+                            if (mC._id == cour._id + ""){
+                                mC.splice(z,1);
+                            }
+                        }
+                        await academicMember.findByIdAndUpdate(m[j]._id, {"courses": mC});
+                        console.log("course removed from academic member");
+                    }
+                    await academicMember.findByIdAndUpdate(coordinator, {"type": "academic member"});
+                    console.log("course coordinator back to academic member");
+                    //delete the course from department
+                    const dC = dep[0].courses;
+                    for (let w = 0 ; w < dC.length ; w++){
+                        if (dC._id == cour._id + ""){
+                            dC.splice(w,1);
+                        }
+                    }
+                    await department.findByIdAndUpdate(dep._id, {"courses": dC});
+                    console.log("course removed from department");
+                    await course.findByIdAndDelete(cour[0]._id);
+                    res.send("course deleted");
+                }
+            }
+        }  
+    }   
 });
 
 HrRouter.route('/addStaffMember')

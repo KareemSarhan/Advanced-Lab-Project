@@ -15,7 +15,7 @@ const courseSchema = new mongoose.Schema({
     code:{
         type: String,
         required: true,
-        unique: true
+       // unique: true
     },
 
     numberOfSlotsNeeded: {
@@ -25,7 +25,7 @@ const courseSchema = new mongoose.Schema({
 
     numberOfSlotsAssigned: {
         type: Number,
-        required: true
+        default: 0
     },
 
     slots: [{
@@ -42,7 +42,8 @@ const courseSchema = new mongoose.Schema({
 
     courseCoordinator:{ 
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema'}
+        ref: 'academicMemberSchema'},
+    creditHours: Number
 });
 
 module.exports = mongoose.model('Course', courseSchema);

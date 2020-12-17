@@ -22,7 +22,8 @@ const facultySchema = new mongoose.Schema({
         ref: 'academicMemberSchema'}],
     instructors: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema'}]
+        ref: 'academicMemberSchema'}],
+    numberOfYears: Number
 });
 
 module.exports = mongoose.model('Faculty', facultySchema);
