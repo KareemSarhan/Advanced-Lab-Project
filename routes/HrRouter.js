@@ -206,7 +206,7 @@ HrRouter.route('/updateFaculty/:name')
         return res.status(401).send("not authorized");
     }else{
         console.log(req.params.name);
-        //verify that there is a location with the name = :name
+        //verify that there is a faculty with the name = :name
         const fac = await faculty.find({"name": req.params.name});
         console.log(fac);
         if(fac.length == 0){
@@ -328,14 +328,60 @@ HrRouter.route('/addDepartment')
         
 });
 
-HrRouter.route('/updateDepartment/:id')
-.put((req,res,next) =>{
+HrRouter.route('/updateDepartment/:name')
+.put( async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //verify that there is a department with the name = id
-    //update the existing department
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //console.log(req.params.name);
+        //verify that there is a department with the name = :name
+        const dep = await department.find({"name": req.params.name});
+        //console.log(fac);
+        if(dep.length == 0){
+            return res.status(400).send("name of department is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.code != null){
+                    //update the existing faculty
+                     await department.findOneAndUpdate({"name": req.params.name}, {"code": req.body.code});
+                     console.log("code updated");
+             }
+             if (req.body.headOfDepartment != null){
+                const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+                if (h1){
+                    //console.log(h1);
+                    const h = (await academicMember.find({"Memberid": h1._id}))[0];
+                    //console.log(dep);
+                    if (h.faculty == dep[0].facultyName){
+                        //console.log(h.faculty);
+                        //the proposed head is of the same faculty
+                        const prevHead = ((await department.find({"name": req.params.name}))[0]).headOfDep;
+                        //console.log(prevHead);
+                        //return the previous head back to being a course instructor
+                        await academicMember.findByIdAndUpdate(prevHead, {"type": "CourseInstructor"});
+                        console.log("prev head updated");
+                        await academicMember.findByIdAndUpdate(h._id, {"type": "HeadOfDepartment"});
+                        console.log("new head updated");
+                        await department.findOneAndUpdate({"name": req.params.name}, {"headOfDep": h._id});
+                        console.log("new head assigned to department");
+                    }
+                    else{
+                        return res.status(400).send("this academic member does not belong to the same faculty");
+                    }
+                }else{
+                    return res.status(400).send("there is no academic member of this id");
+                }
+             }
+             res.send("department updated");
+        }
+        
+    }
 });
 
 HrRouter.route('/deleteDepartment/:id')

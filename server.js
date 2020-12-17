@@ -119,7 +119,13 @@ async function da5lData() {
     // console.log("dep added");
         //const d = (await department.find({"name": "BIDep"}))[0];
         //await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
-        console.log("fac updated");
+      //  console.log("fac updated");
+      //const nh = (await members.find({"id": "ac-3"}))[0];
+      //const n = (await academicMember.find({"Memberid": nh._id}))[0];
+      console.log(n);
+      //await department.findOneAndUpdate({"name": "DMET"}, {"headOfDep": n._id});
+      //await academicMember.findByIdAndUpdate(n._id, {"type": "HeadOfDepartment"});
+      console.log("done");
         };
 
     console.log("check9");
