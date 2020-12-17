@@ -5,7 +5,6 @@ var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const key = 'shawerma';
-//const authenticate = require('../authenticate.js');
 const faculty = require('../models/faculty');
 const Location = require('../models/location.js');
 const academicMember = require('../models/academicMember');
@@ -13,7 +12,7 @@ const { memberSchema } = require('../models/members');
 const members = require('../models/members');
 const slot = require('../models/slot');
 const department = require('../models/department');
-const e = require('express');
+const course = require('../models/course');
 
 const HrRouter = express.Router();
 
@@ -64,12 +63,9 @@ HrRouter.route('/addLocation')
                 await loc.save();
                 res.send("location added");
                 console.log("Location added");
-            }
-            
+            }   
         }
-        
     }
-    
 });
 
 HrRouter.route('/deleteLocation/:name')
@@ -109,10 +105,8 @@ HrRouter.route('/deleteLocation/:name')
             }
             await Location.findOneAndDelete({"name": req.params.name});
             res.send("loc deleted");
-        }
-        
+        }  
     }
-    
 });
 
 HrRouter.route('/updateLocation/:name')
@@ -152,12 +146,9 @@ HrRouter.route('/updateLocation/:name')
                      res.send("location capacity is updated")
                  }
              }
-        }
-        
+        }  
     }
 });
-
-
 
 HrRouter.route('/addFaculty')
 .post(async (req,res,next) =>{
@@ -179,7 +170,6 @@ HrRouter.route('/addFaculty')
                 return res.status(400).send("there exists a faculty with this name");
             }else{
             //add a new faculty
-
                 const f = new faculty({
                     name: req.body.name,
                     departments: [],
@@ -190,8 +180,7 @@ HrRouter.route('/addFaculty')
                 await f.save();
                 res.send("faculty added");
             }
-        }
-        
+        }       
     }
 });
 
@@ -220,7 +209,6 @@ HrRouter.route('/updateFaculty/:name')
                      res.send("faculty number of years is updated")
              }
         }
-        
     }
 });
 
@@ -251,10 +239,8 @@ HrRouter.route('/deleteFaculty/:name')
             }
             await faculty.findOneAndDelete({"name": req.params.name});
             res.send("faculty deleted ,faculty name at corresponding department is removed ,faculty name for corresponding academic members is removed" );
-        }
-        
+        }   
     }
-    
 });
 
 HrRouter.route('/addDepartment')
@@ -281,51 +267,47 @@ HrRouter.route('/addDepartment')
              if (otherDep.length != 0){
                  return res.status(400).send("there exists a department with this name");
              }else{
-            let c = "";
-            if (req.body.code != null){
-                c = req.body.code;
-            }
-            let f = null;
-            const fa = (await faculty.find({"name": req.body.faculty}));
-            if(fa.length == 0){
-                return res.status(400).send("there does not exist a faculty with this name");
-            }else{
-                f = fa[0];
-                const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
-            
-            if(!h1){
-                return res.status(400).send("there does not exist an instructor with this id");
-            }
-            else{
-                const h = (await academicMember.find({"Memberid": h1._id}))[0]
-                const d = new department({
-                    name: req.body.name,
-                    code: c,
-                    facultyName: req.body.faculty,
-                    headOfDep: h._id
-                });
-                //add a new department to this faculty
-                await d.save();
-                console.log("dep added");
-                const dN = (await department.find({"name": req.body.name}))[0];
-                //console.log(dN);
+                let c = "";
+                if (req.body.code != null){
+                    c = req.body.code;
+                }
+                let f = null;
+                const fa = (await faculty.find({"name": req.body.faculty}));
+                if(fa.length == 0){
+                    return res.status(400).send("there does not exist a faculty with this name");
+                }else{
+                    f = fa[0];
+                    const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
                 
-                let x = [];
-                x = f.departments;
-                x.push(dN._id);
-                //console.log(x);
-                await faculty.findByIdAndUpdate(f._id, {"departments" : x});
-                console.log("dep added to faculty");
-                res.send("department added");
+                    if(!h1){
+                        return res.status(400).send("there does not exist an instructor with this id");
+                    }
+                    else{
+                        const h = (await academicMember.find({"Memberid": h1._id}))[0]
+                        const d = new department({
+                            name: req.body.name,
+                            code: c,
+                            facultyName: req.body.faculty,
+                            headOfDep: h._id
+                        });
+                        //add a new department to this faculty
+                        await d.save();
+                        console.log("dep added");
+                        const dN = (await department.find({"name": req.body.name}))[0];
+                        //console.log(dN);
+                        
+                        let x = [];
+                        x = f.departments;
+                        x.push(dN._id);
+                        //console.log(x);
+                        await faculty.findByIdAndUpdate(f._id, {"departments" : x});
+                        console.log("dep added to faculty");
+                        res.send("department added");
+                        }
+                    }
+                }
             }
-            
-            }
-            
-            }
-        }
-           
-    }
-        
+        }      
 });
 
 HrRouter.route('/updateDepartment/:name')
@@ -379,8 +361,7 @@ HrRouter.route('/updateDepartment/:name')
                 }
              }
              res.send("department updated");
-        }
-        
+        }  
     }
 });
 
@@ -420,21 +401,70 @@ HrRouter.route('/deleteDepartment/:name')
             await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
             await department.findOneAndDelete({"name": req.params.name});
             res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
-        }
-        
+        }  
     }
     
 });
 
 HrRouter.route('/addCourse')
-.post((req,res,next) =>{
+.post(async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //get the department from the body
-    //verify that the department and faculty exist
-    //add a new course to this department
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of course should be given in body");
+        }else if (req.body.code == null){
+            return res.status(400).send("course  code should be given in body");
+        }else if (req.body.numberOfSlotsNeeded == null){
+            return res.status(400).send("name of head of department should be given in body");
+        }else if (req.body.creditHours == null){
+            return res.status(400).send("credit hours of course should be given in body");
+        }else if (req.body.department== null){
+            return res.status(400).send("name of department should be given in body");
+        }else{
+            //all data required are given
+            //verify that the department exist
+            //console.log(req.body.department);
+             const dep = (await department.find({"name": req.body.department}));
+            if (dep.length == 0){
+                return res.status(400).send("there does not exist a department with this name");
+            }else{
+                //check that there does not exist a course with this name or code
+                const otherC = await course.find({$or:[{"name": req.body.name}, {"code": req.body.code}]});
+                if (otherC.length != 0){
+                    return res.status(400).send("there exists a course with this name and/or code");
+                }else{
+                    const cour = new course({
+                    name: req.body.name,
+                    code: req.body.code,
+                    numberOfSlotsNeeded: req.body.numberOfSlotsNeeded,
+                    slots: [],
+                    coverage: 0,
+                    teachingAssistants: [],
+                    instructors: [],
+                    courseCoordinator: null,
+                    creditHours: req.body.creditHours
+                });
+                //add a new course
+                await cour.save();
+                console.log("course added");
+                //add the new course to this department
+                const nC = (await course.find({"name": req.body.name}))[0];
+                coursesInDep = dep[0].courses;
+                coursesInDep.push(nC._id);
+                await department.findByIdAndUpdate(dep[0]._id, {"courses" : coursesInDep});
+                console.log("course added to department");
+                res.send("course added to department");
+                }
+            }
+        }       
+    }    
 });
 
 HrRouter.route('/updateCourse/:id')
