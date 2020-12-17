@@ -60,6 +60,10 @@ const course = require('./models/course');
     console.log("check10");
 
     
-   
+    // const birthday = new Date('December 16, 2020 23:15:30');
+    // const day1 = birthday.getMonth();
+    // // Sunday - Saturday : 0 - 6
+    
+    // console.log(day1);
 
 module.exports= app
