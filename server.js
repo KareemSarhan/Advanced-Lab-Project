@@ -18,6 +18,7 @@ const Course = require('./models/course');
 const slot = require('./models/slot');
 const department = require('./models/department');
 const faculty = require('./models/faculty');
+const ReplacementRequest = require('./models/replacementrequest.js');
 const members = require('./models/members.js');
 const course = require('./models/course');
 const jwt = require('jsonwebtoken');
@@ -26,7 +27,6 @@ const key = 'shawerma';
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
 //connection.once('open', function() {
-console.log("MongoDB database connection established successfully");
 app.use(bodyParser.json());
 app.use('/AM', AcademicMemberRouter);
 app.use('/CC', CourseCoordinatorRouter);
@@ -34,6 +34,7 @@ app.use('/CourseInstructor', CourseInstRouter);
 app.use('/Hod', HodRouter);
 app.use('/Hr', HrRouter);
 app.use('/Member', MemberRouter);
+<<<<<<< HEAD
 async function PopulateCourses() {
     course.collection.insertOne({
         name: "batee5",
@@ -155,5 +156,7 @@ async function da5lData() {
     //  }
 
 
+=======
+>>>>>>> 55727c8ae46e9259a9a07b62de0d0000743a6f98
 
 module.exports = app

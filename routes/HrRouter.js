@@ -1105,10 +1105,10 @@ HrRouter.route('/addSignOut/:id')
                     } 
                     res.send("sign out added");
                 }else{
-                    return res.status(400).send("there is no record missing a signIn at this date");
+                    return res.status(400).send("there is no record missing a signout at this date");
                 }
             }else{
-                return res.status(400).send("there is no record missing a signIn");
+                return res.status(400).send("there is no record missing a signout");
             }  
         }
     }
