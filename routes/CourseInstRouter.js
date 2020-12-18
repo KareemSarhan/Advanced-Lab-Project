@@ -9,8 +9,10 @@ const key = 'shawerma';
 const academicMember = require('../models/academicMember')
 const members = require('../models/members')
 const course = require('../models/course')
+const slots = require('../models/slot')
 const location = require('../models/location')
-const AM = require('../models/academicMember')
+const AM = require('../models/academicMember');
+const { query } = require('express');
 
 const CourseInstRouter = express.Router();
 
@@ -30,15 +32,11 @@ CourseInstRouter.route('/viewCoverage')
             if (id.includes('ac')) {
                 const ac = await academicMember.findOne({ Memberid: existingUser._id })
                 const acCourses = ac.courses
-                var courses = await course.find({ _id: acCourses })
-                var coverage = [];
-                courses.forEach(course => {
-                    name = course.name
-                    coveragenum = course.coverage
-                    coverage.push({ name, coveragenum })
-                });
+                const query = { _id: acCourses }
+                const options = { _id: 0, name: 1, coverage: 1 }
+                var courses = await course.find(query, options)
                 res.json({
-                    coverage
+                    courses
                 })
             }
         } catch (error) {
@@ -50,14 +48,60 @@ CourseInstRouter.route('/viewCoverage')
     });
 
 CourseInstRouter.route('/viewSlotAssignment')
-    .get((req, res, next) => {
+    .get(async(req, res, next) => {
+        try {
+            //ToDo : remake it using slots table only .
+
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const existingUser = await members.findOne({ id: id });
+            if (!existingUser) {
+                res.send("not Authenticated")
+            }
+            if (id.includes('ac')) {
+                const ac = await academicMember.findOne({ Memberid: existingUser._id })
+                const acCourses = ac.courses
+                var courses = await course.find({ _id: acCourses })
+                var AssigedSlots = [];
+                for (let index = 0; index < courses.length; index++) {
+                    Name = courses[index].name
+                    slotids = courses[index].slots
+                    const query = { _id: slotids, memberID: existingUser._id }
+                    const options = { _id: 0, type: 1, timing: 1 }
+                    var Slots = await slots.find(query, options)
+                    AssigedSlots.push({ Name, Slots })
+                }
+            }
+            res.json({
+                AssigedSlots
+            })
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
+
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the slots assigned to this course which also has the academic members assigned
     });
 
 CourseInstRouter.route('/viewStaffInDep')
-    .get((req, res, next) => {
+    .get(async(req, res, next) => {
+        try {
+            //ToDo : remake it using slots table only .
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const existingUser = await members.findOne({ id: id });
+            if (!existingUser) {
+                res.send("not Authenticated")
+            }
+            if (id.includes('ac')) {
+
+            }
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -65,7 +109,7 @@ CourseInstRouter.route('/viewStaffInDep')
     });
 
 CourseInstRouter.route('/viewStaff/:cID')
-    .get((req, res, next) => {
+    .get(async(req, res, next) => {
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -74,7 +118,7 @@ CourseInstRouter.route('/viewStaff/:cID')
     });
 
 CourseInstRouter.route('/assignMemToSlot')
-    .put((req, res, next) => {
+    .put(async(req, res, next) => {
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -84,7 +128,7 @@ CourseInstRouter.route('/assignMemToSlot')
     });
 
 CourseInstRouter.route('/deleteAssignment/:cID')
-    .put((req, res, next) => {
+    .put(async(req, res, next) => {
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -94,7 +138,7 @@ CourseInstRouter.route('/deleteAssignment/:cID')
     });
 
 CourseInstRouter.route('/removeMember/:cID')
-    .delete((req, res, next) => {
+    .delete(async(req, res, next) => {
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -105,7 +149,7 @@ CourseInstRouter.route('/removeMember/:cID')
     });
 
 CourseInstRouter.route('/assignCoordinator/:cID')
-    .put((req, res, next) => {
+    .put(async(req, res, next) => {
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
