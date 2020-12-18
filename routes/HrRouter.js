@@ -735,11 +735,47 @@ HrRouter.route('/addStaffMember')
 });
 
 HrRouter.route('/updateStaffMember/:id')
-.put((req,res,next) =>{
+.put(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that there is a member with this id
-    //update this member
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a member with the id = :id
+        var mem = await members.find({"id": req.params.id});
+        if(mem.length == 0){
+            return res.status(400).send("member is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.officeLocation != null){
+                    //update the existing office location for the member
+                    //decrement the previous location capacity so far
+                    //increment the new location capacity so far
+                    var nextO = (await Location.find({"name": req.body.officeLocation}));
+                    if (nextO.length == 0){
+                        return res.status(400).send("office is not found");
+                    }else{
+                    const prevOid = mem[0].officeLocation;
+                    console.log(mem[0].officeLocation);
+                    const oldC = (await Location.findById(prevOid)).capacitySoFar;
+                    const nC = oldC - 1;
+                    await Location.findByIdAndUpdate(prevOid, {"capacitySoFar": nC});
+                    console.log("old office capacity decremented");
+                    const nextC = nextO[0].capacitySoFar + 1;
+                    await Location.findByIdAndUpdate(nextO[0]._id, {"capacitySoFar": nextC});
+                    console.log("new office capacity so far is incremented");
+                    //update this member
+                    await members.findOneAndUpdate({"id": req.params.id}, {"officeLocation": nextO[0]._id});
+                    console.log("member office updated");
+                    }
+             }
+             res.send("staff member updated");
+        }  
+    }
 });
 
 HrRouter.route('/deleteStaffMember/:id')

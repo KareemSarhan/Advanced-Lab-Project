@@ -122,14 +122,27 @@ async function da5lData() {
       //  console.log("fac updated");
       //const nh = (await members.find({"id": "ac-3"}))[0];
       //const n = (await academicMember.find({"Memberid": nh._id}))[0];
-      console.log(n);
+      //console.log(n);
       //await department.findOneAndUpdate({"name": "DMET"}, {"headOfDep": n._id});
       //await academicMember.findByIdAndUpdate(n._id, {"type": "HeadOfDepartment"});
-      console.log("done");
+     // console.log("done");
+
+    //   const c = await course.findOne({code:"CSEN704"});
+    //   var s=[];
+    //   var c1 ;
+    //   var c2;
+    //   for(i=0;i<c.slots.length;i++){
+    //       s.push(await slot.findOne({_id:c.slots[i]}));
+    //       console.log(s[i].memberID);
+    //       var c1=await academicMember.findById(s[i].memberID);
+    //       console.log(c1);
+    //       c2= await members.findOne({_id:c1.Memberid});
+    //       console.log(c2);
+    //   }
         };
 
     console.log("check9");
-   // da5lData2();
+    //da5lData2();
     console.log("check10");
     // const d = new Date();
     // const day = d.getDay();
@@ -140,5 +153,7 @@ async function da5lData() {
     //  if ({ s: { $in: a}}){
     //     console.log("ddddddddddd")
     //  }
+
+
 
 module.exports = app
