@@ -8,11 +8,13 @@ const key = 'shawerma';
 const faculty = require('../models/faculty');
 const Location = require('../models/location.js');
 const academicMember = require('../models/academicMember');
-const { memberSchema } = require('../models/members');
+const { memberSchema, findById } = require('../models/members');
 const members = require('../models/members');
 const slot = require('../models/slot');
 const department = require('../models/department');
 const course = require('../models/course');
+const attendance = require('../models/attendance');
+const missing = require('../models/missing');
 
 const HrRouter = express.Router();
 
@@ -795,16 +797,19 @@ HrRouter.route('/deleteStaffMember/:id')
         }
         else{
             //get the office location from the member
-            var office = mem.officeLocation;
-            //decrement the officelocation by 1
-            var oldC = (await Location.findById(office)).capacitySoFar;
-            var nC = oldC + 1;
-            await Location.findByIdAndUpdate(office, {"capacitySoFar": nC});
-            console.log("office capacity so far is decremented by 1");
+            var office = mem[0].officeLocation;
+            if (office != null){
+                 //decrement the officelocation by 1
+                var oldO = (await Location.findById(office))
+                var oldC = oldO.capacitySoFar;
+                var nC = oldC + 1;
+                await Location.findByIdAndUpdate(office, {"capacitySoFar": nC});
+                console.log("office capacity so far is decremented by 1");
+            }
             if ((req.params.id).includes("ac")){
                 // this is an academic member
                 // check if it a course coordinator or head of department and nullify the corresponding fields
-                var acMem = (await academicMember.find({"Memberid": mem._id}))[0];
+                var acMem = (await academicMember.find({"Memberid": mem[0]._id}))[0];
                 var acType = acMem.type;
                 var dep = acMem.department;
                 var fac = acMem.faculty;
@@ -886,8 +891,16 @@ HrRouter.route('/deleteStaffMember/:id')
                         console.log("member removed from being course coordinator of the corresponding course");
                     }
                 }
-                //remove this member from slots
+                //remove this member from slots and increment the number of unAssigned slots and recalculate the coverage
                 for (let r = 0 ; r < s.length; r++){
+                    var currSlot = await slot.findById(s[r]);
+                    var slotCour = currSlot.course;
+                    var cours = await course.findById(slotCour);
+                    var oldunAssign = cours.numberOfSlotsAssigned;
+                    var newUnAssign = oldunAssign - 1;
+                    var nCov = newUnAssign/cours.numberOfSlotsNeeded;
+                    await course.findByIdAndUpdate(cours._id, {"numberOfSlotsAssigned": newUnAssign, "coverage": nCov});
+                    console.log("course coverage updated and number of unAssigned slots is incremented");
                     await slot.findByIdAndUpdate(s[r], {"memberID": null});
                     console.log("member removed from teaching slots");
                 }
@@ -897,20 +910,208 @@ HrRouter.route('/deleteStaffMember/:id')
                 await academicMember.findByIdAndDelete(acMem._id);
                 console.log("member removed from academic members table");
             }
-           
             res.send("member deleted");
         }
     }   
 });
 
-HrRouter.route('/addSignInorOut/:id')
-.put((req,res,next) =>{
+HrRouter.route('/addSignIn/:id')
+.put(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that there is a member with this id and is not the same as the doer
-    //get the date from the body
-    //add signin or signout that is missing
-    //decrement the missing days
+    let payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a member with the id = :id
+        var mem = await members.find({"id": req.params.id});
+        if(mem.length == 0){
+            return res.status(400).send("member is not found");
+        }
+        //verify that the member is not doing it to himself
+        else if (payload.id == req.params.id){
+            return res.status(401).send("not authorized to do this route to yourself");
+        }
+        //get the date from the body
+        else if (req.params.year == null){
+            return res.status(400).send("year should be given in body");
+        }else if (req.params.month == null){
+            return res.status(400).send("month should be given in body");
+        }
+        else if (req.params.day == null){
+            return res.status(400).send("day should be given in body");
+        }
+        else if (req.params.hour == null){
+            return res.status(400).send("Hour should be given in body");
+        }
+        else if (req.params.minute == null){
+            return res.status(400).send("minute should be given in body");
+        }else{
+            var SpentHours;
+            var SpentMin ;
+            var finalDuration;
+            const d = new Date(req.params.year, req.params.month, req.params.day, req.params.hour, req.params.minute);
+            var rec = find({ $and: [{ "Memberid": mem[0]._id }, { "signIn": null}]});
+            if (rec.length != 0){
+                //check that the record is the same date as the body
+                const givenYear = req.params.year;
+                const givenMonth = req.params.month;
+                const givenDay = req.params.day;
+                const recYear = rec[0].signOut.getFullYear();
+                const recMonth = rec[0].signOut.getMonth(); + 1; //because index in month starts by 0
+                const recDay = rec[0].signOut.getDate();
+                if (givenYear == recYear && givenMonth == recMonth && givenDay == recDay){
+                    await attendance.findByIdAndUpdate(rec[0]._id, {"signIn": d});
+                    console.log("sign in added");
+                    var correspondingSignInHours= req.params.hour;
+                    var correspondingSignInMinutes=req.params.minute;
+                    var signOut = rec[0].signOut;
+                    var correspondingSignOutHour=signOut.getHours();
+                    var correspondingSignOutMin=signOut.getMinutes();
+                    if(correspondingSignOutHour>19){
+                        var time2 = new Date('1995-12-17T02:00:00')
+                        var time = new Date('1995-12-17T19:00:00')
+                        var timeHour2 = time2.getHours();
+                        var timeHour = time.getHours();
+                        finalDuration = (timeHour- (correspondingSignInHours-timeHour2))
+                        console.log( correspondingSignInHours + "  d5l " + finalDuration + timeHour) ;
+                
+                    }
+                    else{
+                    SpentHours = (correspondingSignOutHour- correspondingSignInHours)
+                    SpentMin = (correspondingSignOutMin- correspondingSignInMinutes)/60
+                    if(SpentMin<0){
+                        SpentMin=SpentMin/-1;
+                       }
+                       finalDuration = SpentMin + SpentHours;
+                       console.log(finalDuration);
+                    }
+                    await attendance.findByIdAndUpdate(rec[0]._id, {"duration": finalDuration});
+                    console.log("duration updated");
+                    //decrement the missing days and hours
+                    const oldMiss = await missing.findOne({"Memberid": mem[0]._id});
+                    if (oldMiss){
+                        oldMissH = oldMiss.missingHours;
+                        nMissH = oldMissH - finalDuration;
+                        oldRemH = oldMiss.remainingHours;
+                        nRemH = oldRemH - finalDuration;
+                        oldMissD = oldMiss.missingDays;
+                        nMissD = oldMissD - 1;
+                        oldRemD = oldMiss.remainingDays;
+                        nRemD = oldRemD - 1;
+                        await missing.findOneAndUpdate({"Memberid": mem[0]._id},{"missingHours": nMissH , "remainingHours":nRemH , "missingDays": nMissD , "remainingDays":nRemD});
+                        console.log("missings updated");
+                    } 
+                    res.send("sign in added");
+                }else{
+                    return res.status(400).send("there is no record missing a signIn at this date");
+                }
+            }else{
+                return res.status(400).send("there is no record missing a signIn");
+            }  
+        }
+    }
+});
+
+HrRouter.route('/addSignOut/:id')
+.put(async(req,res,next) =>{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    let payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a member with the id = :id
+        var mem = await members.find({"id": req.params.id});
+        if(mem.length == 0){
+            return res.status(400).send("member is not found");
+        }
+        //verify that the member is not doing it to himself
+        else if (payload.id == req.params.id){
+            return res.status(401).send("not authorized to do this route to yourself");
+        }
+        //get the date from the body
+        else if (req.params.year == null){
+            return res.status(400).send("year should be given in body");
+        }else if (req.params.month == null){
+            return res.status(400).send("month should be given in body");
+        }
+        else if (req.params.day == null){
+            return res.status(400).send("day should be given in body");
+        }
+        else if (req.params.hour == null){
+            return res.status(400).send("Hour should be given in body");
+        }
+        else if (req.params.minute == null){
+            return res.status(400).send("minute should be given in body");
+        }else{
+            var SpentHours;
+            var SpentMin ;
+            var finalDuration;
+            const d = new Date(req.params.year, req.params.month, req.params.day, req.params.hour, req.params.minute);
+            var rec = find({ $and: [{ "Memberid": mem[0]._id }, { "signOut": null}]});
+            if (rec.length != 0){
+                //check that the record is the same date as the body
+                const givenYear = req.params.year;
+                const givenMonth = req.params.month;
+                const givenDay = req.params.day;
+                const recYear = rec[0].signIn.getFullYear();
+                const recMonth = rec[0].signIn.getMonth(); + 1; //because index in month starts by 0
+                const recDay = rec[0].signIn.getDate();
+                if (givenYear == recYear && givenMonth == recMonth && givenDay == recDay){
+                    await attendance.findByIdAndUpdate(rec[0]._id, {"signOut": d});
+                    console.log("sign out added");
+                    var correspondingSignOutHours= req.params.hour;
+                    var correspondingSignOutMinutes=req.params.minute;
+                    var signIn = rec[0].signIn;
+                    var correspondingSignInHour=signIn.getHours();
+                    var correspondingSignInMin=signIn.getMinutes();
+                    if(correspondingSignOutHour>19){
+                        var time2 = new Date('1995-12-17T02:00:00')
+                        var time = new Date('1995-12-17T19:00:00')
+                        var timeHour2 = time2.getHours();
+                        var timeHour = time.getHours();
+                        finalDuration = (timeHour- (correspondingSignInHours-timeHour2))
+                        console.log( correspondingSignInHours + "  d5l " + finalDuration + timeHour) ;
+                    }
+                    else{
+                    SpentHours = (correspondingSignOutHour- correspondingSignInHours)
+                    SpentMin = (correspondingSignOutMin- correspondingSignInMinutes)/60
+                    if(SpentMin<0){
+                        SpentMin=SpentMin/-1;
+                       }
+                       finalDuration = SpentMin + SpentHours;
+                       console.log(finalDuration);
+                    }
+                    await attendance.findByIdAndUpdate(rec[0]._id, {"duration": finalDuration});
+                    console.log("duration updated");
+                    //decrement the missing days and hours
+                    const oldMiss = await missing.findOne({"Memberid": mem[0]._id});
+                    if (oldMiss){
+                        oldMissH = oldMiss.missingHours;
+                        nMissH = oldMissH - finalDuration;
+                        oldRemH = oldMiss.remainingHours;
+                        nRemH = oldRemH - finalDuration;
+                        oldMissD = oldMiss.missingDays;
+                        nMissD = oldMissD - 1;
+                        oldRemD = oldMiss.remainingDays;
+                        nRemD = oldRemD - 1;
+                        await missing.findOneAndUpdate({"Memberid": mem[0]._id},{"missingHours": nMissH , "remainingHours":nRemH , "missingDays": nMissD , "remainingDays":nRemD});
+                        console.log("missings updated");
+                    } 
+                    res.send("sign out added");
+                }else{
+                    return res.status(400).send("there is no record missing a signIn at this date");
+                }
+            }else{
+                return res.status(400).send("there is no record missing a signIn");
+            }  
+        }
+    }
 });
 
 HrRouter.route('/viewAttendance/:id')
