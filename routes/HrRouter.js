@@ -779,11 +779,128 @@ HrRouter.route('/updateStaffMember/:id')
 });
 
 HrRouter.route('/deleteStaffMember/:id')
-.delete((req,res,next) =>{
+.delete(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that there is a member with this id
-    //delete this member
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a member with the id = :id
+        var mem = await members.find({"id": req.params.id});
+        if(mem.length == 0){
+            return res.status(400).send("member is not found");
+        }
+        else{
+            //get the office location from the member
+            var office = mem.officeLocation;
+            //decrement the officelocation by 1
+            var oldC = (await Location.findById(office)).capacitySoFar;
+            var nC = oldC + 1;
+            await Location.findByIdAndUpdate(office, {"capacitySoFar": nC});
+            console.log("office capacity so far is decremented by 1");
+            if ((req.params.id).includes("ac")){
+                // this is an academic member
+                // check if it a course coordinator or head of department and nullify the corresponding fields
+                var acMem = (await academicMember.find({"Memberid": mem._id}))[0];
+                var acType = acMem.type;
+                var dep = acMem.department;
+                var fac = acMem.faculty;
+                var s = acMem.schedule;
+                var c = acMem.courses;
+                //remove this member from the department's array of instructors or teaching assistants
+                //remove this member from the faculty's array of instructors or teaching assistants
+                //remove this member from the course's array of instructors or teaching assistants
+                var actualDep = (await department.find({"name": dep}))[0];
+                var actualFac = (await faculty.find({"name": fac}))[0];
+                if (acType == "CourseInstructor" || acType == "HeadOfDepartment"){
+                    var depIns = actualDep.instructors;
+                    for (let i = 0 ; i < depIns.length; i++){
+                        if (depIns[i] == acMem._id + ""){
+                            depIns.splice(i,1);
+                            break;
+                        }
+                    }
+                    var facIns = actualFac.instructors;
+                    for (let j = 0 ; j < facIns.length; j++){
+                        if (facIns[j] == acMem._id + ""){
+                            facIns.splice(j,1);
+                            break;
+                        }
+                    }
+                    await department.findByIdAndUpdate(actualDep._id, {"instructors": depIns});
+                    console.log("member removed from department's instructors");
+                    await faculty.findByIdAndUpdate(actualFac._id, {"instructors": facIns});
+                    console.log("member removed from faculty's instructors");
+                    for (let q = 0 ; q < c.length; q++){
+                        var actualC = (await course.findById(c[q]));
+                        var actualCIns = actualC.instructors;
+                        for (let e = 0; e < actualCIns.length; e++){
+                            if (actualCIns[e] == acMem._id + ""){
+                                actualCIns.splice(e,1);
+                                break;
+                            }
+                        }
+                        await course.findByIdAndUpdate(actualC._id, {"instructors": actualIns});
+                        console.log("member removed from course's instructors");
+                    }
+                    if (acType == "HeadOfDepartment"){
+                        await department.findByIdAndUpdate(actualDep._id, {"headOfDep": "N/A"});
+                        console.log("member removed from being head of his department");
+                    }
+                }else if(acType == "CourseCoordinator" || acType == "academic member"){
+                    var depTas = actualDep.teachingAssistants;
+                    for (let x = 0 ; x < depTas.length; x++){
+                        if (depTas[x] == acMem._id + ""){
+                            depTas.splice(x,1);
+                            break;
+                        }
+                    }
+                    var facTas = actualFac.teachingAssistants;
+                    for (let y = 0 ; y < facTas.length; y++){
+                        if (facTas[y] == acMem._id + ""){
+                            facTas.splice(y,1);
+                            break;
+                        }
+                    }
+                    await department.findByIdAndUpdate(actualDep._id, {"teachingAssistants": depTas});
+                    console.log("member removed from department's teaching assistants");
+                    await faculty.findByIdAndUpdate(actualFac._id, {"teachingAssistants": facTas});
+                    console.log("member removed from faculty's teaching assistants");
+                    for (let w = 0 ; w < c.length; w++){
+                        var actualC2 = (await course.findById(c[w]));
+                        var actualCTas = actualC2.teachingAssistants;
+                        for (let t = 0; t < actualCTas.length; t++){
+                            if (actualCTas[t] == acMem._id + ""){
+                                actualCTas.splice(t,1);
+                                break;
+                            }
+                        }
+                        await course.findByIdAndUpdate(actualC._id, {"teachingAssistants": actualCTas});
+                        console.log("member removed from course's teaching assistants");
+                    }
+                    if (acType == "CourseCoordinator"){
+                        await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": "N/A"});
+                        console.log("member removed from being course coordinator of the corresponding course");
+                    }
+                }
+                //remove this member from slots
+                for (let r = 0 ; r < s.length; r++){
+                    await slot.findByIdAndUpdate(s[r], {"memberID": null});
+                    console.log("member removed from teaching slots");
+                }
+                //delete this member
+                await members.findByIdAndDelete(mem[0]._id);
+                console.log("member removed from members table");
+                await academicMember.findByIdAndDelete(acMem._id);
+                console.log("member removed from academic members table");
+            }
+           
+            res.send("member deleted");
+        }
+    }   
 });
 
 HrRouter.route('/addSignInorOut/:id')
