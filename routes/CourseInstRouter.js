@@ -71,6 +71,7 @@ CourseInstRouter.route('/viewSlotAssignment')
                     const options = { _id: 0, type: 1, timing: 1 }
                     var Slots = await slots.find(query, options)
                     AssigedSlots.push({ Name, Slots })
+
                 }
             }
             res.json({
@@ -85,10 +86,9 @@ CourseInstRouter.route('/viewSlotAssignment')
         //get the slots assigned to this course which also has the academic members assigned
     });
 
-CourseInstRouter.route('/viewStaffInDep')
+CourseInstRouter.route('/viewStaff')
     .get(async(req, res, next) => {
         try {
-            //ToDo : remake it using slots table only .
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
             const id = DecodeToken.id;
@@ -97,8 +97,15 @@ CourseInstRouter.route('/viewStaffInDep')
                 res.send("not Authenticated")
             }
             if (id.includes('ac')) {
+                const ac = await academicMember.findOne({ Memberid: existingUser._id })
+                const acDep = ac.department
+                const options = { _id: 0, Memberid: 1, officeHourse: 1, courses: 1, schedule: 1 }
+                var inDepStaff = await academicMember.find({ department: acDep }, options)
 
             }
+            res.json({
+                inDepStaff
+            })
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
@@ -110,6 +117,27 @@ CourseInstRouter.route('/viewStaffInDep')
 
 CourseInstRouter.route('/viewStaff/:cID')
     .get(async(req, res, next) => {
+        try {
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const existingUser = await members.findOne({ id: id });
+            if (!existingUser) {
+                res.send("not Authenticated")
+            }
+            if (id.includes('ac')) {
+                const ac = await academicMember.findOne({ Memberid: existingUser._id })
+                const acDep = ac.department
+                const options = { _id: 0, Memberid: 1, officeHourse: 1, courses: 1, schedule: 1 }
+                var inDepStaff = await academicMember.find({ department: acDep, courses: req.params.cID }, options)
+
+                res.json({
+                    inDepStaff
+                })
+            }
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
