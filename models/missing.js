@@ -8,8 +8,8 @@ const missingSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required:true,
         ref: 'memberSchema'},
-    missingHours: Number,
-    remainingHours: Number,
+    missingDays: Number,
+    remainingDays: Number,
     missingHours: Number,
     remainingHours: Number
 });

@@ -579,17 +579,155 @@ HrRouter.route('/deleteCourse/:name')
 });
 
 HrRouter.route('/addStaffMember')
-.post((req,res,next) =>{
+.post(async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the given mail is unique
-    //make the system automatically increment the ids
-    //check if this is an academic member of hr to make the id prefix 
-    //put this member to the corresponding table(academic/hr)
-    //prompt the user to change the password on first login
-    //check that the office given is not full
-    //check that there is no course assigned to this member if academic
-    //if this is an HR member make the dayoff Saturday
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that the needed credentials are given
+        if (req.body.name == null){
+            return res.status(400).send("name of member should be given in body");
+        }else if (req.body.type == null){
+            return res.status(400).send("type of member (whether academic or HR) should be given in body");
+        }else if (req.body.email== null){
+            return res.status(400).send("email of member should be given in body");
+        }else if (req.body.salary == null){
+            return res.status(400).send("salary of member should be given in body");
+        }else if (req.body.officeLocation== null){
+            return res.status(400).send("office location should be given in body");
+        }else{
+            //check if the office is full
+            const office = await Location.find({"name": req.body.officeLocation});
+            if (office.length == 0){
+                return res.status(400).send("there does not exist an office with this name");
+            }else if(office[0].type != "office"){
+                return res.status(400).send("this location is not an office with this name");
+            }else if (office[0].capacitySoFar > office[0].capacity){
+                return res.status(400).send("this office is full");
+            }else{
+                let flagAc = false;
+                let phoneNumber = "";
+                let SecondayMail = "";
+                let gender = "";
+                if (req.body.phoneNumber != null){
+                    phoneNumber = req.body.phoneNumber;
+                }
+                if (req.body.SecondayMail != null){
+                    SecondayMail = req.body.SecondayMail;
+                }
+                if (req.body.gender != null){
+                    gender = req.body.gender;
+                }
+                //check the type academic or HR
+                let assignedOffice = office[0]._id;
+                let nID = 0;
+                let dOff = "";
+                if (req.body.type == "HR"){
+                    //get the last id available and increment it by 1
+                    const ids = await members.find({ "id": { $regex: 'hr'}});
+                    console.log(ids);
+                    const maxID = ids[ids.length - 1];
+                    console.log(maxID);
+                    const toBeParsed = maxID.id.substring(3);
+                    const iID = parseInt(toBeParsed);
+                    nID = iID + 1;
+                    dOff = "Saturday"
+                }else{
+                    // this is an academic member
+                    if (req.body.faculty == null){
+                        return res.status(400).send("faculty should be given in body");
+                    }else if(req.body.department == null){
+                        return res.status(400).send("department should be given in body");
+                    }else if (req.body.dayOff == null){
+                        return res.status(400).send("dayOff of academic member should be given in body");
+                    } else if (req.body.academicType== null){
+                        return res.status(400).send("type of academic member should be given in body");
+                    }else{
+                        const fac = await faculty.find({"name": req.body.faculty});
+                        const dep1 = await department.find({"name": req.body.department}); 
+                        if (fac.length == 0 || dep1.length == 0){
+                            return res.status(400).send("there does not exist a faculty and/or a department with this name");
+                        }else{
+                            flagAc = true;
+                            dOff = req.body.dayOff;
+                            //get the last id available and increment it by 1
+                            const ids = await members.find({ "id": { $regex: 'ac'}});
+                            console.log(ids);
+                            const maxID = ids[ids.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.id.substring(3);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;  
+                        }   
+                    }
+                }
+                //try and catch if email is not unique
+                //put this member to the corresponding table(academic/hr)
+                var assignedID = "";
+                if (flagAc){
+                    assignedID = "ac-" + nID + "";
+                }else{
+                    assignedID = "hr-" + nID + "";
+                }
+                console.log(assignedID);
+                const m = new members({
+                    name: req.body.name,
+                    id: assignedID,
+                    email: req.body.email,
+                    officeLocation: assignedOffice,
+                    salary: req.body.salary,
+                    phoneNumber: phoneNumber,
+                    SecondayMail: SecondayMail,
+                    gender: gender
+                });
+                try{
+                    await m.save();
+                    console.log("member added to members table");
+                    const nCapacity = office[0].capacitySoFar += 1;
+                    await Location.findOneAndUpdate({"name": req.body.officeLocation}, {"capacitySoFar": nCapacity});
+                    console.log("number of members in office is incremented by 1");
+                }catch(err){
+                    console.log(err);
+                    return res.status(400).send("email already exists");
+                }
+                if (flagAc){
+                    var dep = await department.find({"name": req.body.department}); 
+                    var acMemID = (await members.find({"id": assignedID}))[0];
+                    const am = new academicMember({
+                        Memberid: acMemID._id,
+                        schedule: [],
+                        type: req.body.academicType,
+                        courses: [],
+                        faculty: req.body.faculty,
+                        department: req.body.department,
+                        officeHourse: ""
+                    });
+                    await am.save();
+                    console.log("member added to academic members table");
+                    //add this member to the corresponding department
+                    var acID = await academicMember.find({"Memberid": acMemID._id});
+                    let oldMem = [];
+                    if (req.body.academicType == "CourseInstructor"){
+                        oldMem = dep[0].instructors;
+                        oldMem.push(acID[0]._id);
+                        await department.findOneAndUpdate({"name":req.body.department}, {"instructors": oldMem});
+                        console.log("academic member added to instructors of this department");
+                    }else{
+                        //an academic member
+                        oldMem = dep[0].teachingAssistants;
+                        oldMem.push(acID[0]._id);
+                        await department.findOneAndUpdate({"name":req.body.department}, {"teachingAssistants": oldMem});
+                        console.log("academic member added to teaching assistants of this department");
+                    }
+                }
+            }
+            res.send("member added");
+        }       
+    }    
 });
 
 HrRouter.route('/updateStaffMember/:id')
