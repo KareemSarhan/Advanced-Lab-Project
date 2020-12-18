@@ -674,9 +674,13 @@ HrRouter.route('/addStaffMember')
                     assignedID = "hr-" + nID + "";
                 }
                 console.log(assignedID);
+                const salt = await bcrypt.genSalt(12); //if the number is increased the complexity of salting increases
+                const hashedPassword = await bcrypt.hash("123456", salt); //this operation also takes time
+        
                 const m = new members({
                     name: req.body.name,
                     id: assignedID,
+                    password: hashedPassword,
                     email: req.body.email,
                     officeLocation: assignedOffice,
                     salary: req.body.salary,
