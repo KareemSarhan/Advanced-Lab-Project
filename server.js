@@ -66,7 +66,7 @@ async function da5lData() {
     console.log("updated")
 };
 
-    async function da5lData(){
+    async function da5lData2(){
         // const o2 = await Location.find({"name": "c3.217"});
         // let o3;
         // if (o2 != null){
@@ -111,19 +111,34 @@ async function da5lData() {
     //     });
     //    // await s.save();
     //     console.log("new slot");
-        const d = (await department.find({"name": "BIDep"}))[0];
-       // await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
-        //await d.save();
-        console.log("fac updated");
+    // const dep = new department({
+    //     name: "BIDep",
+    //     facultyName: "BI"
+    // })
+    // await dep.save();
+    // console.log("dep added");
+        //const d = (await department.find({"name": "BIDep"}))[0];
+        //await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
+      //  console.log("fac updated");
+      //const nh = (await members.find({"id": "ac-3"}))[0];
+      //const n = (await academicMember.find({"Memberid": nh._id}))[0];
+      console.log(n);
+      //await department.findOneAndUpdate({"name": "DMET"}, {"headOfDep": n._id});
+      //await academicMember.findByIdAndUpdate(n._id, {"type": "HeadOfDepartment"});
+      console.log("done");
         };
 
     console.log("check9");
-    //da5lData();
+   // da5lData2();
     console.log("check10");
     // const d = new Date();
     // const day = d.getDay();
     // console.log(day);
 
-
+    // const s = "safa";
+    // const a = "fa"
+    // if ({ s: { $in: [a ]}}){
+    //     console.log("ddddddddddd")
+    // }
 
 module.exports = app
