@@ -147,6 +147,38 @@ CourseInstRouter.route('/viewStaff/:cID')
 
 CourseInstRouter.route('/assignMemToSlot')
     .put(async(req, res, next) => {
+        const token = req.header('auth-token');
+        const DecodeToken = jwt_decode(token);
+        const id = DecodeToken.id;
+        const existingUser = await members.findOne({ id: id });
+        if (!existingUser) {
+            res.send("not Authenticated")
+        }
+        if (id.includes('ac')) {
+            academicMemID = req.body.academicMemberID;
+            courseID = req.body.courseID;
+            slotID = req.body.slotID;
+            res.json({
+                reqas: academicMemID
+            })
+            academicMem = academicMember.findOne({ _id: academicMemID })
+            if (academicMember != null) {
+
+                res.json({
+                    academicMem
+                })
+
+            } else {
+                res.json({
+                    Msg: 'this member isnt an academic Member .'
+                })
+            }
+        }
+
+        // } catch (error) {
+        //     res.status(500).json({ error: error.message })
+        // }
+
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -157,6 +189,22 @@ CourseInstRouter.route('/assignMemToSlot')
 
 CourseInstRouter.route('/deleteAssignment/:cID')
     .put(async(req, res, next) => {
+        try {
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const existingUser = await members.findOne({ id: id });
+            if (!existingUser) {
+                res.send("not Authenticated")
+            }
+            if (id.includes('ac')) {
+                const ac = await academicMember.findOne({ Memberid: existingUser._id })
+
+                res.json({})
+            }
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -167,6 +215,22 @@ CourseInstRouter.route('/deleteAssignment/:cID')
 
 CourseInstRouter.route('/removeMember/:cID')
     .delete(async(req, res, next) => {
+        try {
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const existingUser = await members.findOne({ id: id });
+            if (!existingUser) {
+                res.send("not Authenticated")
+            }
+            if (id.includes('ac')) {
+                const ac = await academicMember.findOne({ Memberid: existingUser._id })
+
+                res.json({})
+            }
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
@@ -178,6 +242,22 @@ CourseInstRouter.route('/removeMember/:cID')
 
 CourseInstRouter.route('/assignCoordinator/:cID')
     .put(async(req, res, next) => {
+        try {
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const existingUser = await members.findOne({ id: id });
+            if (!existingUser) {
+                res.send("not Authenticated")
+            }
+            if (id.includes('ac')) {
+                const ac = await academicMember.findOne({ Memberid: existingUser._id })
+
+                res.json({})
+            }
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
         //authenticate that this is a valid member
         //authorize that this is a CI member
         //get the department of this member
