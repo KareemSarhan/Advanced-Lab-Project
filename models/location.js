@@ -12,6 +12,11 @@ const locationSchema = new mongoose.Schema({
     capacity: {
         type: Number,
         required: true},
+
+    capacitySoFar: {
+        type: Number,
+        default: 0
+    },
     
     type: {
         type: String,

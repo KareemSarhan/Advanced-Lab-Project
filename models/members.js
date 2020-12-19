@@ -30,6 +30,7 @@ const memberSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    salarySoFar: Number,
     prompt:{
         type: Boolean,
         default: true
