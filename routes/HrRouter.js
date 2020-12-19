@@ -1115,27 +1115,86 @@ HrRouter.route('/addSignOut/:id')
 });
 
 HrRouter.route('/viewAttendance/:id')
-.get((req,res,next) =>{
+.get(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that there is a member with this id
-    //view the attendance record of this member
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+      //verify that there is a member with this id
+      const m = await memberSchema.find({"id": req.params.id});
+      if (m.length == 0){
+        return res.status(400).send("there is no member with this id");
+      }else{
+        //view the attendance record of this member
+        const a = await attendance.find({"Memberid": m[0]._id});
+        res.send(a);
+        console.log("attendace shown");
+      }
+    }          
 });
 
 HrRouter.route('/viewMissing')
-.get((req,res,next) =>{
+.get(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //view members with missings more than 0
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //view the missings table
+        const miss = await missing.find();
+        res.send(miss);
+        console.log("missing shown");
+    } 
 });
 
 HrRouter.route('/updateSalary/:id')
-.get((req,res,next) =>{
+.put(async(req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that there is a member with this id
-    //compute the deductions using the missings table
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a member with this id
+        const m = await members.find({"id": req.params.id});
+        if (m.length == 0 ){
+            return res.status(400).send("there is no member with this id");
+        }else{
+            //check if there is a promotion
+            if (req.body.newSalary != null){
+                //update the salary
+                //validate that it is a number
+                await members.findByIdAndUpdate(m[0]._id, {"salary": newSalary});
+            }
+            //apply the deductions if any
+            let missing = await missings.findOne({"Memberid": m[0]._id});
+            if (missing != null){
+                const missingDays = missing.missingDays;
+                const missingHours = missing.missingHours;
+                const mSalary = await members.findById(m[0]._id);
+                const dayDed = missingDays * (mSalary/60);
+                let hourDed = 0;
+                let minDed = 0;
+                if (missingHours >= 3){
+                    hourDed =Math.floor(missingHours) * (mSalary/180);
+                    minDed = (missingHours - (Math.floor(missingHours))) * 60 * (mSalary/180*60);
+                }
+                mSalary = mSalary - dayDed - hourDed - minDed;
+                await members.findByIdAndUpdate(m[0]._id, {"salarySoFar": mSalary});
+                console.log("salary deducted");
+            }
+            res.send("Salary updated");
+        }
+    } 
 });
 
 module.exports = HrRouter;
-

@@ -23,6 +23,7 @@ const members = require('./models/members.js');
 const course = require('./models/course');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const slotLinkReq = require('./models/slotLinkReq');
 const key = 'shawerma';
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
@@ -34,7 +35,6 @@ app.use('/CourseInstructor', CourseInstRouter);
 app.use('/Hod', HodRouter);
 app.use('/Hr', HrRouter);
 app.use('/Member', MemberRouter);
-<<<<<<< HEAD
 async function PopulateCourses() {
     course.collection.insertOne({
         name: "batee5",
@@ -140,10 +140,20 @@ async function da5lData() {
     //       c2= await members.findOne({_id:c1.Memberid});
     //       console.log(c2);
     //   }
+
+    // const sl = new slotLinkReq({
+    //     requestID: 1,
+    //     memberID: null,
+    //     courseID: null,
+    //     requestedSlot: "Tuesday 4th",
+    //     comment: ""
+    // });
+    // await (sl.save());
+    // console.log("done");
         };
 
     console.log("check9");
-    //da5lData2();
+   // da5lData2();
     console.log("check10");
     // const d = new Date();
     // const day = d.getDay();
@@ -156,7 +166,5 @@ async function da5lData() {
     //  }
 
 
-=======
->>>>>>> 55727c8ae46e9259a9a07b62de0d0000743a6f98
 
 module.exports = app
