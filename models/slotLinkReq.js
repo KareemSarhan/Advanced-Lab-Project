@@ -1,31 +1,40 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const slotLinkReqSchema = new mongoose.Schema({
+const slotLinkReqSchema = new mongoose.Schema(
+{
 
-    requestID:{
+    requestID:
+    {
         type: Number
     },
-    memberID:{ 
+    memberID:
+    {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'academicMemberSchema',
-        required: true},
+        required: true
+    },
 
-    courseID:{
+    courseID:
+    {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'courseSchema',
         required: true
     },
-    requestedSlot: {
-        type: String,
-        required: true},
+    requestedSlot:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'slotSchema',
+        required: true
+    },
 
-    status:{
+    status:
+    {
         type: String,
         default: "Pending"
     },
     comment: String
-    
+
 });
 
 module.exports = mongoose.model('SlotLinkReq', slotLinkReqSchema);

@@ -19,6 +19,7 @@ const slot = require('./models/slot');
 const department = require('./models/department');
 const faculty = require('./models/faculty');
 const ReplacementRequest = require('./models/replacementrequest.js');
+const SlotLinkReqs = require('./models/slotLinkReq.js');
 const members = require('./models/members.js');
 const course = require('./models/course');
 const jwt = require('jsonwebtoken');
