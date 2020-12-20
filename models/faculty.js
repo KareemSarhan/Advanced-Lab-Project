@@ -5,24 +5,32 @@ const departmentSchema = departmentSchemaModel.departmentSchema;
 const academicMemberSchemaModel = require('./academicMember');
 const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 
-const facultySchema = new mongoose.Schema({
+const facultySchema = new mongoose.Schema(
+{
 
-    name: {
+    name:
+    {
         type: String,
         required: true,
         unique: true
     },
 
-    departments: [{
+    departments: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'departmentSchema'}],
-    
-    teachingAssistants: [{
+        ref: 'departmentSchema'
+    }],
+
+    teachingAssistants: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema'}],
-    instructors: [{
+        ref: 'AcademicMember'
+    }],
+    instructors: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema'}],
+        ref: 'AcademicMember'
+    }],
     numberOfYears: Number
 });
 

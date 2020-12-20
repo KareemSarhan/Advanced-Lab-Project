@@ -23,7 +23,7 @@ CourseCoordinatorRouter.use(express.json());
 CourseCoordinatorRouter.use(authenticate);
 
 CourseCoordinatorRouter.route('/viewSlotLinkReq')
-    .get((req, res, next) =>
+    .get(async(req, res, next) =>
     {
         //authenticate that this is a valid member
         //authorize that this is a CC member
@@ -59,87 +59,27 @@ CourseCoordinatorRouter.route('/acceptlotLinkReq')
         }
         if (id.includes('ac'))
         {
-            const reqID = req.body.reqID;
-            const request = await SlotLinkReqs.findOne(
-            {
-                _id: reqID,
-            })
-            if (request == null)
-            {
-                res.send("request not found.");
-                return;
-            }
             const loggedacm = await academicMember.findOne(
             {
                 Memberid: loggedMember._id
-            })
-            const reqmaker = await academicMember.findOne(
-            {
-                _id: request.memberID
-            })
-            const reqcourse = await courses.findOne(
-            {
-                _id: request.courseID,
-            })
-            console.log(
-            {
-                courseCoordinator: loggedacm._id,
-                asd: reqcourse.courseCoordinator,
-                flag: reqcourse.courseCoordinator + "" == loggedacm._id + ""
             });
-            if (reqcourse == null)
+            //console.log("ASdasdasdsasdddddddddddddddddddad" + loggedMember._id);
+            const loggedcourse = await courses.findOne(
             {
-                res.send("course not found")
-                return
-            }
-            if (reqcourse.courseCoordinator != loggedacm._id)
+                courseCoordinator: loggedacm._id
+            });
+            const requests = await SlotLinkReqs.find(
             {
-                res.send("course not related to this course coordinator")
-                return
-            }
-            const reqSlot = await slots.findOne(
-                {
-                    _id: request.requestedSlot
-                })
-                //check if el wad da by coord el course da
-            if (request.courseID != reqcourse._id)
+                courseID: loggedcourse._id
+            }).populate(
             {
-                res.send("course not related to this course coordinator");
-                return;
-            }
-            else
+                path: 'courseID',
+                select: 'name code numberOfSlotsNeeded numberOfSlotsAssigned coverage'
+            }).populate(
             {
-                //update req
-                request.status = "accepted";
-                await request.save();
-
-                //update el acadimic memeber schedule\
-                reqmaker.schedule.push(reqSlot._id);
-                await reqmaker.save();
-
-                //update el slots 
-                reqSlot.memberID = reqmaker._id;
-                await reqSlot.save();
-
-                //update el course 
-                //hageb 3add el slots ely lnfs el course we lehom 7ad bydehom
-                var slotcount = await slots.find(
-                {
-                    course: request.courseID,
-                    memberID:
-                    {
-                        $ne: null
-                    }
-                })
-                slotcount = slotcount.length;
-                reqcourse.numberOfSlotsAssigned = slotcount;
-                reqcourse.coverage = reqcourse.numberOfSlotsAssigned / reqcourse.numberOfSlotsNeeded;
-                await reqcourse.save();
-                res.send("Accepted");
-                return;
-            }
-
-
+                path: 'memberID',
+            })
+            res.json(requests)
         }
         // }
         // catch (error)
@@ -149,6 +89,132 @@ CourseCoordinatorRouter.route('/acceptlotLinkReq')
         //         error: error
         //     })
         // }
+    });
+
+
+//authenticate that this is a valid member
+//authorize that this is a CC member
+//verify that there is a req with this id
+//get the course id 
+//update the status to accepted
+//update the mem schedule with this assignment
+//update the course assigned slots
+//update the coverage
+CourseCoordinatorRouter.route('/acceptlotLinkReq')
+    .put(async(req, res, next) =>
+    {
+        try
+        {
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const loggedMember = await members.findOne(
+            {
+                id: id
+            });
+            if (!loggedMember)
+            {
+                res.send("not Authenticated");
+                return;
+            }
+            if (id.includes('ac'))
+            {
+                const reqID = req.body.reqID;
+                const request = await SlotLinkReqs.findOne(
+                {
+                    _id: reqID,
+                })
+                if (request.status != "Pending")
+                {
+                    res.send("Request isnot in Pending state")
+                    return
+                }
+                if (request == null)
+                {
+                    res.send("request not found.");
+                    return;
+                }
+                const loggedacm = await academicMember.findOne(
+                {
+                    Memberid: loggedMember._id
+                })
+                const reqmaker = await academicMember.findOne(
+                {
+                    _id: request.memberID
+                })
+                console.log("course iD " + request.courseID)
+                const reqcourse = await courses.findOne(
+                {
+                    _id: request.courseID,
+                })
+                console.log(
+                {
+                    courseCoordinator: loggedacm._id,
+                    asd: reqcourse.courseCoordinator,
+                    flag: reqcourse.courseCoordinator + "" == loggedacm._id + ""
+                });
+                if (reqcourse == null)
+                {
+                    res.send("course not found")
+                    return
+                }
+                if (reqcourse.courseCoordinator + "" != loggedacm._id + "")
+                {
+                    res.send("course not related to this course coordinator")
+                    return
+                }
+                const reqSlot = await slots.findOne(
+                    {
+                        _id: request.requestedSlot
+                    })
+                    //check if el wad da by coord el course da
+                if (request.courseID + "" != reqcourse._id + "")
+                {
+                    res.send("course not relasdasdsadated to this course coordinator");
+                    return;
+                }
+                else
+                {
+                    //update req
+                    request.status = "accepted";
+                    await request.save();
+
+                    //update el acadimic memeber schedule\
+                    reqmaker.schedule.push(reqSlot._id);
+                    await reqmaker.save();
+
+                    //update el slots 
+                    reqSlot.memberID = reqmaker._id;
+                    await reqSlot.save();
+
+                    //update el course 
+                    //hageb 3add el slots ely lnfs el course we lehom 7ad bydehom
+                    var slotcount = await slots.find(
+                    {
+                        course: request.courseID,
+                        memberID:
+                        {
+                            $ne: null
+                        }
+                    })
+                    slotcount = slotcount.length;
+                    reqcourse.numberOfSlotsAssigned = slotcount;
+                    reqcourse.coverage = reqcourse.numberOfSlotsAssigned / reqcourse.numberOfSlotsNeeded;
+                    await reqcourse.save();
+                    res.send("Accepted");
+                    return;
+                }
+
+
+            }
+        }
+        catch (error)
+        {
+            res.status(500).json(
+            {
+                error: error
+            })
+        }
     });
 
 CourseCoordinatorRouter.route('rejectlotLinkReq/:reqID')

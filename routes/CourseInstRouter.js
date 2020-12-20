@@ -10,8 +10,9 @@ const academicMember = require('../models/academicMember')
 const members = require('../models/members')
 const course = require('../models/course')
 const slots = require('../models/slot')
-const location = require('../models/location')
+const locations = require('../models/location')
 const AM = require('../models/academicMember');
+var validator = require('validator');
 
 
 const CourseInstRouter = express.Router();
@@ -58,10 +59,10 @@ CourseInstRouter.route('/viewCoverage')
                     numberOfSlotsAssigned: 1,
                     coverage: 1
                 }
-                var courses = await course.find(query, options)
+                var Courses = await course.find(query, options)
                 res.json(
                 {
-                    courses
+                    Courses
                 })
                 return;
 
@@ -81,12 +82,16 @@ CourseInstRouter.route('/viewCoverage')
         }
     });
 
+//authenticate that this is a valid member
+//authorize that this is a CI member
+//get the slots assigned to this academic member
 CourseInstRouter.route('/viewSlotAssignment')
     .get(async(req, res, next) =>
     {
         try
         {
-            //ToDo : remake it using slots table only .
+            //ToDo : remake it using slots table only we populate bdl el 2rf da.
+
 
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
@@ -124,23 +129,19 @@ CourseInstRouter.route('/viewSlotAssignment')
                         _id: 0,
                         type: 1,
                         timing: 1,
-                        location: 1
+                        location: 1,
+
                     }
                     const locationoptions = {
                         _id: 0,
                         type: 1,
                         name: 1
                     }
-                    var Slots = await slots.find(slotsquery, slotsoptions)
-                    for (let index = 0; index < Slots.length; index++)
+                    var Slots = await slots.find(slotsquery, slotsoptions).populate(
                     {
-                        Slots[index].location = await location.findone(
-                            {
-                                _id: Slots[index].location
-                            },
-                            locationoptions);
-
-                    }
+                        path: 'location',
+                        select: '-_id name type capacity'
+                    })
                     AssigedSlots.push(
                     {
                         Name,
@@ -170,9 +171,6 @@ CourseInstRouter.route('/viewSlotAssignment')
             })
         }
 
-        //authenticate that this is a valid member
-        //authorize that this is a CI member
-        //get the slots assigned to this course which also has the academic members assigned
     });
 
 //authenticate that this is a valid member
@@ -229,7 +227,7 @@ CourseInstRouter.route('/viewStaff')
                     {
                         _id: inDepStaff[index].Memberid
                     });
-                    var officeLocation = await location.findOne(
+                    var officeLocation = await locations.findOne(
                     {
                         _id: indepmem.officeLocation
                     })
@@ -288,7 +286,7 @@ CourseInstRouter.route('/viewStaff')
 //get the department of this member
 //get the course in this dep from params
 //get all academic members assigned to this course
-CourseInstRouter.route('/viewStaff/:CourseID')
+CourseInstRouter.route('/viewCourseStaff')
     .get(async(req, res, next) =>
     {
         try
@@ -307,6 +305,18 @@ CourseInstRouter.route('/viewStaff/:CourseID')
             }
             if (id.includes('ac'))
             {
+                const CourseID = req.body.CourseID + "";
+                console.log(CourseID)
+                if (CourseID == null)
+                {
+                    res.send("CourseID is null");
+                    return;
+                }
+                if (!validator.isMongoId(CourseID))
+                {
+                    res.send("CourseID is not a valid objectID");
+                    return;
+                }
                 const ac = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id
@@ -325,7 +335,7 @@ CourseInstRouter.route('/viewStaff/:CourseID')
                 var inDepStaff = await academicMember.find(
                 {
                     department: acDep,
-                    courses: req.params.CourseID
+                    courses: CourseID
                 }, options)
                 var resStaff = []
                 const locationoptions = {
@@ -339,7 +349,7 @@ CourseInstRouter.route('/viewStaff/:CourseID')
                     {
                         _id: inDepStaff[index].Memberid
                     });
-                    var officeLocation = await location.findOne(
+                    var officeLocation = await locations.findOne(
                     {
                         _id: indepmem.officeLocation
                     })

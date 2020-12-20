@@ -1,29 +1,36 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const academicMemberSchema = new mongoose.Schema({
+const academicMemberSchema = new mongoose.Schema(
+{
 
-    Memberid: {
+    Memberid:
+    {
         type: mongoose.Schema.Types.ObjectId,
         unique: true,
-        ref: 'memberSchema'
+        ref: 'Member'
     },
-    schedule: [{
+    schedule: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'slotSchema'
+        ref: 'Slot'
     }],
-    type: {
+    type:
+    {
         type: String,
         required: true
     },
-    courses: [{
+    courses: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'courseSchema'
+        ref: 'course'
     }],
-    faculty: {
+    faculty:
+    {
         type: String
     },
-    department: {
+    department:
+    {
         type: String
     },
     officeHourse: String

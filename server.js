@@ -25,6 +25,7 @@ const course = require('./models/course');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const slotLinkReq = require('./models/slotLinkReq');
+const AccidentalLeaves = require('./models/AccidentalLeaves.js');
 const key = 'shawerma';
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
@@ -36,8 +37,10 @@ app.use('/CourseInstructor', CourseInstRouter);
 app.use('/Hod', HodRouter);
 app.use('/Hr', HrRouter);
 app.use('/Member', MemberRouter);
-async function PopulateCourses() {
-    course.collection.insertOne({
+async function PopulateCourses()
+{
+    course.collection.insertOne(
+    {
         name: "batee5",
         code: "bat300",
         numberOfSlotsNeeded: 8,
@@ -45,7 +48,8 @@ async function PopulateCourses() {
         coverage: 0.6
     });
 }
-async function da5lData() {
+async function da5lData()
+{
     // const o2 = await Location.find({"name": "c3.217"});
     // let o3;
     // if (o2 != null){
@@ -54,42 +58,63 @@ async function da5lData() {
     // console.log(o3);
     //const c = (await course.find({}))[0];
     const d = (await department.find())[0];
-    let ta = await academicMember.find({ $or: [{ "type": "CourseCoordinator" }, { "type": "academic member" }] });
-    let doc = await academicMember.find({ $or: [{ "type": "CourseInstructor" }, { "type": "HeadOfDepartment" }] });
+    let ta = await academicMember.find(
+    {
+        $or: [
+        {
+            "type": "CourseCoordinator"
+        },
+        {
+            "type": "academic member"
+        }]
+    });
+    let doc = await academicMember.find(
+    {
+        $or: [
+        {
+            "type": "CourseInstructor"
+        },
+        {
+            "type": "HeadOfDepartment"
+        }]
+    });
     let tA = [];
-    for (let i = 0; i < ta.length; i++) {
+    for (let i = 0; i < ta.length; i++)
+    {
         tA.push(ta[i]._id);
     }
     let docA = [];
-    for (let j = 0; j < doc.length; j++) {
+    for (let j = 0; j < doc.length; j++)
+    {
         docA.push(doc[j]._id);
     }
     // await faculty.findOneAndUpdate({"name": "MET"}, {"departments": d , "teachingAssistants": tA , "instructors": docA});
     console.log("updated")
 };
 
-    async function da5lData2(){
-        // const o2 = await Location.find({"name": "c3.217"});
-        // let o3;
-        // if (o2 != null){
-        //     o3 = o2[0]._id;
-        // }
-        // console.log(o3);
-        // const c = (await course.find({}))[0];
-        //  console.log(c._id);
-        //  const d = (await department.find())[0];
-        //  //let ta = await academicMember.find({$or:[{"type": "CourseCoordinator"}, {"type": "academic member"}]});
-        //  let doc = (await academicMember.find({"type": "CourseCoordinator"}));
-        //  let s = (await slot.find({"type": "Tutorial"}))[0]; 
-        //  let tA = [];
-        //  for (let i = 0 ; i < ta.length; i++){
-        //     tA.push(ta[i]._id);
-        //  }
-        //  let docA = [];
-        //  for (let j = 0 ; j < doc.length; j++){
-        //     docA.push(doc[j]._id);
-        //  }
-        //await academicMember.findOneAndUpdate({"type": "HeadOfDepartment"}, {"schedule" :[], "courses":[]});
+async function da5lData2()
+{
+    // const o2 = await Location.find({"name": "c3.217"});
+    // let o3;
+    // if (o2 != null){
+    //     o3 = o2[0]._id;
+    // }
+    // console.log(o3);
+    // const c = (await course.find({}))[0];
+    //  console.log(c._id);
+    //  const d = (await department.find())[0];
+    //  //let ta = await academicMember.find({$or:[{"type": "CourseCoordinator"}, {"type": "academic member"}]});
+    //  let doc = (await academicMember.find({"type": "CourseCoordinator"}));
+    //  let s = (await slot.find({"type": "Tutorial"}))[0]; 
+    //  let tA = [];
+    //  for (let i = 0 ; i < ta.length; i++){
+    //     tA.push(ta[i]._id);
+    //  }
+    //  let docA = [];
+    //  for (let j = 0 ; j < doc.length; j++){
+    //     docA.push(doc[j]._id);
+    //  }
+    //await academicMember.findOneAndUpdate({"type": "HeadOfDepartment"}, {"schedule" :[], "courses":[]});
     //     const salt = await bcrypt.genSalt(12); //if the number is increased the complexity of salting increases
     //     const hashedPassword = await bcrypt.hash("234", salt);
     //     const o = (await Location.find({"name": "test"}))[0];
@@ -119,15 +144,15 @@ async function da5lData() {
     // })
     // await dep.save();
     // console.log("dep added");
-        //const d = (await department.find({"name": "BIDep"}))[0];
-        //await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
-      //  console.log("fac updated");
-      //const nh = (await members.find({"id": "ac-3"}))[0];
-      //const n = (await academicMember.find({"Memberid": nh._id}))[0];
-      //console.log(n);
-      //await department.findOneAndUpdate({"name": "DMET"}, {"headOfDep": n._id});
-      //await academicMember.findByIdAndUpdate(n._id, {"type": "HeadOfDepartment"});
-     // console.log("done");
+    //const d = (await department.find({"name": "BIDep"}))[0];
+    //await faculty.findOneAndUpdate({"name":"BI"}, {"departments": [d._id]});
+    //  console.log("fac updated");
+    //const nh = (await members.find({"id": "ac-3"}))[0];
+    //const n = (await academicMember.find({"Memberid": nh._id}))[0];
+    //console.log(n);
+    //await department.findOneAndUpdate({"name": "DMET"}, {"headOfDep": n._id});
+    //await academicMember.findByIdAndUpdate(n._id, {"type": "HeadOfDepartment"});
+    // console.log("done");
 
     //   const c = await course.findOne({code:"CSEN704"});
     //   var s=[];
@@ -151,15 +176,16 @@ async function da5lData() {
     // });
     // await (sl.save());
     // console.log("done");
-        };
+};
 
-    console.log("check9");
-   // da5lData2();
-    console.log("check10");
-    // const d = new Date();
-    // const day = d.getDay();
-    // console.log(day);
+// console.log("check9");
+// da5lData2();
+// console.log("check10");
+// const d = new Date();
+// const day = d.getDay();
+// console.log(day);
 
+<<<<<<< HEAD
     //  const s = "safa";
     //  const a = "fa"
     //  if ({ s: { $in: a}}){
@@ -167,4 +193,14 @@ async function da5lData() {
     //  }
     //console.log(typeof(123) == 'string');
     console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
+=======
+//  const s = "safa";
+//  const a = "fa"
+//  if ({ s: { $in: a}}){
+//     console.log("ddddddddddd")
+//  }
+
+
+
+>>>>>>> 90bb8cc8408d72ab73bcb0ca55995b81aeda35a5
 module.exports = app
