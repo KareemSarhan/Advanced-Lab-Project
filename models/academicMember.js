@@ -13,7 +13,7 @@ const academicMemberSchema = new mongoose.Schema(
     schedule: [
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'slot'
+        ref: 'Slot'
     }],
     type:
     {

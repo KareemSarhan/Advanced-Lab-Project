@@ -3,26 +3,33 @@ const Schema = mongoose.Schema;
 const academicMemberSchemaModel = require('./academicMember');
 const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 
-const dayOffReqSchema = new mongoose.Schema({
+const dayOffReqSchema = new mongoose.Schema(
+{
 
-    requestID:{
+    requestID:
+    {
         type: Number
     },
-    memberID:{ 
+    memberID:
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema',
-        required: true},
+        ref: 'AcademicMember',
+        required: true
+    },
 
-    requestedDay: {
+    requestedDay:
+    {
         type: String,
-        required: true},
+        required: true
+    },
 
-    status:{
+    status:
+    {
         type: String,
         default: "Pending"
     },
     comment: String
-    
+
 });
 
 module.exports = mongoose.model('DayOffReq', dayOffReqSchema);

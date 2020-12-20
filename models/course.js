@@ -5,44 +5,59 @@ const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 const slotSchemaModel = require('./slot');
 const slotSchema = slotSchemaModel.slotSchema;
 
-const courseSchema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema(
+{
 
-    name: {
+    name:
+    {
         type: String,
         required: true
     },
 
-    code:{
+    code:
+    {
         type: String,
         required: true,
-       // unique: true
+        // unique: true
     },
 
-    numberOfSlotsNeeded: {
+    numberOfSlotsNeeded:
+    {
         type: Number,
         required: true
     },
 
-    numberOfSlotsAssigned: {
+    numberOfSlotsAssigned:
+    {
         type: Number,
         default: 0
     },
 
-    slots: [{
+    slots: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'slotSchema'}],
+        ref: 'Slot'
+    }],
 
-    coverage: Number ,
+    coverage: Number,
     //can be calculated from the number of assigned slots and number of slots
 
-    teachingAssistants: [{type: mongoose.Schema.Types.ObjectId,
-                         ref: 'academicMemberSchema'}],
-    instructors: [{type: mongoose.Schema.Types.ObjectId,
-            ref: 'academicMemberSchema'}],
-
-    courseCoordinator:{ 
+    teachingAssistants: [
+    {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema'},
+        ref: 'AcademicMember'
+    }],
+    instructors: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AcademicMember'
+    }],
+
+    courseCoordinator:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AcademicMember'
+    },
     creditHours: Number
 });
 
