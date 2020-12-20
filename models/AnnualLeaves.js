@@ -2,41 +2,29 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 //const replacementSchemaModel = require('./Replacement');
 //const replacementSchema = replacementSchemaModel.replacementSchema;
-
-const ReplacementSchema = new mongoose.Schema(
+const AnnualLeavesSchema = new mongoose.Schema(
 {
     StaffID:
-    { // the staff who sent the request 
+    {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Member'
     },
-
-    ReplacementID:
-    { //this represents the TA that will replace the Ta whos sent the request
-        type: String
-    },
-    found:
+    requestID:
     {
-        type: Boolean,
-    }
-
-
-});
-
-const AnnualLeavesSchema = new mongoose.Schema(
-{
-
+        type: String,
+        required: true,
+        unique: true
+    },
     numberOfdays:
     {
-        type: number,
+        type: Number,
         required: true,
     },
-    replacement:
-    {
-        type: [ReplacementSchema],
-        //required:true
-    },
+    // replacement:
+    // {
+    //     //required:true
+    // },
 
     Status:
     {
@@ -46,8 +34,8 @@ const AnnualLeavesSchema = new mongoose.Schema(
 
     dateOfLeave:
     {
-        type: date,
-        required: ture
+        type: Date,
+        required: true
     }
 
 

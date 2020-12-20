@@ -25,6 +25,7 @@ const course = require('./models/course');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const slotLinkReq = require('./models/slotLinkReq');
+const AccidentalLeaves = require('./models/AccidentalLeaves.js');
 const key = 'shawerma';
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
