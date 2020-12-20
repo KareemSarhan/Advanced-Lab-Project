@@ -5,6 +5,7 @@ var authenticate = require('../authenticate');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const key = 'shawerma';
+var validator = require('validator');
 const faculty = require('../models/faculty');
 const Location = require('../models/location.js');
 const academicMember = require('../models/academicMember');
@@ -24,54 +25,64 @@ HrRouter.use(authenticate);
 
 HrRouter.route('/addLocation')
 .post( async(req,res,next) =>{
-    //authenticate that this is a valid member
-    //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
-    //console.log(payload.id);
-    if (!((payload.id).includes("hr"))){ 
+    try{
+        //authenticate that this is a valid member
+        //authorize that this is a Hr member
+        const payload = jwt.verify(req.header('auth-token'),key);
         //console.log(payload.id);
-        return res.status(401).send("not authorized");
-    }else{
-        //verify that the needed credentials are given
-        if (req.body.name == null){
-            return res.status(400).send("name of location should be given in body");
-        }else if (req.body.capacity == null){
-            return res.status(400).send("capacity of location should be given in body");
-        }else if (req.body.type == null){
-            return res.status(400).send("capacity of location should be given in body");
+        if (!((payload.id).includes("hr"))){ 
+            //console.log(payload.id);
+            return res.status(401).send("not authorized");
         }else{
-            //all data required are given
-            //verify that the capacity matches the type 
-            //e.g if a lab or room capacity <= 25
-            const cap = req.body.capacity;
-            let maxCap = 0;
-            if (req.body.type == "Lab" || req.body.type == "Room"){
-                maxCap = 25;
-            }else if (req.body.type == "Lecture Hall"){
-                maxCap = 250;
+            //verify that the needed credentials are given
+            if (req.body.name == null){
+                return res.status(400).send("name of location should be given in body");
+            }else if (req.body.capacity == null){
+                return res.status(400).send("capacity of location should be given in body");
+            }else if (req.body.type == null){
+                return res.status(400).send("capacity of location should be given in body");
             }else{
-                //it is an office
-                maxCap = 5;
+                //all data required are given
+                //validate the types
+                if ((typeof(req.body.name) == 'string') && (typeof(req.body.type) == 'string') && (typeof(req.body.capacity) == 'number')){
+                    //verify that the capacity matches the type 
+                    //e.g if a lab or room capacity <= 25
+                    const cap = req.body.capacity;
+                    let maxCap = 0;
+                    if (req.body.type == "Lab" || req.body.type == "Room"){
+                        maxCap = 25;
+                    }else if (req.body.type == "Lecture Hall"){
+                        maxCap = 250;
+                    }else{
+                        //it is an office
+                        maxCap = 5;
+                    }
+                    if (cap > maxCap){
+                        return res.status(400).send("capacity of location exceeds limit");
+                    }else{
+                        //make a new location 
+                        const loc = new Location({
+                            name: req.body.name,
+                            capacity : req.body.capacity,
+                            type: req.body.type
+                        });
+                        await loc.save();
+                        res.send("location added");
+                        console.log("Location added");
+                    }   
+                }else{
+                    return res.status(400).send("wrong data types");
+                }
             }
-            if (cap > maxCap){
-                return res.status(400).send("capacity of location exceeds limit");
-            }else{
-                //make a new location 
-                const loc = new Location({
-                    name: req.body.name,
-                    capacity : req.body.capacity,
-                    type: req.body.type
-                });
-                await loc.save();
-                res.send("location added");
-                console.log("Location added");
-            }   
         }
-    }
+}catch(err){
+    res.status(500).json({error:error.message})
+}
 });
 
 HrRouter.route('/deleteLocation/:name')
 .delete(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -111,10 +122,14 @@ HrRouter.route('/deleteLocation/:name')
             res.send("loc deleted");
         }  
     }
+}catch(err){
+        res.status(500).json({error:error.message})
+    }
 });
 
 HrRouter.route('/updateLocation/:name')
 .put( async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -131,31 +146,37 @@ HrRouter.route('/updateLocation/:name')
         else{
              //verify that the needed credentials are given
              if (req.body.capacity != null){
-                 //check that the capacity is suitable
-                 const cap = req.body.capacity;
-                 let maxCap = 0;
-                 if (loc.type == "Lab" || loc.type == "Room"){
-                     maxCap = 25;
-                 }else if (loc.type == "Lecture Hall"){
-                     maxCap = 250;
-                 }else{
-                     //it is an office
-                     maxCap = 5;
-                 }
-                 if (req.body.capacity > maxCap){
-                    return res.status(400).send("this new capacity exceeds the max capacity of the location");
-                 }else{
-                       //update the existing location
-                     await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
-                     res.send("location capacity is updated")
-                 }
-             }
-        }  
+                    if (typeof(req.body.capacity) == 'number'){
+                    //check that the capacity is suitable
+                    const cap = req.body.capacity;
+                    let maxCap = 0;
+                    if (loc.type == "Lab" || loc.type == "Room"){
+                        maxCap = 25;
+                    }else if (loc.type == "Lecture Hall"){
+                        maxCap = 250;
+                    }else{
+                        //it is an office
+                        maxCap = 5;
+                    }
+                    if (req.body.capacity > maxCap){
+                        return res.status(400).send("this new capacity exceeds the max capacity of the location");
+                    }else{
+                        //update the existing location
+                        await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
+                        res.send("location capacity is updated")
+                    }
+                }
+            } 
+        } 
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+}
 });
 
 HrRouter.route('/addFaculty')
 .post(async (req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -168,29 +189,44 @@ HrRouter.route('/addFaculty')
         if (req.body.name == null){
             return res.status(400).send("name of faculty should be given in body");
         }else{
-            //all data required are given
-            const n = await faculty.find({"name": req.body.name});
-            if (n != 0){
-                return res.status(400).send("there exists a faculty with this name");
-            }else{
-            //add a new faculty
-                const f = new faculty({
-                    name: req.body.name,
-                    departments: [],
-                    teachingAssistants:[],
-                    instructors:[]
-                });
-               // console.log(f);
-                await f.save();
-                res.send("faculty added");
-            }
-        }       
+            if (typeof(req.body.name) == 'string'){
+                //all data required are given
+                const n = await faculty.find({"name": req.body.name});
+                if (n != 0){
+                    return res.status(400).send("there exists a faculty with this name");
+                }else{
+                    var nYears = 0;
+                    if (req.body.numberOfYears != null){
+                        if (typeof(req.body.numberOfYears) == 'number'){
+                            nYears = req.body.numberOfYears;
+                        }else{
+                            return res.status(400).send("wrong data type");
+                        }
+                    }
+                    //add a new faculty
+                    const f = new faculty({
+                        name: req.body.name,
+                        departments: [],
+                        teachingAssistants:[],
+                        instructors:[],
+                        numberOfYears: nYears
+                    });
+                    // console.log(f);
+                    await f.save();
+                    res.send("faculty added");
+                }
+            }       
+        }
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+}
 });
 
 HrRouter.route('/updateFaculty/:name')
 .put(async (req,res,next) =>{
- //authenticate that this is a valid member
+    try{
+    //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
     //console.log(payload.id);
@@ -198,7 +234,7 @@ HrRouter.route('/updateFaculty/:name')
         //console.log(payload.id);
         return res.status(401).send("not authorized");
     }else{
-        console.log(req.params.name);
+        //console.log(req.params.name);
         //verify that there is a faculty with the name = :name
         const fac = await faculty.find({"name": req.params.name});
         console.log(fac);
@@ -208,16 +244,22 @@ HrRouter.route('/updateFaculty/:name')
         else{
              //verify that the needed credentials are given
              if (req.body.number != null){
+                if (typeof(req.body.number) == 'number'){
                     //update the existing faculty
-                     await faculty.findOneAndUpdate({"name": req.params.name}, {"numberOfYears": req.body.number});
-                     res.send("faculty number of years is updated")
-             }
+                    await faculty.findOneAndUpdate({"name": req.params.name}, {"numberOfYears": req.body.number});
+                    res.send("faculty number of years is updated")
+                }
+            }
         }
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+}
 });
 
 HrRouter.route('/deleteFaculty/:name')
 .delete(async (req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -245,10 +287,14 @@ HrRouter.route('/deleteFaculty/:name')
             res.send("faculty deleted ,faculty name at corresponding department is removed ,faculty name for corresponding academic members is removed" );
         }   
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+}
 });
 
 HrRouter.route('/addDepartment')
 .post(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -265,6 +311,7 @@ HrRouter.route('/addDepartment')
         }else if (req.body.headOfDepartment == null){
             return res.status(400).send("name of head of department should be given in body");
         }else{
+            if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')&& (typeof(req.body.headOfDepartment) == 'string')){
             //all data required are given
              //make sure this department does not exist in other faculties
              const otherDep = (await department.find({"name": req.body.name}));
@@ -272,7 +319,7 @@ HrRouter.route('/addDepartment')
                  return res.status(400).send("there exists a department with this name");
              }else{
                 let c = "";
-                if (req.body.code != null){
+                if (req.body.code != null && typeof(req.body.code) == 'string'){
                     c = req.body.code;
                 }
                 let f = null;
@@ -311,11 +358,16 @@ HrRouter.route('/addDepartment')
                     }
                 }
             }
-        }      
+        } 
+    }
+    }catch(err){
+        res.status(500).json({error:error.message})
+    }     
 });
 
 HrRouter.route('/updateDepartment/:name')
 .put( async (req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -333,12 +385,12 @@ HrRouter.route('/updateDepartment/:name')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.code != null){
+             if (req.body.code != null && typeof(req.body.code) == 'string'){
                     //update the existing faculty
                      await department.findOneAndUpdate({"name": req.params.name}, {"code": req.body.code});
                      console.log("code updated");
              }
-             if (req.body.headOfDepartment != null){
+             if (req.body.headOfDepartment != null && typeof(req.body.headOfDepartment) == 'string'){
                 const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
                 if (h1){
                     //console.log(h1);
@@ -367,10 +419,14 @@ HrRouter.route('/updateDepartment/:name')
              res.send("department updated");
         }  
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 HrRouter.route('/deleteDepartment/:name')
 .delete(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -406,11 +462,15 @@ HrRouter.route('/deleteDepartment/:name')
             await department.findOneAndDelete({"name": req.params.name});
             res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
         }  
-    }   
+    } 
+}catch(err){
+    res.status(500).json({error:error.message})
+}   
 });
 
 HrRouter.route('/addCourse')
 .post(async (req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -420,15 +480,15 @@ HrRouter.route('/addCourse')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null){
+        if (req.body.name == null && typeof(req.body.name) == 'string'){
             return res.status(400).send("name of course should be given in body");
-        }else if (req.body.code == null){
+        }else if (req.body.code == null && typeof(req.body.code) == 'string'){
             return res.status(400).send("course  code should be given in body");
-        }else if (req.body.numberOfSlotsNeeded == null){
+        }else if (req.body.numberOfSlotsNeeded == null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
             return res.status(400).send("name of head of department should be given in body");
-        }else if (req.body.creditHours == null){
+        }else if (req.body.creditHours == null && typeof(req.body.creditHours) == 'number'){
             return res.status(400).send("credit hours of course should be given in body");
-        }else if (req.body.department== null){
+        }else if (req.body.department== null && typeof(req.body.department) == 'string'){
             return res.status(400).send("name of department should be given in body");
         }else{
             //all data required are given
@@ -467,11 +527,15 @@ HrRouter.route('/addCourse')
                 }
             }
         }       
-    }    
+    } 
+}catch(err){
+    res.status(500).json({error:error.message})
+}    
 });
 
 HrRouter.route('/updateCourse/:name')
 .put(async (req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -488,12 +552,12 @@ HrRouter.route('/updateCourse/:name')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.creditHours != null){
+             if (req.body.creditHours != null && typeof(req.body.creditHours) == 'number'){
                     //update the existing course
                      await course.findOneAndUpdate({"name": req.params.name}, {"creditHours": req.body.creditHours});
                      //res.send("course credit hours is updated")
              }
-             if (req.body.numberOfSlotsNeeded != null){
+             if (req.body.numberOfSlotsNeeded != null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
                 //update the existing course
                  await course.findOneAndUpdate({"name": req.params.name}, {"numberOfSlotsNeeded": req.body.numberOfSlotsNeeded});
                  //res.send("course number of needed slots is updated")
@@ -501,10 +565,14 @@ HrRouter.route('/updateCourse/:name')
          res.send("course updated");
         }
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 HrRouter.route('/deleteCourse/:name')
 .delete(async(req,res,next) =>{
+    try{
      //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -520,7 +588,7 @@ HrRouter.route('/deleteCourse/:name')
         }
         else{
             //get the department from the body
-            if (req.body.department == null){
+            if (req.body.department == null && typeof(req.body.department) == 'string'){
                 return res.status(400).send("name of department should be given in the body");
             }else{
                 //check if there exists a department with this name
@@ -577,11 +645,15 @@ HrRouter.route('/deleteCourse/:name')
                 }
             }
         }  
-    }   
+    } 
+}catch(err){
+    res.status(500).json({error:error.message})
+}  
 });
 
 HrRouter.route('/addStaffMember')
 .post(async (req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -591,15 +663,15 @@ HrRouter.route('/addStaffMember')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null){
+        if (req.body.name == null && typeof(req.body.name) == 'string'){
             return res.status(400).send("name of member should be given in body");
-        }else if (req.body.type == null){
+        }else if (req.body.type == null && typeof(req.body.type) == 'string'){
             return res.status(400).send("type of member (whether academic or HR) should be given in body");
-        }else if (req.body.email== null){
+        }else if (req.body.email== null && validator.isEmail(req.body.email)){
             return res.status(400).send("email of member should be given in body");
-        }else if (req.body.salary == null){
+        }else if (req.body.salary == null && typeof(req.body.salary) == 'number'){
             return res.status(400).send("salary of member should be given in body");
-        }else if (req.body.officeLocation== null){
+        }else if (req.body.officeLocation== null && typeof(req.body.officeLocation) == 'string'){
             return res.status(400).send("office location should be given in body");
         }else{
             //check if the office is full
@@ -615,13 +687,13 @@ HrRouter.route('/addStaffMember')
                 let phoneNumber = "";
                 let SecondayMail = "";
                 let gender = "";
-                if (req.body.phoneNumber != null){
+                if (req.body.phoneNumber != null && typeof(req.body.phoneNumber) == 'string'){
                     phoneNumber = req.body.phoneNumber;
                 }
-                if (req.body.SecondayMail != null){
+                if (req.body.SecondayMail != null && typeof(req.body.SecondayMail) == 'string'){
                     SecondayMail = req.body.SecondayMail;
                 }
-                if (req.body.gender != null){
+                if (req.body.gender != null && typeof(req.body.gender) == 'string'){
                     gender = req.body.gender;
                 }
                 //check the type academic or HR
@@ -640,13 +712,13 @@ HrRouter.route('/addStaffMember')
                     dOff = "Saturday"
                 }else{
                     // this is an academic member
-                    if (req.body.faculty == null){
+                    if (req.body.faculty == null && typeof(req.body.faculty) == 'string'){
                         return res.status(400).send("faculty should be given in body");
-                    }else if(req.body.department == null){
+                    }else if(req.body.department == null && typeof(req.body.department) == 'string'){
                         return res.status(400).send("department should be given in body");
-                    }else if (req.body.dayOff == null){
+                    }else if (req.body.dayOff == null && typeof(req.body.dayOff) == 'string'){
                         return res.status(400).send("dayOff of academic member should be given in body");
-                    } else if (req.body.academicType== null){
+                    } else if (req.body.academicType== null && typeof(req.body.academicType) == 'string'){
                         return res.status(400).send("type of academic member should be given in body");
                     }else{
                         const fac = await faculty.find({"name": req.body.faculty});
@@ -733,11 +805,15 @@ HrRouter.route('/addStaffMember')
             }
             res.send("member added");
         }       
-    }    
+    } 
+}catch(err){
+    res.status(500).json({error:error.message})
+}    
 });
 
 HrRouter.route('/updateStaffMember/:id')
 .put(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -753,7 +829,7 @@ HrRouter.route('/updateStaffMember/:id')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.officeLocation != null){
+             if (req.body.officeLocation != null && typeof(req.body.officeLocation) == 'string'){
                     //update the existing office location for the member
                     //decrement the previous location capacity so far
                     //increment the new location capacity so far
@@ -774,14 +850,20 @@ HrRouter.route('/updateStaffMember/:id')
                     await members.findOneAndUpdate({"id": req.params.id}, {"officeLocation": nextO[0]._id});
                     console.log("member office updated");
                     }
+             }else{
+                return res.status(400).send("wrong data type");
              }
              res.send("staff member updated");
         }  
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 HrRouter.route('/deleteStaffMember/:id')
 .delete(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -912,11 +994,15 @@ HrRouter.route('/deleteStaffMember/:id')
             }
             res.send("member deleted");
         }
-    }   
+    } 
+}catch(err){
+    res.status(500).json({error:error.message})
+}   
 });
 
 HrRouter.route('/addSignIn/:id')
 .put(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     let payload = jwt.verify(req.header('auth-token'),key);
@@ -935,38 +1021,38 @@ HrRouter.route('/addSignIn/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.params.year == null){
+        else if (req.body.year == null && typeof(req.body.year) == 'number'){
             return res.status(400).send("year should be given in body");
-        }else if (req.params.month == null){
+        }else if (req.body.month == null && typeof(req.body.month) == 'number'){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.params.day == null){
+        else if (req.body.day == null && typeof(req.body.day) == 'number'){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.params.hour == null){
+        else if (req.body.hour == null && typeof(req.body.hour) == 'number'){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.params.minute == null){
+        else if (req.body.minute == null && typeof(req.body.minute) == 'number'){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
             var SpentMin ;
             var finalDuration;
-            const d = new Date(req.params.year, req.params.month, req.params.day, req.params.hour, req.params.minute);
+            const d = new Date(req.body.year, req.body.month, req.body.day, req.body.hour, req.body.minute);
             var rec = find({ $and: [{ "Memberid": mem[0]._id }, { "signIn": null}]});
             if (rec.length != 0){
                 //check that the record is the same date as the body
-                const givenYear = req.params.year;
-                const givenMonth = req.params.month;
-                const givenDay = req.params.day;
+                const givenYear = req.body.year;
+                const givenMonth = req.body.month;
+                const givenDay = req.body.day;
                 const recYear = rec[0].signOut.getFullYear();
                 const recMonth = rec[0].signOut.getMonth(); + 1; //because index in month starts by 0
                 const recDay = rec[0].signOut.getDate();
                 if (givenYear == recYear && givenMonth == recMonth && givenDay == recDay){
                     await attendance.findByIdAndUpdate(rec[0]._id, {"signIn": d});
                     console.log("sign in added");
-                    var correspondingSignInHours= req.params.hour;
-                    var correspondingSignInMinutes=req.params.minute;
+                    var correspondingSignInHours= req.body.hour;
+                    var correspondingSignInMinutes=req.body.minute;
                     var signOut = rec[0].signOut;
                     var correspondingSignOutHour=signOut.getHours();
                     var correspondingSignOutMin=signOut.getMinutes();
@@ -1013,10 +1099,14 @@ HrRouter.route('/addSignIn/:id')
             }  
         }
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 HrRouter.route('/addSignOut/:id')
 .put(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     let payload = jwt.verify(req.header('auth-token'),key);
@@ -1035,38 +1125,38 @@ HrRouter.route('/addSignOut/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.params.year == null){
+        else if (req.body.year == null && typeof(req.body.year) == 'number'){
             return res.status(400).send("year should be given in body");
-        }else if (req.params.month == null){
+        }else if (req.body.month == null && typeof(req.body.month) == 'number'){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.params.day == null){
+        else if (req.body.day == null && typeof(req.body.day) == 'number'){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.params.hour == null){
+        else if (req.body.hour == null && typeof(req.body.hour) == 'number'){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.params.minute == null){
+        else if (req.body.minute == null && typeof(req.body.minute) == 'number'){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
             var SpentMin ;
             var finalDuration;
-            const d = new Date(req.params.year, req.params.month, req.params.day, req.params.hour, req.params.minute);
+            const d = new Date(req.body.year, req.body.month, req.body.day, req.body.hour, req.body.minute);
             var rec = find({ $and: [{ "Memberid": mem[0]._id }, { "signOut": null}]});
             if (rec.length != 0){
                 //check that the record is the same date as the body
-                const givenYear = req.params.year;
-                const givenMonth = req.params.month;
-                const givenDay = req.params.day;
+                const givenYear = req.body.year;
+                const givenMonth = req.body.month;
+                const givenDay = req.body.day;
                 const recYear = rec[0].signIn.getFullYear();
                 const recMonth = rec[0].signIn.getMonth(); + 1; //because index in month starts by 0
                 const recDay = rec[0].signIn.getDate();
                 if (givenYear == recYear && givenMonth == recMonth && givenDay == recDay){
                     await attendance.findByIdAndUpdate(rec[0]._id, {"signOut": d});
                     console.log("sign out added");
-                    var correspondingSignOutHours= req.params.hour;
-                    var correspondingSignOutMinutes=req.params.minute;
+                    var correspondingSignOutHours= req.body.hour;
+                    var correspondingSignOutMinutes=req.body.minute;
                     var signIn = rec[0].signIn;
                     var correspondingSignInHour=signIn.getHours();
                     var correspondingSignInMin=signIn.getMinutes();
@@ -1112,10 +1202,14 @@ HrRouter.route('/addSignOut/:id')
             }  
         }
     }
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 HrRouter.route('/viewAttendance/:id')
 .get(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -1134,11 +1228,15 @@ HrRouter.route('/viewAttendance/:id')
         res.send(a);
         console.log("attendace shown");
       }
-    }          
+    }  
+}catch(err){
+    res.status(500).json({error:error.message})
+}         
 });
 
 HrRouter.route('/viewMissing')
 .get(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -1152,10 +1250,14 @@ HrRouter.route('/viewMissing')
         res.send(miss);
         console.log("missing shown");
     } 
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 HrRouter.route('/updateSalary/:id')
 .put(async(req,res,next) =>{
+    try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
     const payload = jwt.verify(req.header('auth-token'),key);
@@ -1170,7 +1272,7 @@ HrRouter.route('/updateSalary/:id')
             return res.status(400).send("there is no member with this id");
         }else{
             //check if there is a promotion
-            if (req.body.newSalary != null){
+            if (req.body.newSalary != null && typeof(req.body.newSalary) == 'number'){
                 //update the salary
                 //validate that it is a number
                 await members.findByIdAndUpdate(m[0]._id, {"salary": newSalary});
@@ -1195,6 +1297,9 @@ HrRouter.route('/updateSalary/:id')
             res.send("Salary updated");
         }
     } 
+}catch(err){
+    res.status(500).json({error:error.message})
+} 
 });
 
 module.exports = HrRouter;

@@ -9,7 +9,8 @@
     "jwt-decode": "^3.1.2",
     "mongodb": "^3.6.3",
     "mongoose": "^5.10.15",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "validator": "^13.5.2"
   },
   "name": "advanced-lab-project",
   "description": "Advanced-Lab-Project",

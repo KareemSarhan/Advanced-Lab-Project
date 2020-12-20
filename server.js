@@ -165,7 +165,6 @@ async function da5lData() {
     //  if ({ s: { $in: a}}){
     //     console.log("ddddddddddd")
     //  }
-
-
-
+    //console.log(typeof(123) == 'string');
+    console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
 module.exports = app
