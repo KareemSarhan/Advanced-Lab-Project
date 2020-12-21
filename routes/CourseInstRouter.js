@@ -132,11 +132,6 @@ CourseInstRouter.route('/viewSlotAssignment')
                         location: 1,
 
                     }
-                    const locationoptions = {
-                        _id: 0,
-                        type: 1,
-                        name: 1
-                    }
                     var Slots = await slots.find(slotsquery, slotsoptions).populate(
                     {
                         path: 'location',
@@ -410,6 +405,7 @@ CourseInstRouter.route('/viewCourseStaff')
 //get the course in this dep from params
 //get all unassigned slots for the course given in the body
 //assign the given member in the body to this slot
+///  assig el member to course
 CourseInstRouter.route('/assignMemToSlot')
     .put(async(req, res, next) =>
     {
@@ -429,6 +425,7 @@ CourseInstRouter.route('/assignMemToSlot')
             }
             if (id.includes('ac'))
             {
+                //shofo course inst wla la2a
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
                 SlotID = req.body.SlotID;
@@ -514,7 +511,6 @@ CourseInstRouter.route('/assignMemToSlot')
 //get the department of this member
 //get the course in this dep from params
 //get the slot assigned
-//make the academic member null
 CourseInstRouter.route('/unassignMemFromSlot')
     .put(async(req, res, next) =>
     {
@@ -614,6 +610,7 @@ CourseInstRouter.route('/unassignMemFromSlot')
 //remove this member from the course teachers
 //remove his name from course slots
 //remove this course from the member's courses
+//make the academic member null
 CourseInstRouter.route('/removeMember')
     .delete(async(req, res, next) =>
     {
@@ -690,6 +687,7 @@ CourseInstRouter.route('/removeMember')
                     //course
                     console.log("ablllllll courssesss  " + accourse);
                     accourse.courseCoordinator = accourse.courseCoordinator == AcID ? null : accourse.courseCoordinator;
+                    //
                     accourse.instructors = accourse.instructors.filter(function(ele)
                     {
                         return ele != AcID;
@@ -757,6 +755,7 @@ CourseInstRouter.route('/assignCoordinator')
                 const ac = await academicMember.findOne(
                 {
                     _id: AcID,
+                    //sheel de low sa7
                     courses: CourseID
                 })
                 if (!ac)

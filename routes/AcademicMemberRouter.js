@@ -18,6 +18,10 @@ const slot = require('../models/slot');
 const Linkreq = require('../models/slotLinkReq');
 const LEAVES = require('../models/Leaves');
 const AccidentalLeaves = require('../models/AccidentalLeaves');
+const
+{
+    query
+} = require('express');
 
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());

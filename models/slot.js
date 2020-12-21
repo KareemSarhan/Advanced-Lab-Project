@@ -30,7 +30,7 @@ const slotSchema = new mongoose.Schema(
     memberID:
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMember'
+        ref: 'AcademicMember'
     }
 });
 
