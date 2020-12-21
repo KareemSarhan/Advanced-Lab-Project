@@ -4,9 +4,18 @@ const Schema = mongoose.Schema;
 
 
 const SickLeavesSchema  = new mongoose.Schema({
-
+    StaffID : {
+        type: mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref: 'memberSchema'
+     },
+     requestID:{
+      type: String,
+      required: true,
+      unique: true
+     },
     document : {
-     type : text,
+     type : String,
      required : true
     },
     dateOfLeave :{
@@ -21,9 +30,7 @@ const SickLeavesSchema  = new mongoose.Schema({
     Status:{
         type: String,
         default:"pending"
-    }
-    
-    
+    }  
 });
 
 module.exports = mongoose.model('SickLeavesSchema', SickLeavesSchema);

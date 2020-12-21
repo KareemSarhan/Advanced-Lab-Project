@@ -6,7 +6,7 @@ const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 const dayOffReqSchema = new mongoose.Schema({
 
     requestID:{
-        type: Number
+        type: String
     },
     memberID:{ 
         type: mongoose.Schema.Types.ObjectId,

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const slotLinkReqSchema = new mongoose.Schema({
 
     requestID:{
-        type: Number
+        type: String
     },
     memberID:{ 
         type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +17,8 @@ const slotLinkReqSchema = new mongoose.Schema({
         required: true
     },
     requestedSlot: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'slotSchema',
         required: true},
 
     status:{

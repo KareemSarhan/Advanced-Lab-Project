@@ -5,8 +5,18 @@ const Schema = mongoose.Schema;
 
 const MaternityLeavesSchema  = new mongoose.Schema({
 
+StaffID : {
+        type: mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref: 'memberSchema'
+     },
+     requestID:{
+      type: String,
+      required: true,
+      unique: true
+     },
     document : {
-     type : text,
+     type : String,
      required:true
     },
     Status:{
@@ -14,7 +24,7 @@ const MaternityLeavesSchema  = new mongoose.Schema({
         default:"Accepted"
     },
     dateOfLeave : {
-        type:date,
+        type:Date,
         required:true 
     }
     
