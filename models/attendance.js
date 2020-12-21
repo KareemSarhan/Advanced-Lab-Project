@@ -20,5 +20,6 @@ const attendanceLogSchema = new mongoose.Schema(
         //this can be calculated from signin and signout
 });
 
+
 module.exports = mongoose.model('Attendance', attendanceLogSchema);
 module.exports.attendanceLogSchema = attendanceLogSchema;

@@ -1039,7 +1039,7 @@ HrRouter.route('/addSignIn/:id')
             var SpentMin ;
             var finalDuration;
             const d = new Date(req.body.year, req.body.month, req.body.day, req.body.hour, req.body.minute);
-            var rec = find({ $and: [{ "Memberid": mem[0]._id }, { "signIn": null}]});
+            var rec = attendance.find({ $and: [{ "Memberid": mem[0]._id }, { "signIn": null}]});
             if (rec.length != 0){
                 //check that the record is the same date as the body
                 const givenYear = req.body.year;

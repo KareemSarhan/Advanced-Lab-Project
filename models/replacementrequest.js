@@ -4,9 +4,8 @@ const Schema = mongoose.Schema;
 const ReplacementRequestSchema = new mongoose.Schema(
 {
 
-    requestID:
-    {
-        type: Number
+    requestID: {
+        type: String
     },
     memberID:
     { //asking for the request
@@ -15,9 +14,9 @@ const ReplacementRequestSchema = new mongoose.Schema(
         required: true
     },
 
-    requestedID:
-    { //member to send the request to
-        type: String,
+    requestedID: { //member to send the request to
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'academicMemberSchema',
         required: true
     },
     requestedDay:

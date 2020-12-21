@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const courseSchemaModel = require('./course');
 const courseSchema = courseSchemaModel.courseSchema;
-const slotLinkReqSchema = new mongoose.Schema(
-{
 
-    requestID:
-    {
-        type: Number
+
+const slotLinkReqSchema = new mongoose.Schema({
+
+    requestID:{
+        type: String
     },
     memberID:
     {
@@ -28,6 +28,10 @@ const slotLinkReqSchema = new mongoose.Schema(
         ref: 'Slot',
         required: true
     },
+    requestedSlot: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'slotSchema',
+        required: true},
 
     status:
     {
