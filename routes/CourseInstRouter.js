@@ -13,10 +13,14 @@ const slots = require('../models/slot')
 const locations = require('../models/location')
 const AM = require('../models/academicMember');
 var validator = require('validator');
+const
+{
+    count
+} = require('../models/members');
 
 
 const CourseInstRouter = express.Router();
-
+CourseInstRouter.use(authenticate);
 CourseInstRouter.use(bodyParser.json());
 
 
@@ -28,21 +32,18 @@ CourseInstRouter.route('/viewCoverage')
     {
         try
         {
-
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated")
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 const ac = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id
@@ -67,11 +68,6 @@ CourseInstRouter.route('/viewCoverage')
                 return;
 
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
         }
         catch (error)
         {
@@ -90,23 +86,18 @@ CourseInstRouter.route('/viewSlotAssignment')
     {
         try
         {
-            //ToDo : remake it using slots table only we populate bdl el 2rf da.
-
-
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated")
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 const ac = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id
@@ -152,11 +143,7 @@ CourseInstRouter.route('/viewSlotAssignment')
 
 
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
@@ -175,22 +162,21 @@ CourseInstRouter.route('/viewSlotAssignment')
 CourseInstRouter.route('/viewStaff')
     .get(async(req, res, next) =>
     {
+
         try
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 const ac = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id
@@ -261,11 +247,7 @@ CourseInstRouter.route('/viewStaff')
                 })
                 return;
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
@@ -286,20 +268,18 @@ CourseInstRouter.route('/viewCourseStaff')
     {
         try
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 const CourseID = req.body.CourseID + "";
                 console.log(CourseID)
                 if (CourseID == null)
@@ -383,11 +363,7 @@ CourseInstRouter.route('/viewCourseStaff')
                 })
                 return;
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
@@ -411,21 +387,19 @@ CourseInstRouter.route('/assignMemToSlot')
     {
         try
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
-                //shofo course inst wla la2a
+                const loggedMember = await members.findOne(
+                    {
+                        id: id
+                    })
+                    //shofo course inst wla la2a
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
                 SlotID = req.body.SlotID;
@@ -491,11 +465,7 @@ CourseInstRouter.route('/assignMemToSlot')
                 }
 
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
@@ -511,20 +481,18 @@ CourseInstRouter.route('/AssignMemberToCourse')
     {
         try
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
                 //check if el wad da bydy el course da
@@ -585,11 +553,7 @@ CourseInstRouter.route('/AssignMemberToCourse')
                 res.send("TA is now assigned . Course , Academic Member  tables UPDATED.");
                 return;
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
@@ -609,20 +573,18 @@ CourseInstRouter.route('/unassignMemFromSlot')
     {
         try
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
                 SlotID = req.body.SlotID;
@@ -681,11 +643,7 @@ CourseInstRouter.route('/unassignMemFromSlot')
                 }
 
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
@@ -855,20 +813,18 @@ CourseInstRouter.route('/assignCoordinator')
     {
         try
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
             {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
+                //console.log(payload.id);
+                return res.status(401).send("not authorized");
             }
-            if (id.includes('ac'))
+            else
             {
+                const loggedMember = await members.findOne(
+                {
+                    id: id
+                })
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
                 //check if el wad da bydy el course da
@@ -909,11 +865,7 @@ CourseInstRouter.route('/assignCoordinator')
                 }
 
             }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
         catch (error)
         {
