@@ -8,10 +8,11 @@ const missingSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required:true,
         ref: 'memberSchema'},
-    missingHours: Number,
-    remainingHours: Number,
-    missingHours: Number,
-    remainingHours: Number
+    SpentHours: Number,
+    MissingHours: Number,
+    ExtraHour: Number,
+    missingDays: Number,
+    remainingDays: Number
 });
 
 module.exports = mongoose.model('missing', missingSchema);

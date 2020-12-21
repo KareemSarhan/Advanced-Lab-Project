@@ -173,27 +173,114 @@ HrRouter.route('/addCourse')
     //add a new course to this department
 });
 
-HrRouter.route('/updateCourse/:id')
-.put((req,res,next) =>{
+HrRouter.route('/updateCourse/:name')
+.put(async (req,res,next) =>{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //get the department from the body
-    //verify that there exists a faculty and department and course
-    //update the course with code = id
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //console.log(req.params.name);
+        //verify that there is a course with the name = :name
+        const cour = await course.find({"name": req.params.name});
+        if(cour.length == 0){
+            return res.status(400).send("name of course is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.creditHours != null){
+                    //update the existing course
+                     await course.findOneAndUpdate({"name": req.params.name}, {"creditHours": req.body.creditHours});
+                     //res.send("course credit hours is updated")
+             }
+             if (req.body.numberOfSlotsNeeded != null){
+                //update the existing course
+                 await course.findOneAndUpdate({"name": req.params.name}, {"numberOfSlotsNeeded": req.body.numberOfSlotsNeeded});
+                 //res.send("course number of needed slots is updated")
+         }
+         res.send("course updated");
+        }
+    }
 });
 
-HrRouter.route('/deleteCourse/:id')
-.delete((req,res,next) =>{
-    //authenticate that this is a valid member
+HrRouter.route('/deleteCourse/:name')
+.delete(async(req,res,next) =>{
+     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    //verify that the needed credentials are given
-    //get the faculty from the body
-    //get the department from the body
-    //verify that there exists a faculty and department and course
-    //delete the course with code = id
-    //delete the slots with this course
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a department with the name = :name
+        const cour = await course.find({"name": req.params.name});
+        if(cour.length == 0){
+            return res.status(400).send("name of course is not found");
+        }
+        else{
+            //get the department from the body
+            if (req.body.department == null){
+                return res.status(400).send("name of department should be given in the body");
+            }else{
+                //check if there exists a department with this name
+                const dep = await department.find({"name": req.body.department});
+                if (dep.length == 0){
+                    return res.status(400).send("name of department is not found");
+                }else{
+                    //delete the slots with this course
+                    const s = await slot.find({});
+                    //console.log(s);
+                    for (let i = 0 ; i < s.length ; i++){
+                        if (s[i].course == cour._id + ""){
+                            //console.log(s[i]);
+                            const teacher = s[i].memberid;
+                            const corTeacher = await academicMember.findById(teacher);
+                            const sched = corTeacher.schedule;
+                            for (let q = 0 ; q < sched.length; q++){
+                                if (sched[q]._id == s[i]._id + ""){
+                                    sched.splice(q,1);
+                                }
+                            }
+                            await academicMember.findByIdAndUpdate(teacher, {"schedule": sched});
+                            console.log("slot deleted from member schedule");
+                            await slot.findByIdAndDelete(s[i]._id);
+                            console.log("slot deleted");
+                        }  
+                    }
+                    //delete the course from academic members and make the coordinator back to academic member
+                    const coordinator = cour.courseCoordinator;
+                    const m = await academicMember.find({});
+                    for (let j = 0 ; j < m.length ; j++){
+                        const mC = m[j].courses;
+                        for (let z = 0 ; z < mC.length; z++){
+                            if (mC._id == cour._id + ""){
+                                mC.splice(z,1);
+                            }
+                        }
+                        await academicMember.findByIdAndUpdate(m[j]._id, {"courses": mC});
+                        console.log("course removed from academic member");
+                    }
+                    await academicMember.findByIdAndUpdate(coordinator, {"type": "academic member"});
+                    console.log("course coordinator back to academic member");
+                    //delete the course from department
+                    const dC = dep[0].courses;
+                    for (let w = 0 ; w < dC.length ; w++){
+                        if (dC._id == cour._id + ""){
+                            dC.splice(w,1);
+                        }
+                    }
+                    await department.findByIdAndUpdate(dep._id, {"courses": dC});
+                    console.log("course removed from department");
+                    await course.findByIdAndDelete(cour[0]._id);
+                    res.send("course deleted");
+                }
+            }
+        }  
+    }   
 });
 
 HrRouter.route('/addStaffMember')

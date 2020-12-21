@@ -7,9 +7,11 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.10.15",
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "validator": "^13.5.2"
   },
   "name": "advanced-lab-project",
   "description": "Advanced-Lab-Project",

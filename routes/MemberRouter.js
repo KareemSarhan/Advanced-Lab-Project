@@ -1,5 +1,6 @@
 const express = require('express');
 const { timeStamp } = require('console');
+const validator = require('validator');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var authenticate = require('../authenticate');
@@ -12,6 +13,9 @@ const location = require('../models/location')
 const AM = require('../models/academicMember')
 const DeletedToken = require("../models/DeletedTokens")
 const attendance = require("../models/attendance");
+const Missings = require("../models/missing");
+const Leaves = require('../models/Leaves');
+
 
 
 const MemberRouter = express.Router();
@@ -25,12 +29,17 @@ MemberRouter.route('/login')
             return res.status(400).json({msg:"please enter email or password"})
         }
         const existingUser = await members.findOne({email:email});
+        if(!(validator.isEmail(email))){
+            res.send("this is not an email formate , please try again")
+            return;
+        }
         if(!existingUser)
         {
             return res.status(400).json({msg:"Not found Member."})
         }
+        
         const isMatched = await bcrypt.compare(password,existingUser.password);
-        if(!isMatched){
+        if(!(isMatched)){
             return res.status(400).json({msg:"inavalid password"})
         }
         const token = jwt.sign({id:existingUser.id},key);
@@ -117,7 +126,10 @@ res.json({
 MemberRouter.route('/updateProfile')
 .post(async(req,res,next) =>{
     try{
-    const {NewSecondaryEmail,NewPhonenumber, NewOfficehours} = req.body;
+    const NewSecondaryEmail = req.body.NewSecondaryEmail;
+    const NewPhonenumber = req.body.NewPhonenumber;
+    const NewOfficehours = req.body.NewOfficehours;
+
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
@@ -126,22 +138,32 @@ MemberRouter.route('/updateProfile')
 if(deletedtoken){
     res.send("Sorry you are logged out .")
 }
+
 else{
     if(!existingUser){
         res.send("Not authenticated");
     }
     if(NewSecondaryEmail){
+        if(!(validator.isEmail(NewSecondaryEmail))){
+            res.send("that not a correct email.")
+        }
+        else{
     members.updateOne({id:id},{SecondayMail:NewSecondaryEmail} , function(err, res) {
         if (err) throw err;
         console.log("document updated 1");
       });
     }
+    }
       if(NewPhonenumber){
+        if(!(validator.isMobilePhone(NewPhonenumber))){
+            res.send("that is not a mobile number")
+        } else {
       members.updateOne({id:id},{phoneNumber:NewPhonenumber} , function(err, res) {
         if (err) throw err;
         console.log("document updated 2");
       });
     }
+}
       if(id.includes('ac')){
           if(NewOfficehours){
             AM.updateOne({Memberid:existingUser._id},{officeHourse:NewOfficehours} , function(err, res) {
@@ -172,6 +194,10 @@ MemberRouter.route('/resetPassword')
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
     const deletedtoken = await DeletedToken.findOne({token:token});
+    if(!existingUser){
+        res.send("Not authenticated .")
+        return;
+    }
 if(deletedtoken){
     res.send("Sorry you are logged out .")
 }
@@ -212,14 +238,35 @@ MemberRouter.route('/signIn')
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
     const today = new Date()
-    const attended = new attendance({
+    const deletedtoken = await DeletedToken.findOne({token:token});
+    if(!existingUser){
+        res.send("Not authenticated .")
+        return;
+    }
+    if(deletedtoken){
+        res.send("Sorry you are logged out .")
+        return;
+    } 
+    
+     var signIns = await attendance.findOne({Memberid :existingUser ,signOut:undefined  })
+      if(signIns){
+        attendance.updateOne({_id:signIns._id},{signIns:today,signOut:undefined } , function(err, res) {
+            if (err) throw err;
+            //console.log("document updated");
+          });
+          res.send('You have signed in from moments ago .')
+          return
+      }
+      else {
+     const attended = new attendance({
         Memberid : existingUser._id ,
         signIn : today
     })
     await attended.save()
     res.send("Welcome to the guc.")
-  
-    }
+}
+    
+}
     catch(error){
         res.status(500).json({error:error.message})
     }
@@ -236,44 +283,85 @@ MemberRouter.route('/signOut')
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
     var existingID = await attendance.find({Memberid:existingUser._id});
-    console.log(existingID)
+    //console.log(existingID)
     const SignOutDate  = new Date();
-    let i = 0 ;
-    console.log(existingID.length)
+    const deletedtoken = await DeletedToken.findOne({token:token});
+    if(!existingUser){
+        res.send("Not authenticated .")
+        return;
+    }
+    if(deletedtoken){
+        res.send("Sorry you are logged out .")
+    }
+    else{
+    //console.log(existingID.length)
+
+var SpentHours;
+var SpentMin ;
+var finalDuration;
+   
     for(i=0 ; i < existingID.length;i++){
-      //  console.log("here")
     var correspondingSignIn=existingID[i].signIn
-   // console.log(correspondingSignIn);
-    var correspondingSignInDay=correspondingSignIn.getDay()
+    var correspondingSignInHours=correspondingSignIn.getHours();
+    var correspondingSignInMinutes=correspondingSignIn.getMinutes();
+
+
+    //var correspondingSignOut=existingID[i].signOut
+    // var correspondingSignOutHours=correspondingSignOut.getHours();
+    // var correspondingSignOutMinutes=correspondingSignOut.getMinutes();
+    var correspondingSignOutHour=SignOutDate.getHours()
+    var correspondingSignOutMin=SignOutDate.getMinutes()
+    if(correspondingSignOutHour>21){
+        var time = new Date('1995-12-17T21:00:00')
+        var timeHour = time.getHours();
+        finalDuration = (timeHour- correspondingSignInHours)
+       // console.log( correspondingSignInHours + "  d5l " + finalDuration + timeHour) ;
+
+    }
+    else{
+    SpentHours = (correspondingSignOutHour- correspondingSignInHours)
+    SpentMin = (correspondingSignOutMin- correspondingSignInMinutes)/60
+    if(SpentMin<0){
+        SpentMin=SpentMin/-1;
+       }
+       finalDuration = SpentMin + SpentHours;
+    }
+   
+   attendance.updateOne({_id:existingID[i]._id},{duration:finalDuration} , function(err, res) {
+    if (err) throw err;
+  });     
+
+    var correspondingSignInDay=correspondingSignIn.getDate();
     var correspondingSignInMonth=correspondingSignIn.getMonth()
-    var correspondingSignOutDay=SignOutDate.getDay()
+    var correspondingSignOutDay=SignOutDate.getDate()
     var correspondingSignOutMonth=SignOutDate.getMonth()
     var MemberID = existingID[i].Memberid;
-    //console.log(correspondingSignInDay,correspondingSignInMonth,correspondingSignOutDay,correspondingSignOutMonth,existingID[i].signOut,i)
 
-    if(correspondingSignInDay === correspondingSignOutDay && correspondingSignInMonth===correspondingSignOutMonth && (existingID[i].signOut===undefined)){
+     
+    
+    if(correspondingSignInDay === correspondingSignOutDay && correspondingSignInMonth===correspondingSignOutMonth && (existingID[i].signOut===undefined ||existingID[i].signOut===null )){
         var existingObjectID = await attendance.find({Memberid:existingUser._id ,signOut:undefined });
-
-       // console.log(correspondingSignInDay,correspondingSignInMonth,correspondingSignOutDay,correspondingSignOutMonth,existingID[i].signOut,i)
-
-        //console.log("d5lt " + i)
         attendance.updateOne({_id:existingObjectID},{signOut:SignOutDate} , function(err, res) {
             if (err) throw err;
            // console.log("document updated 2");
-          });
+          });   
     }
+    else{
+        const attended = new attendance({
+            Memberid : existingUser._id ,
+            signOut : SignOutDate
+        })
+        await attended.save()
+    }
+    
 }
-   res.send("Good Bye!")              
+   
+   res.send("Good Bye!") 
+}             
       }
       catch(error){
           res.status(500).json({error:error.message})
       }
-    //does he has to be logged in?
-    //authenticate
-    //update the last record in the attendace collection with the id from params with an empty signOut
-    // with a new date created once signed out
-    //update the hours remaining and missing in the log table
-    //update the remaining days if the number of hours spent satisfies the day
 });
 
 MemberRouter.route('/viewAllAttendance')
@@ -283,8 +371,13 @@ MemberRouter.route('/viewAllAttendance')
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});
+    if(!existingUser){
+        res.send("Not autheticated ")
+        return
+    }
 if(deletedtoken){
     res.send("Sorry you are logged out .")
+    return
 }
     else{
     const existingUser = await members.findOne({id:id});
@@ -292,20 +385,9 @@ if(deletedtoken){
     console.log(AttendanceRecord)
     res.json({
            
-        AttendanceRecord
-
-       
+        AttendanceRecord  
     })
     }
-
-        // const token  = req.header('auth-token');
-        // const DecodeToken = jwt_decode(token);
-        // const id = DecodeToken.id;
-        // const token  = req.header('auth-token');
-        // const existingUser = await members.findOne({id:id});
-        // const existingID = await attendance.findOne({_id:existingUser._id});
-
-
     }
     catch(error){
         res.status(500).json({error:error.message})
@@ -318,57 +400,108 @@ if(deletedtoken){
 MemberRouter.route('/viewAttendanceByMonth')
 .get(async(req,res,next) =>{
     try{
-        const Month = req.body;const token  = req.header('auth-token');
+        const Month = req.body.Month;
+       // console.log(Month)
+        const token  = req.header('auth-token');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});
         const deletedtoken = await DeletedToken.findOne({token:token});
         const allMonths =['January','February','March', 'April','May','June', 'July', 'August','September', 'October', 'November','December' ];
+        const allMonth =['january','february','march', 'april','may','june', 'july', 'august','september', 'october', 'november','december' ];
         const wantedIndex = allMonths.indexOf(Month);
+        const wantedIndex2 = allMonth.indexOf(Month);
+
         console.log(wantedIndex)
+        if(!existingUser){
+            res.send("Not authenticated ")
+            return
+        }
         if(deletedtoken){
             res.send("sorry you are logged out .")
+            return;
+        }
+        if(wantedIndex==-1 && wantedIndex2==-1){
+            res.send("Please enter a Month.")
         }
         else{
     const existingUser = await members.findOne({id:id});
     const AttendanceRecord = await attendance.find({Memberid:existingUser._id})
     var WantedRecords = new Array();
     for(i=0 ; i<AttendanceRecord.length;i++ ){
-      if(AttendanceRecord[i].signOut.getMonth()==wantedIndex)  {
-        AttendanceRecord.push(AttendanceRecord[i])
+      if(AttendanceRecord[i].signOut.getMonth()==wantedIndex || AttendanceRecord[i].signOut.getMonth()==wantedIndex2 )  {
+          //console.log("here")
+        WantedRecords.push(AttendanceRecord[i])
       }
         }
         res.json({
-           AttendanceRecord
+            WantedRecords
         })   
-     }
-        
+     }   
     }
     catch(error){
         res.status(500).json({error:error.message})
-
-
     }
-    //authenticate
-    //get all the records with the id from params and month is equal to mID
 });
 
-MemberRouter.route('/viewMissingDays')
-.get((req,res,next) =>{
-    //authenticate
-    //get all the records with the id from params
-    //compute the number of days attended
-    //subtract the number of days that should be attended by the number of actually attended
-    //remove days off and fridays
-    //if there is a remainder compare it with leaves table 
-    //the remainder is the missing days
-});
 
 MemberRouter.route('/viewHours')
-.get((req,res,next) =>{
-    //authenticate
-    //get all the records with the id from params
-    //compute the number of hours missing shown in negative /extra shown in positive
+.get(async(req,res,next) =>{
+    try{
+        const token  = req.header('auth-token');
+        const DecodeToken = jwt_decode(token);
+        const id = DecodeToken.id;
+        const existingUser = await members.findOne({id:id});
+        const deletedtoken = await DeletedToken.findOne({token:token});
+        const existingID =  await attendance.find({Memberid:existingUser._id});
+   
+        if(!existingUser){
+           res.send("Not authenticated ")
+           return
+       }
+       if(deletedtoken){
+           res.send('you are logged out.')
+           return;
+
+       }
+       else{
+           var SpentHour = 0 ;
+           var HoursMissing = 0 ;
+           var Extrahours = 0 ;
+           for(i = 0 ; i<existingID.length;i++ ){
+            SpentHour  = SpentHour+existingID[i].duration
+
+           }
+           HoursMissing=180-SpentHour;
+           if(HoursMissing<0){
+            HoursMissing=0;
+           }
+           if(SpentHour >180){
+            Extrahours = SpentHour-180
+           }
+           console.log(SpentHour)
+           console.log(HoursMissing)
+           console.log(Extrahours)
+           const Missing = new Missings({
+            Memberid : existingUser._id ,
+            SpentHours : SpentHour,
+            MissingHours:HoursMissing,
+            ExtraHour : Extrahours
+        })
+        await Missing.save()
+        res.json({
+            YourHours :{
+
+            SpentHours : SpentHour,
+            MissingHours:HoursMissing,
+            ExtraHour : Extrahours
+            }
+        });
+       }
+    }
+    catch(error){
+        res.status(500).json({error:error.message})
+    }
 });
 
 module.exports = MemberRouter;
