@@ -506,6 +506,99 @@ CourseInstRouter.route('/assignMemToSlot')
         }
     });
 
+CourseInstRouter.route('/AssignMemberToCourse')
+    .put(async(req, res, next) =>
+    {
+        try
+        {
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const loggedMember = await members.findOne(
+            {
+                id: id
+            });
+            if (!loggedMember)
+            {
+                res.send("not Authenticated");
+                return;
+            }
+            if (id.includes('ac'))
+            {
+                CourseID = req.body.CourseID;
+                AcID = req.body.AcID;
+                //check if el wad da bydy el course da
+                var Course = await course.findOne(
+                {
+                    _id: CourseID
+                });
+                if (!Course)
+                {
+                    res.send("CourseId doesnt belong to a course .")
+                    return
+                }
+                const Loggedinstructor = await academicMember.findOne(
+                {
+                    Memberid: loggedMember._id,
+                    courses: CourseID
+                })
+                if (!ac)
+                {
+                    res.send("This Academic Member is not a part of this course");
+                    return;
+                }
+                Course = await course.findOne(
+                {
+                    _id: CourseID,
+                    instructors: Loggedinstructor._id
+                });
+                if (!Course)
+                {
+                    res.send("This Academic Member is not a course intructor to this course");
+                    return;
+                }
+                var AssigedAcm = await academicMember.findOne(
+                {
+                    _id: AcID
+                })
+                if (!AssigedAcm)
+                {
+                    res.send("The TA that you want to assign doesnt exist");
+                    return;
+                }
+                AssigedAcm = await academicMember.findOne(
+                {
+                    _id: AcID,
+                    courses: CourseID
+                })
+                if (!AssigedAcm)
+                {
+                    res.send("The TA that you want to assign is already assigned to this course");
+                    return;
+                }
+                AssigedAcm.courses.push(Course._id);
+                AssigedAcm.save();
+
+                course.teachingAssistants.push(AssigedAcm._id)
+                course.save();
+
+                res.send("TA is now assigned . Course , Academic Member  tables UPDATED.");
+                return;
+            }
+            else
+            {
+                res.send("This User isnt an academic member.")
+                return;
+            }
+        }
+        catch (error)
+        {
+            res.status(500).json(
+            {
+                error: error
+            })
+        }
+    });
 //authenticate that this is a valid member
 //authorize that this is a CI member
 //get the department of this member
@@ -632,6 +725,36 @@ CourseInstRouter.route('/removeMember')
             {
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
+                const accourse = await course.findOne(
+                {
+                    _id: CourseID,
+                })
+                if (!accourse)
+                {
+                    res.send("Course doesnot exist.")
+                    return;
+                }
+                var Loggedinstructor = await academicMember.findOne(
+                {
+                    Memberid: loggedMember._id,
+                    type: "Course Instructor",
+                })
+                if (!Loggedinstructor)
+                {
+                    res.send("This academic Member is not a Course instructor");
+                    return;
+                }
+                Loggedinstructor = await academicMember.findOne(
+                {
+                    Memberid: loggedMember._id,
+                    type: "Course Instructor",
+                    courses: accourse._id
+                })
+                if (!Loggedinstructor)
+                {
+                    res.send("This Course instructor is not a part of this course");
+                    return;
+                }
                 //check if el wad da bydy el course da
                 const ac = await academicMember.findOne(
                 {
@@ -645,15 +768,6 @@ CourseInstRouter.route('/removeMember')
                 }
                 else
                 {
-                    const accourse = await course.findOne(
-                    {
-                        _id: CourseID,
-                    })
-                    if (!accourse)
-                    {
-                        res.send("Course doesnot exist.")
-                        return;
-                    }
 
 
                     // acadimic member
@@ -686,7 +800,12 @@ CourseInstRouter.route('/removeMember')
                     //sha8aaaaaaaaaaaaaaaaaal
                     //course
                     console.log("ablllllll courssesss  " + accourse);
-                    accourse.courseCoordinator = accourse.courseCoordinator == AcID ? null : accourse.courseCoordinator;
+                    if (accourse.courseCoordinator == AcID)
+                    {
+                        accourse.courseCoordinator = null
+                        ac.type = "Academic Member"
+                    }
+
                     //
                     accourse.instructors = accourse.instructors.filter(function(ele)
                     {
@@ -694,6 +813,7 @@ CourseInstRouter.route('/removeMember')
                     });
                     accourse.teachingAssistants = accourse.teachingAssistants.filter(function(ele)
                     {
+                        //low mesh equal true
                         return ele != AcID;
                     });
                     accourse.numberOfSlotsAssigned = accourse.numberOfSlotsAssigned - slotscount;
