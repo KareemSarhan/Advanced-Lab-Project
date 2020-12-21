@@ -1,18 +1,23 @@
-const { timeStamp } = require('console');
+const
+{
+    timeStamp
+} = require('console');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const missingSchema = new mongoose.Schema({
-    
-    Memberid: {
+const missingSchema = new mongoose.Schema(
+{
+
+    Memberid:
+    {
         type: mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref: 'memberSchema'},
-    SpentHours: Number,
-    MissingHours: Number,
-    ExtraHour: Number,
+        required: true,
+        ref: 'Member'
+    },
     missingDays: Number,
-    remainingDays: Number
+    remainingDays: Number,
+    missingHours: Number,
+    remainingHours: Number
 });
 
 module.exports = mongoose.model('missing', missingSchema);

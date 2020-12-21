@@ -5,32 +5,44 @@ const courseSchema = courseSchemaModel.courseSchema;
 const academicMemberSchemaModel = require('./academicMember');
 const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
 
-const departmentSchema = new mongoose.Schema({
+const departmentSchema = new mongoose.Schema(
+{
 
-    name: {
+    name:
+    {
         type: String,
-        required: true,
-        unique: true
+        required: true
+            //unique: true
     },
 
-    code:{
+    code:
+    {
         type: String,
-        unique: true
+        //unique: true
+    },
+    facultyName: String,
+
+    courses: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course'
+    }],
+    headOfDep:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AcademicMember'
     },
 
-   courses: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'courseSchema'}],
-   headOfDep: {
-       type: mongoose.Schema.Types.ObjectId,
-       ref: 'academicMemberSchema'},
-
-   teachingAssistants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'academicMemberSchema'}],
-   instructors: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'academicMemberSchema'}]
+    teachingAssistants: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AcademicMember'
+    }],
+    instructors: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AcademicMember'
+    }]
 });
 
 module.exports = mongoose.model('Department', departmentSchema);

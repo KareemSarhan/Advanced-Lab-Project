@@ -1,32 +1,39 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const courseSchemaModel = require('./course');
-const courseSchema = courseSchemaModel.courseSchema;
-const slotSchemaModel = require('./slot');
-const slotSchema = slotSchemaModel.slotSchema;
 
-const academicMemberSchema = new mongoose.Schema({
+const academicMemberSchema = new mongoose.Schema(
+{
 
-    Memberid: {
+    Memberid:
+    {
         type: mongoose.Schema.Types.ObjectId,
         unique: true,
-        ref: 'memberSchema'
+        ref: 'Member'
     },
-   schedule: [{
-       type: mongoose.Schema.Types.ObjectId,
-        ref: 'slotSchema'}],
-   type: {
-       type: String,
-        required: true},
-   courses: [{type: mongoose.Schema.Types.ObjectId,
-            ref: 'courseSchema'}],
-   faculty: {
-       type: String
-   },
-   department: {
-       type: String
-   },
-   officeHourse  :String
+    schedule: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Slot'
+    }],
+    type:
+    {
+        type: String,
+        required: true
+    },
+    courses: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'course'
+    }],
+    faculty:
+    {
+        type: String
+    },
+    department:
+    {
+        type: String
+    },
+    officeHourse: String
 });
 
 module.exports = mongoose.model('AcademicMember', academicMemberSchema);

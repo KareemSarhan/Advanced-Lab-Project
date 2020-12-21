@@ -1,21 +1,33 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const locationSchema = new mongoose.Schema({
+const locationSchema = new mongoose.Schema(
+{
 
-    name: {
+    name:
+    {
         type: String,
         required: true,
         unique: true
     },
 
-    capacity: {
+    capacity:
+    {
         type: Number,
-        required: true},
-    
-    type: {
+        required: true
+    },
+
+    capacitySoFar:
+    {
+        type: Number,
+        default: 0
+    },
+
+    type:
+    {
         type: String,
-        required: true}
+        required: true
+    }
     //whether it is and office, room, lab, or hall
 });
 
