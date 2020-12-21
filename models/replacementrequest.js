@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const ReplacementRequestSchema = new mongoose.Schema({
+const ReplacementRequestSchema = new mongoose.Schema(
+{
 
     requestID: {
         type: String
     },
-    memberID: { //asking for the request
+    memberID:
+    { //asking for the request
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'academicMemberSchema',
+        ref: 'AcademicMember',
         required: true
     },
 
@@ -17,21 +19,25 @@ const ReplacementRequestSchema = new mongoose.Schema({
         ref: 'academicMemberSchema',
         required: true
     },
-    requestedDay: {
+    requestedDay:
+    {
         type: Date,
         required: true
     },
 
-    requestedSlot: {
+    requestedSlot:
+    {
         type: String,
         required: true
     },
 
-    status: {
+    status:
+    {
         type: String,
         default: "Pending"
     },
-    comment: {
+    comment:
+    {
         type: String
     }
 

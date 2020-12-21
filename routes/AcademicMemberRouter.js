@@ -14,13 +14,10 @@ const slots = require('../models/slot');
 const Loc = require('../models/location');
 const course = require('../models/course');
 const Dayoffreq = require('../models/dayOffReq');
+const slot = require('../models/slot');
 const Linkreq = require('../models/slotLinkReq');
 const LEAVES = require('../models/Leaves');
-
-// const
-// {
-//     query
-// } = require('express');
+const AccidentalLeaves = require('../models/AccidentalLeaves');
 
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
@@ -31,7 +28,8 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
             //authenticate that this is a valid member
             //authorize that this is a AM member
             const payload = jwt.verify(req.header('auth-token'), key);
-            if (!((payload.id).includes("ac"))) {
+            if (!((payload.id).includes("ac")))
+            {
                 return res.status(401).send("not authorized");
             }
             else {
@@ -94,7 +92,8 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
                 // })
                 // slot in the schedule   
                 var scheduleslots = [];
-                for (i = 0; i < acfound.schedule.length; i++) {
+                for (i = 0; i < acfound.schedule.length; i++)
+                {
                     scheduleslots.push(acfound.schedule[i]);
                     const SlotID = scheduleslots[i];
 
@@ -134,8 +133,13 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
                 }
                 res.send(actualSchedule);
             }
-        } catch (error) {
-            res.status(500).json({ error: error.message })
+        }
+        catch (error)
+        {
+            res.status(500).json(
+            {
+                error: error.message
+            })
         }
     });
 
@@ -143,7 +147,8 @@ AcademicMemberRouter.route('/viewReplacementReq') //done written
     .get(async (req, res, next) => {
         try {
             const payload = jwt.verify(req.header('auth-token'), key);
-            if (!((payload.id).includes("ac"))) {
+            if (!((payload.id).includes("ac")))
+            {
                 return res.status(401).send("not authorized");
             }
             else {
