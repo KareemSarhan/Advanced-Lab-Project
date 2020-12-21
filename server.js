@@ -185,7 +185,6 @@ async function da5lData2()
 // const day = d.getDay();
 // console.log(day);
 
-<<<<<<< HEAD
     //  const s = "safa";
     //  const a = "fa"
     //  if ({ s: { $in: a}}){
@@ -193,14 +192,4 @@ async function da5lData2()
     //  }
     //console.log(typeof(123) == 'string');
     console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
-=======
-//  const s = "safa";
-//  const a = "fa"
-//  if ({ s: { $in: a}}){
-//     console.log("ddddddddddd")
-//  }
-
-
-
->>>>>>> 90bb8cc8408d72ab73bcb0ca55995b81aeda35a5
 module.exports = app
