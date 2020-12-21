@@ -1300,7 +1300,56 @@ AcademicMemberRouter.route('/cancelReq') //~~
     });
 
 
+AcademicMemberRouter.route('/AcceptReq')
+    .post(async(req, res, next) =>
+    {
+        try
+        {
+            const payload = jwt.verify(req.header('auth-token'), key);
+            if (!((payload.id).includes("ac")))
+            {
+                return res.status(401).send("not authorized");
+            }
+            else
+            {
+                //get the memberID from the token
+                const token = req.header('auth-token');
+                const DecodeToken = jwt_decode(token);
+                const CurrentID = DecodeToken.id;
+                const found = await member.findOne(
+                {
+                    id: CurrentID
+                });
+                const FoundID = found._id;
+                const acfound = await academicMember.findOne(
+                {
+                    Memberid: FoundID
+                });
+                var request = await ReplacementRequest.findOne(
+                {
+                    requestID: req.body.requestID
+                })
+                if (!request)
+                {
+                    return res.send("Request Doesnt Exist");
+                }
+                if (!request.requestedID.equals(acfound._id))
+                {
+                    return res.send("You are not the academic person requested.")
+                }
+                if (request.status != "Pending")
+                {
+                    return res.send("Request not in Pending state.")
+                }
+                request.status = "Accepted"
+                request.save();
+            }
+        }
+        catch
+        {
 
+        }
+    });
 
 
 
