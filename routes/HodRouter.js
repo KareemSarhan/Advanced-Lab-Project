@@ -18,7 +18,9 @@ const location = require('../models/location');
 const course = require('../models/course');
 const Leaves = require('../models/Leaves');
 const missing = require('../models/missing');
-const DeletedToken = require("../models/DeletedTokens")
+const DeletedToken = require("../models/DeletedTokens");
+const replacementrequest = require('../models/replacementrequest');
+const compensationslot = require('../models/CompensationSlot');
 
 const HodRouter = express.Router();
 
@@ -783,9 +785,28 @@ HodRouter.route('/acceptLeaveReq/:reqID')
                 miss.missingDays = miss.missingDays - l1.numberOfdays;
                 miss.remainingDays = miss.remainingDays - l1.numberOfdays;
                 await miss.save();
-                if(l1.type == "Annual"|| l1.type == "Accidental"){
+                if(l1.Leavetype == "Annual"|| l1.Leavetype == "Accidental"){
                     l1.AnnualBalance-=l1.numberOfdays;
                     await l1.save();
+                }
+                if (l1.Leavetype == "Annual"){
+                    if (l1.replacementID != null){
+                        //get the replacement request
+                        const rep = (await replacementrequest.find({$and:[{"memberID": ufound._id}, {"requestedID": replacementID}]}))[0];
+                        const repSlot = rep.requestedSlot;
+                        const repDate = rep.requestedDay;
+                        const nComp = new compensationslot({
+                            slot: repSlot,
+                            Date: repDate
+                        });
+                        await nComp.save();
+                        console.log("compensation added");
+                        const comp = await compensationslot.findOne({$and:[{"slot": repSlot}, {"Date": repDate}]});
+                        const exSlot = (await academicMember.findById(replacementID)).CompensationSlots;
+                        exSlot.push(comp._id);
+                        await academicMember.findByIdAndUpdate(replacementID, {"CompensationSlots": exSlot});
+                        console.log("compensation added to requested member");
+                    }
                 }
             }
             res.json("Request updated successfully");

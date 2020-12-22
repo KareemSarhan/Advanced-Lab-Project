@@ -18,6 +18,7 @@ const CompensationSlots = require('../models/CompensationSlot');
 const Linkreq = require('../models/slotLinkReq');
 const LEAVES = require('../models/Leaves');
 const DeletedToken = require("../models/DeletedTokens");
+const { findOne } = require('../models/DeletedTokens');
 
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
@@ -1079,7 +1080,7 @@ AcademicMemberRouter.route('/cancelReq') //~~
                         //if the request is still pending just delete the record   
                         //if the request got accepted but its day did not come reverse any taken action  
 
-                        if (slotrequest.status == "Pending" || (slotrequest.status == "Accepted"))
+                        if (slotrequest.status == "Pending")
                         {
                             await Linkreq.findOneAndDelete(
                             {
@@ -1095,33 +1096,57 @@ AcademicMemberRouter.route('/cancelReq') //~~
                     {
                         requestID: req.body.requestID
                     });
-
-                    // console.log(slotrequest.memberID)
-                    //          if(acID!=Reprequest.memberID){
-                    //              console.log(acID!=Reprequest.memberID)
-                    //             return res.status(400).send("you don't have a request of this ID");
-                    // } else
-                    if (Reprequest == null)
+                     console.log(slotrequest.memberID)
+                     if (Reprequest == null)
                     {
                         return res.status(400).send("ID of the request is not found");
                     }
+                    if(acID!=Reprequest.memberID){
+                        console.log(acID!=Reprequest.memberID)
+                        return res.status(400).send("you don't have a request of this ID");
+                    } 
                     else
                     {
                         //if the request is still pending just delete the record   
                         //if the request got accepted but its day did not come reverse any taken action   
                         const today = new Date();
                         //var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        const requestDay = Reprequest.requestedDay.getDate();
-                        const requestMonth = Reprequest.requestedDay.getMonth();
-                        const requestYear = Reprequest.requestedDay.getFullYear();
+                        //const requestDay = Reprequest.requestedDay.getDate();
+                        //const requestMonth = Reprequest.requestedDay.getMonth();
+                        //const requestYear = Reprequest.requestedDay.getFullYear();
+                        const requestDay = Reprequest.requestedDay.getTime();
                         console.log(today.getDate())
-                        if (Reprequest.status == "Pending" || (Reprequest.status == "Accepted" && (requestDay > today.getDate() && requestMonth >= today.getMonth() && requestYear >= today.getFullYear())))
+                        if (Reprequest.status == "Pending" || (Reprequest.status == "Accepted" && (requestDay > today.getTime())))
                         {
                             await ReplacementRequest.findOneAndDelete(
                             {
                                 "requestID": req.body.requestID
                             });
-                            res.send("Replacement request deleted!")
+                            res.send("Replacement request deleted!");
+                            if ( (Reprequest.status == "Accepted" && (requestDay > today.getTime()))){
+                                //change it in the leaves table
+                                //check in leaves if the annual got accepted remove the extra slot
+                                //else remove the id
+                                const annReq = await LEAVES.findOne({$and:[{"StaffID": acID}, {"replacementID": Reprequest.memberID}]});
+                                if (annReq){
+                                    if (annReq.status == "Accepted"){
+                                        const compSlot = (await ReplacementRequest.findById(Reprequest._id)).requestedSlot;
+                                        const compId = (await CompensationSlots.findOne({"slot": compSlot}));
+                                        const repComp = (await academicMember.findById(Reprequest.memberID)).CompensationSlots;
+                                        for (let e = 0; e < repComp.length; e++){
+                                            if (repComp[e] == compId._id + ""){
+                                                reqComp.splice(e,1);
+                                                break;
+                                            }
+                                        }
+                                        await academicMember.findByIdAndUpdate(Reprequest.memberID, {"CompensationSlots": repComp});
+                                        console.log("extra slot removed");
+                                    }else{
+                                        const annLeave = await LEAVES.findOneAndUpdate({$and:[{"StaffID": acID}, {"replacementID": Reprequest.memberID}]},{"replacementID": null});
+                                        console.log("requested id removed");
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -1130,8 +1155,6 @@ AcademicMemberRouter.route('/cancelReq') //~~
                         }
 
                     }
-
-
                 }
                 else if (req.body.requestID.includes("DayOff"))
                 {
@@ -1159,7 +1182,7 @@ AcademicMemberRouter.route('/cancelReq') //~~
                         //    const requestMonth=DayOffrequest.requestedDay.getMonth();
                         //    const requestYear=DayOffrequest.requestedDay.getFullYear();
                         console.log(today.getDate())
-                        if (DayOffrequest.status == "Pending" || DayOffrequest.status == "Accepted")
+                        if (DayOffrequest.status == "Pending")
                         {
                             await Dayoffreq.findOneAndDelete(
                             {

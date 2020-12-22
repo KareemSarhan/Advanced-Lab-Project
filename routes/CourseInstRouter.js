@@ -13,11 +13,6 @@ const slots = require('../models/slot')
 const locations = require('../models/location')
 const AM = require('../models/academicMember');
 var validator = require('validator');
-const
-{
-    count
-} = require('../models/members');
-
 
 const CourseInstRouter = express.Router();
 CourseInstRouter.use(authenticate);

@@ -395,7 +395,7 @@ HrRouter.route('/updateDepartment/:name')
                      console.log("code updated");
              }
              if (req.body.headOfDepartment != null && typeof(req.body.headOfDepartment) == 'string'){
-                const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+                const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
                 if (h1){
                     //console.log(h1);
                     const h = (await academicMember.find({"Memberid": h1._id}))[0];
@@ -484,15 +484,15 @@ HrRouter.route('/addCourse')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null && typeof(req.body.name) == 'string'){
+        if (req.body.name == null || typeof(req.body.name) != 'string'){
             return res.status(400).send("name of course should be given in body");
-        }else if (req.body.code == null && typeof(req.body.code) == 'string'){
+        }else if (req.body.code == null || typeof(req.body.code) != 'string'){
             return res.status(400).send("course  code should be given in body");
-        }else if (req.body.numberOfSlotsNeeded == null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
+        }else if (req.body.numberOfSlotsNeeded == null || typeof(req.body.numberOfSlotsNeeded) != 'number'){
             return res.status(400).send("name of head of department should be given in body");
-        }else if (req.body.creditHours == null && typeof(req.body.creditHours) == 'number'){
+        }else if (req.body.creditHours == null || typeof(req.body.creditHours) != 'number'){
             return res.status(400).send("credit hours of course should be given in body");
-        }else if (req.body.department== null && typeof(req.body.department) == 'string'){
+        }else if (req.body.department== null || typeof(req.body.department) != 'string'){
             return res.status(400).send("name of department should be given in body");
         }else{
             //all data required are given
@@ -593,7 +593,7 @@ HrRouter.route('/deleteCourse/:name')
         }
         else{
             //get the department from the body
-            if (req.body.department == null && typeof(req.body.department) == 'string'){
+            if (req.body.department == null || typeof(req.body.department) != 'string'){
                 return res.status(400).send("name of department should be given in the body");
             }else{
                 //check if there exists a department with this name
@@ -668,15 +668,15 @@ HrRouter.route('/addStaffMember')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null && typeof(req.body.name) == 'string'){
+        if (req.body.name == null || typeof(req.body.name) != 'string'){
             return res.status(400).send("name of member should be given in body");
-        }else if (req.body.type == null && typeof(req.body.type) == 'string'){
+        }else if (req.body.type == null || typeof(req.body.type) != 'string'){
             return res.status(400).send("type of member (whether academic or HR) should be given in body");
-        }else if (req.body.email== null && validator.isEmail(req.body.email)){
+        }else if (req.body.email== null || !(validator.isEmail(req.body.email))){
             return res.status(400).send("email of member should be given in body");
-        }else if (req.body.salary == null && typeof(req.body.salary) == 'number'){
+        }else if (req.body.salary == null || typeof(req.body.salary) != 'number'){
             return res.status(400).send("salary of member should be given in body");
-        }else if (req.body.officeLocation== null && typeof(req.body.officeLocation) == 'string'){
+        }else if (req.body.officeLocation== null || typeof(req.body.officeLocation) != 'string'){
             return res.status(400).send("office location should be given in body");
         }else{
             //check if the office is full
@@ -717,13 +717,13 @@ HrRouter.route('/addStaffMember')
                     dOff = "Saturday"
                 }else{
                     // this is an academic member
-                    if (req.body.faculty == null && typeof(req.body.faculty) == 'string'){
+                    if (req.body.faculty == null || typeof(req.body.faculty) != 'string'){
                         return res.status(400).send("faculty should be given in body");
-                    }else if(req.body.department == null && typeof(req.body.department) == 'string'){
+                    }else if(req.body.department == null || typeof(req.body.department) != 'string'){
                         return res.status(400).send("department should be given in body");
-                    }else if (req.body.dayOff == null && typeof(req.body.dayOff) == 'string'){
+                    }else if (req.body.dayOff == null || typeof(req.body.dayOff) != 'string'){
                         return res.status(400).send("dayOff of academic member should be given in body");
-                    } else if (req.body.academicType== null && typeof(req.body.academicType) == 'string'){
+                    } else if (req.body.academicType== null || typeof(req.body.academicType) != 'string'){
                         return res.status(400).send("type of academic member should be given in body");
                     }else{
                         const fac = await faculty.find({"name": req.body.faculty});
@@ -1026,18 +1026,18 @@ HrRouter.route('/addSignIn/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.body.year == null && typeof(req.body.year) == 'number'){
+        else if (req.body.year == null || typeof(req.body.year) != 'number'){
             return res.status(400).send("year should be given in body");
-        }else if (req.body.month == null && typeof(req.body.month) == 'number'){
+        }else if (req.body.month == null || typeof(req.body.month) != 'number'){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.body.day == null && typeof(req.body.day) == 'number'){
+        else if (req.body.day == null || typeof(req.body.day) != 'number'){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.body.hour == null && typeof(req.body.hour) == 'number'){
+        else if (req.body.hour == null || typeof(req.body.hour) != 'number'){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.body.minute == null && typeof(req.body.minute) == 'number'){
+        else if (req.body.minute == null || typeof(req.body.minute) != 'number'){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
@@ -1130,18 +1130,18 @@ HrRouter.route('/addSignOut/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.body.year == null && typeof(req.body.year) == 'number'){
+        else if (req.body.year == null || typeof(req.body.year) != 'number'){
             return res.status(400).send("year should be given in body");
-        }else if (req.body.month == null && typeof(req.body.month) == 'number'){
+        }else if (req.body.month == null || typeof(req.body.month) != 'number'){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.body.day == null && typeof(req.body.day) == 'number'){
+        else if (req.body.day == null || typeof(req.body.day) != 'number'){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.body.hour == null && typeof(req.body.hour) == 'number'){
+        else if (req.body.hour == null || typeof(req.body.hour) != 'number'){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.body.minute == null && typeof(req.body.minute) == 'number'){
+        else if (req.body.minute == null || typeof(req.body.minute) != 'number'){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
