@@ -292,6 +292,7 @@ CourseInstRouter.route('/viewCourseStaff')
                     res.send("CourseID is not a valid objectID");
                     return;
                 }
+
                 const ac = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id
@@ -359,7 +360,7 @@ CourseInstRouter.route('/viewCourseStaff')
                 }
                 res.json(
                 {
-                    "In Department Staff": resStaff
+                    "In Course Staff": resStaff
                 })
                 return;
             }
