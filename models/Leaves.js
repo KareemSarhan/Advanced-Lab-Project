@@ -57,6 +57,10 @@ const Leaves = new mongoose.Schema({
     },
     HodComment: {
         type: String
+    },
+    AnnualBalance:{
+        type: Number,
+        default:30
     }
 });
 

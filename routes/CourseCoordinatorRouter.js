@@ -24,8 +24,8 @@ const CourseCoordinatorRouter = express.Router();
 CourseCoordinatorRouter.use(express.json());
 CourseCoordinatorRouter.use(bodyParser.json());
 CourseCoordinatorRouter.use(authenticate);
-CourseCoordinatorRouter.route('/viewSlotLinkReq')
 
+CourseCoordinatorRouter.route('/viewSlotLinkReq')
 .get(async(req,res,next) =>{
     try{
         const token  = req.header('auth-token');
@@ -35,20 +35,22 @@ CourseCoordinatorRouter.route('/viewSlotLinkReq')
         const deletedtoken = await DeletedToken.findOne({token:token});
         const existingAM = await AM.findOne({Memberid:existingUser._id})
         const CCofCourse = await courses.findOne({courseCoordinator:existingAM._id})
-        console.log(CCofCourse.name)
+      //  console.log(CCofCourse.name)
         const typeOfAM = existingAM.type;
         const SLslotsReq = await slotLinkReqs.find({courseID:CCofCourse._id})
         console.log(typeOfAM)
-        if(!(typeOfAM=="CourseCoordinator")){
-            res.send("Not authorized .")
-            return
-        }
+        
         if(!existingUser){
             res.send("Not authenticated .")
             return;
         }
     if(deletedtoken){
         res.send("Sorry you are logged out .")
+        return
+    }
+    if(!(typeOfAM=="CourseCoordinator")){
+        res.send("Not authorized .")
+        return
     }
     else{
         res.json({
@@ -357,6 +359,7 @@ if(deletedtoken){
 }
 if(!(SlotMember) || !(SlotTiming)){
     res.send('Please enter the required Data.')
+    return
 }
 else {
   
@@ -401,7 +404,6 @@ else {
 CourseCoordinatorRouter.route('/deleteSlot')
 .delete(async(req,res,next) =>{
     try{
-      //  console.log("shh")
     const SlotMember = req.body.SlotMember
     const SlotTiming = req.body.SlotTiming
     
@@ -422,11 +424,7 @@ CourseCoordinatorRouter.route('/deleteSlot')
    // console.log(CCofCourse)
     const typeOfAM = existingAM.type;
 
-    if(!(typeOfAM=="CourseCoordinator")){
-        res.send("Not authorized .")
-        return
-    }
-    if(!existingUser){
+if(!existingUser){
         res.send("Not authenticated .")
         return;
     }
@@ -434,6 +432,15 @@ if(deletedtoken){
     res.send("Sorry you are logged out .")
     return
 }
+if(!(typeOfAM=="CourseCoordinator")){
+    res.send("Not authorized .")
+    return
+}
+if(!SlotMember || !!SlotTiming ){
+    res.send("Please enter the required data .")
+    return
+}
+
 else{
    const WantedSlot = await slot.findOne({course:CCofCourse._id , timing:SlotTiming , memberID :FindAM._id  });
    //console.log(WantedSlot._id)

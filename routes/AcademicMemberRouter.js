@@ -17,7 +17,7 @@ const Dayoffreq = require('../models/dayOffReq');
 const slot = require('../models/slot');
 const Linkreq = require('../models/slotLinkReq');
 const LEAVES = require('../models/Leaves');
-const AccidentalLeaves = require('../models/AccidentalLeaves');
+//const AccidentalLeaves = require('../models/AccidentalLeaves');
 
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
