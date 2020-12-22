@@ -1,38 +1,22 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const slotSchema = new mongoose.Schema(
+const compensationslotSchema = new mongoose.Schema(
 {
 
-    type: String,
-    //whether it is a lecture, tutorial, or lab
-
-    course:
+    slot:
     {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'course'
+        ref: 'Slot'
     },
-
-    location:
+    Date:
     {
-        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Location'
-    },
-
-    timing:
-    {
-        type: String,
-        required: true
-    },
-
-    memberID:
-    {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'AcademicMember'
+        type: Date
     }
+
 });
 
-module.exports = mongoose.model('Slot', slotSchema);
-module.exports.slotSchema = slotSchema;
+module.exports = mongoose.model('CompensationSlot', compensationslotSchema);
+module.exports.compensationslotSchema = compensationslotSchema;
