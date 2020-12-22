@@ -198,7 +198,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
             {
                 return res.status(400).send("Please provide  the day!");
             }
-            else if (req.body.requestedSlot == null || !(typeof(req.body.requestedSlot) == 'string'))
+            else if (req.body.requestedSlot == null || !(validator.isMongoId(req.body.requestedSlot)))
             {
                 return res.status(400).send("Please provide which slot of the day!");
             }
