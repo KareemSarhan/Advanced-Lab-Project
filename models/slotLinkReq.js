@@ -28,11 +28,7 @@ const slotLinkReqSchema = new mongoose.Schema({
         ref: 'Slot',
         required: true
     },
-    requestedSlot: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'slotSchema',
-        required: true},
-
+   
     status:
     {
         type: String,

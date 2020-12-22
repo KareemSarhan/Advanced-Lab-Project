@@ -18,6 +18,7 @@ const Location = require('./models/location.js');
 const academicMember = require('./models/academicMember');
 const Course = require('./models/course');
 const slot = require('./models/slot');
+const CompensationSlot = require('./models/CompensationSlot.js');
 const department = require('./models/department');
 const faculty = require('./models/faculty');
 const ReplacementRequest = require('./models/replacementrequest.js');
@@ -27,7 +28,6 @@ const course = require('./models/course');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const slotLinkReq = require('./models/slotLinkReq');
-//const AccidentalLeaves = require('./models/AccidentalLeaves.js');
 const key = 'shawerma';
 //mongoose.connect(mongoConnectionString, { useNewUrlParser: true , useUnifiedTopology: true})
 //const connection = mongoose.connection;
@@ -96,6 +96,19 @@ async function da5lData()
 
 async function da5lData2()
 {
+    const salt = await bcrypt.genSalt(12); //if the number is increased the complexity of salting increases
+    const hashedPassword = await bcrypt.hash("123456", salt);
+    const hr = new members({
+        name: "testHR1",
+        id: "hr-1",
+        password: hashedPassword,
+        email: "testHR1@gmail.com",
+        salary: 10000,
+        salarySoFar: 10000,
+        dayOff: "Saturday",
+    });
+    await hr.save();
+    console.log("hr added");
     // const o2 = await Location.find({"name": "c3.217"});
     // let o3;
     // if (o2 != null){
@@ -180,19 +193,18 @@ async function da5lData2()
     // console.log("done");
 };
 
-// console.log("check9");
-// da5lData2();
+ console.log("check9");
+ //da5lData2();
 // console.log("check10");
 // const d = new Date();
 // const day = d.getDay();
 // console.log(day);
 
-//  const s = "safa";
-//  const a = "fa"
-//  if ({ s: { $in: a}}){
-//     console.log("ddddddddddd")
-//  }
-
-
-
+    //  const s = "safa";
+    //  const a = "fa"
+    //  if ({ s: { $in: a}}){
+    //     console.log("ddddddddddd")
+    //  }
+    //console.log(typeof(123) == 'string');
+    console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
 module.exports = app

@@ -24,7 +24,7 @@ const Leaves = new mongoose.Schema({
         default: "Pending"
     },
     requestID: {
-        type: Number,
+        type: String,
         //unique: true
     },
     Leavetype: {

@@ -31,8 +31,8 @@ const memberSchema = new mongoose.Schema(
     {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Location',
-        required: true
-            //make sure it is an office
+        //required: true
+        //make sure it is an office
     },
     salary:
     {
