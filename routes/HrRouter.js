@@ -64,7 +64,8 @@ HrRouter.route('/addLocation')
                         const loc = new Location({
                             name: req.body.name,
                             capacity : req.body.capacity,
-                            type: req.body.type
+                            type: req.body.type,
+                            capacitySoFar: 0
                         });
                         await loc.save();
                         res.send("location added");
@@ -862,7 +863,7 @@ HrRouter.route('/updateStaffMember/:id')
         }  
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
