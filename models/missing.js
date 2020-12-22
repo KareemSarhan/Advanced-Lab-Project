@@ -16,6 +16,7 @@ const missingSchema = new mongoose.Schema(
     },
     missingDays: Number,
     remainingDays: Number,
+    ExtraHours:Number,
     missingHours: Number,
     remainingHours: Number,
     ExtraHour: Number

@@ -24,13 +24,18 @@ MemberRouter.use(bodyParser.json());
 MemberRouter.route('/login')
 .post(async(req,res,next) =>{
     try {
+        //validation
         const {email,password}=req.body;
+       
         if(!email|| !password){
             return res.status(400).json({msg:"please enter email or password"})
         }
+        if(!validator.isEmail(email)){
+            res.send("Please enter a correct email format .")
+        }
         const existingUser = await members.findOne({email:email});
         if(!(validator.isEmail(email))){
-            res.send("this is not an email formate , please try again")
+            res.send(a)
             return;
         }
         if(!existingUser)
@@ -61,7 +66,7 @@ MemberRouter.route('/login')
 
 MemberRouter.route('/logout')
 .get(async(req,res,next) =>{
- try{
+ try{ 
     const token  = req.header('auth-token');
     const t = new DeletedToken({token : token})
     await t.save()
@@ -105,7 +110,6 @@ MemberRouter.route('/viewProfile')
             course : course
         }
     })
-    //res.send(course)
 }
 else{
 res.json({
@@ -135,7 +139,7 @@ MemberRouter.route('/updateProfile')
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
     const deletedtoken = await DeletedToken.findOne({token:token});
-if(deletedtoken){
+    if(deletedtoken){
     res.send("Sorry you are logged out .")
 }
 
@@ -143,6 +147,7 @@ else{
     if(!existingUser){
         res.send("Not authenticated");
     }
+
     if(NewSecondaryEmail){
         if(!(validator.isEmail(NewSecondaryEmail))){
             res.send("that not a correct email.")
@@ -229,9 +234,10 @@ else{
 
 });
 
-
+//Check Read me
 MemberRouter.route('/signIn')
 .post(async(req,res,next) =>{
+    
     try{
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);
@@ -282,18 +288,19 @@ MemberRouter.route('/signOut')
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
-    var existingID = await attendance.find({Memberid:existingUser._id});
+    var existingID = await attendance.find({Memberid:existingUser._id , signIn:{$ne:null}});
     //console.log(existingID)
     const SignOutDate  = new Date();
     const deletedtoken = await DeletedToken.findOne({token:token});
+    const Notfound = false;
     if(!existingUser){
         res.send("Not authenticated .")
         return;
     }
     if(deletedtoken){
         res.send("Sorry you are logged out .")
+        return
     }
-    else{
     //console.log(existingID.length)
 
 var SpentHours;
@@ -301,22 +308,20 @@ var SpentMin ;
 var finalDuration;
    
     for(i=0 ; i < existingID.length;i++){
+       // console.log(existingID)
+
     var correspondingSignIn=existingID[i].signIn
     var correspondingSignInHours=correspondingSignIn.getHours();
     var correspondingSignInMinutes=correspondingSignIn.getMinutes();
-
-
-    //var correspondingSignOut=existingID[i].signOut
-    // var correspondingSignOutHours=correspondingSignOut.getHours();
-    // var correspondingSignOutMinutes=correspondingSignOut.getMinutes();
+    
     var correspondingSignOutHour=SignOutDate.getHours()
     var correspondingSignOutMin=SignOutDate.getMinutes()
     if(correspondingSignOutHour>21){
         var time = new Date('1995-12-17T21:00:00')
         var timeHour = time.getHours();
         finalDuration = (timeHour- correspondingSignInHours)
-       // console.log( correspondingSignInHours + "  d5l " + finalDuration + timeHour) ;
 
+        
     }
     else{
     SpentHours = (correspondingSignOutHour- correspondingSignInHours)
@@ -344,20 +349,22 @@ var finalDuration;
         attendance.updateOne({_id:existingObjectID},{signOut:SignOutDate} , function(err, res) {
             if (err) throw err;
            // console.log("document updated 2");
-          });   
-    }
-    else{
-        const attended = new attendance({
-            Memberid : existingUser._id ,
-            signOut : SignOutDate
-        })
-        await attended.save()
-    }
-    
+          });
+          Notfound=true;   
+    }   
 }
+     if(Notfound==false){
+    console.log('d5lt ' + i )
+    const attended = new attendance({
+        Memberid : existingUser._id ,
+        signOut : SignOutDate
+    })
+    await attended.save()
+}
+
    
    res.send("Good Bye!") 
-}             
+            
       }
       catch(error){
           res.status(500).json({error:error.message})
@@ -444,6 +451,100 @@ MemberRouter.route('/viewAttendanceByMonth')
     }
 });
 
+// MemberRouter.route('/viewMissingDays')
+// .get(async(req,res,next) =>{
+//     //authenticate
+//     try{
+//      const token  = req.header('auth-token');
+//      const DecodeToken = jwt_decode(token);
+//      const id = DecodeToken.id;
+//      const existingUser = await members.findOne({id:id});
+//      const AllDays =['Sunday','Monday','Tuesday', 'Wednesday','Thursday','Friday', 'Saturday'];
+//      const deletedtoken = await DeletedToken.findOne({token:token});
+
+//       const StartDay = 11;
+      
+//     if(deletedtoken){
+//         res.send('you are logged out.')
+//     }
+//     //get all the records with the id from token
+//     var GetAttendeddays = await  attendance.find({"Memberid": existingUser._id});
+
+//      // suppose all months are 30 day and they all have 4 fridays and 4 days Off
+//      //Leaves handle the missing days when requests are accepted 
+//      //so the missing days in the missing table should be updated by then
+
+//      var theDayMustAttend = 22;
+//      var uniqueDays = 0;
+    
+//      if(!existingUser){
+//         res.send("Not authenticated ")
+//         return
+//     }
+//     if(deletedtoken){
+//         res.send('you are logged out.')
+//     }
+//     else{
+//         const currentMonth = new Date().getMonth();
+//         const currentYear = new Date().getFullYear();
+//         const startDate = newDate(currentYear, currentMonth, 11);
+//         const finishDate = newDate(currentYear, currentMonth+1, 10);
+//         //filter again the attendane to start from the desired month
+//         var monthAttendance = [];
+//         for (let j = 0 ; j < GetAttendeddays.length ; j++){
+//             if ((GetAttendeddays[j].getTime() >= startDate.getTime())&&(GetAttendeddays[j].getTime() <= finishDate.getTime())){
+//                 monthAttendance.push(GetAttendeddays[j]);
+//             }else if(GetAttendeddays[j].getTime() <= finishDate.getTime()){
+//                 break;
+//                 //to avoid getting not needed data
+//             }
+//         }/////////
+//         //compute the number of days attended
+//         var current;
+//         for(i=0 ;i < monthAttendance.length ; i ++){
+//             if(monthAttendance[i].signIn != undefined && monthAttendance[i].signOut != undefined){
+//                 if(i == 0){
+//                     current = monthAttendance[i].signIn;
+//                     uniqueDays++;
+//                 }else if(current.getTime() != (monthAttendance[i].signIn).getTime){
+//                     current = monthAttendance[i].signIn;
+//                     uniqueDays++;
+//                 }
+//                 //else this is the same day but different sign in time
+//             }    
+//         }
+//         //subtract the number of days that should be attended by the number of actually attended
+//         var diff = theDayMustAttend - uniqueDays
+//         //if the difference is positive then the missing days should increase
+//         //if the difference is negative then he attended more days than should so give him balance gad3na
+//         //update the missing table
+//         const miss = await missing.findOne({"Memberid": existingUser._id});
+//         if (!miss){
+//             //this is his first time
+//             const nMiss = new missing({
+//                 Memberid: existingUser._id,
+//                 missingDays: diff,
+//                 remainingDays: 264 - uniqueDays
+//             });
+//             await missing.save();
+//             console.log("new missing added");
+//         }else{
+//             var preM = miss.missingDays + diff;
+//             const rem = miss.remainingDays - uniqueDays;
+//             await missing.findOneAndUpdate({"Memberid": existingUser._id}, {"missingDays": preM , "remainingDays": rem});
+//             console.log("missing updated");
+//         }
+//         res.send("missing days: " + preM);  
+//     }
+// }
+// catch(error){
+//     res.status(500).json({error:error.message})
+// }
+
+    
+// });
+
+
 MemberRouter.route('/viewMissingDays')
 .get(async(req,res,next) =>{
     //authenticate
@@ -456,37 +557,47 @@ MemberRouter.route('/viewMissingDays')
      const deletedtoken = await DeletedToken.findOne({token:token});
 
       const StartDay = 11;
-      if(!existingUser){
-        res.send("Not authenticated ")
-        return
-    }
+      
     if(deletedtoken){
         res.send('you are logged out.')
+        return;
     }
     //get all the records with the id from token
     var GetAttendeddays = await  attendance.find({"Memberid": existingUser._id});
-
-     // suppose all months are 30 day and they all have 4 fridays and 4 days Off
-     //Leaves handle the missing days when requests are accepted 
-     //so the missing days in the missing table should be updated by then
-
-     var theDayMustAttend = 22;
-     var uniqueDays = 0;
-    
+     
      if(!existingUser){
         res.send("Not authenticated ")
         return
     }
-    if(deletedtoken){
-        res.send('you are logged out.')
-    }
-    else{
+
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
         const startDate = newDate(currentYear, currentMonth, 11);
         const finishDate = newDate(currentYear, currentMonth+1, 10);
-        //filter again the attendane to start from the desired month
+        var numberOfDaysInMonth = 0 ;
+
+        // checking if the month is 31 30 or 29 days 
+        if(currentMonth==1){
+            numberOfDaysInMonth=18;
+        }
+        if(currentMonth==0||currentMonth==2||currentMonth==4||currentMonth==6||currentMonth==7||currentMonth==9||currentMonth==11 ){
+            numberOfDaysInMonth=20;
+        }
+        if(currentMonth==3||currentMonth==5||currentMonth==8||currentMonth==10){
+            numberOfDaysInMonth=19;
+        }
+
         var monthAttendance = [];
+        var daysOftheMonth = [];
+        //filling days of the month from 11 of this month till the 10th of the coming month .
+        for(i=0 ;i<numberOfDaysInMonth;i++){
+                daysOftheMonth.push(new Date(currentYear,currentMonth,12+i))
+        }
+        for(i=1;i<=11;i++){
+            daysOftheMonth.push(new Date(currentYear,currentMonth+1,i))
+
+        }
+        // getting all records from the member from 11 of this month till 10 of the following month  .
         for (let j = 0 ; j < GetAttendeddays.length ; j++){
             if ((GetAttendeddays[j].getTime() >= startDate.getTime())&&(GetAttendeddays[j].getTime() <= finishDate.getTime())){
                 monthAttendance.push(GetAttendeddays[j]);
@@ -495,43 +606,100 @@ MemberRouter.route('/viewMissingDays')
                 //to avoid getting not needed data
             }
         }
-        //compute the number of days attended
         var current;
+        var uniqueDays = 0;
+        var UniqueAttendenceDays = [];
+
+        //getting unique records attendence for this member .
         for(i=0 ;i < monthAttendance.length ; i ++){
-            if(monthAttendance[i].signIn != undefined && monthAttendance[i].signOut != undefined){
-                if(i == 0){
+            if(monthAttendance[i].signIn != undefined){
+                if(current==null){
                     current = monthAttendance[i].signIn;
                     uniqueDays++;
-                }else if(current.getTime() != (monthAttendance[i].signIn).getTime){
+                }
+                else if(current.getTime() != (monthAttendance[i].signIn).getTime()){
+                    UniqueAttendenceDays.push(monthAttendance[i])
                     current = monthAttendance[i].signIn;
                     uniqueDays++;
                 }
                 //else this is the same day but different sign in time
             }    
         }
-        //subtract the number of days that should be attended by the number of actually attended
-        var diff = theDayMustAttend - uniqueDays
-        //if the difference is positive then the missing days should increase
-        //if the difference is negative then he attended more days than should so give him balance gad3na
-        //update the missing table
-        const miss = await missing.findOne({"Memberid": existingUser._id});
-        if (!miss){
-            //this is his first time
-            const nMiss = new missing({
-                Memberid: existingUser._id,
-                missingDays: diff,
-                remainingDays: 264 - uniqueDays
-            });
-            await missing.save();
-            console.log("new missing added");
-        }else{
-            var preM = miss.missingDays + diff;
-            const rem = miss.remainingDays - uniqueDays;
-            await missing.findOneAndUpdate({"Memberid": existingUser._id}, {"missingDays": preM , "remainingDays": rem});
-            console.log("missing updated");
+
+        var numberOfmissingDays = 0 ;
+        //getting the days with no sign Outs 
+        for(i=0 ; i <UniqueAttendenceDays.length;i++){
+            if(UniqueAttendenceDays[i].signOut==null || UniqueAttendenceDays[i].signOut== undefined){
+                numberOfmissingDays++;
+            }
+            
+
         }
-        res.send("missing days: " + preM);  
-    }
+        //getting all the days he missed even if dayOff and fridays 
+        var daysMissed =[]
+        for(i=0 ; i < UniqueAttendenceDays.length ; i++ ){
+            if(UniqueAttendenceDays[i].signIn.getDate() != daysOftheMonth[i].getDate() && UniqueAttendenceDays[i].signIn.getMonth() === daysOftheMonth[i].getMonth()){
+                daysMissed.push(daysOftheMonth[i])
+            }
+        }
+        // getting the day off for the member in term of number 
+        const MemberDayOff =existingUser.dayOff;
+        var DayOffnumber = 0;
+        if(MemberDayOff=="Sunady"){
+            DayOffnumber = 0 
+
+        } 
+        if(MemberDayOff=="Monday"){
+            DayOffnumber = 1
+
+        } 
+        if(MemberDayOff=="Tuesday"){
+            DayOffnumber = 2
+
+        } if(MemberDayOff=="Wednesday"){
+            DayOffnumber = 3 
+
+        } if(MemberDayOff=="Thursday"){
+            DayOffnumber = 4
+
+        } if(MemberDayOff=="Friday"){
+            DayOffnumber = 5
+
+        } if(MemberDayOff=="Saturday"){
+            DayOffnumber = 6
+        }
+              // getting the days he/she did not attend filtered from fridays and daysOff
+        var TheAbsentDays =[];
+        for(i=0 ; i <daysMissed.length;i++){
+            if(daysMissed[i].getDay() != 5 ){
+                numberOfmissingDays++;
+                TheAbsentDays.push(daysMissed[i]);
+            }
+            if(daysMissed[i].getDay() != DayOffnumber){
+                numberOfmissingDays++;
+                TheAbsentDays.push(daysMissed[i]);
+
+            }
+        }
+
+        //if a member was not found with a record it will create a new record and add it to missings else it will only update the missing days 
+       const FoundMember = await missing.findOne({Memberid : existingUser._id})
+       if(!FoundMember){
+          const NewRecord  = new Missings({
+            Memberid : existingUser._id ,
+            missingDays:numberOfmissingDays
+        })
+        await NewRecord.save()
+       }
+       else{
+        missing.updateOne({Memberid:existingUser._id},{missingDays:numberOfmissingDays} , function(err, res) {
+            if (err) throw err;
+            console.log("document updated 1");
+          });
+
+       }
+ res.send("Your Missing Days are " + numberOfmissingDays)
+    
 }
 catch(error){
     res.status(500).json({error:error.message})
@@ -587,7 +755,6 @@ MemberRouter.route('/viewHours')
         await Missing.save()
         res.json({
             YourHours :{
-
             SpentHours : SpentHour,
             MissingHours:HoursMissing,
             ExtraHour : Extrahours
