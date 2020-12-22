@@ -7,7 +7,8 @@ const key = 'shawerma';
 const app = express();
 const DeletedToken = require("./models/DeletedTokens")
 
-async function authenticate(req,res,next){
+async function authenticate(req, res, next)
+{
 
     const verified = req.header('auth-token');
     console.log("here");
@@ -32,10 +33,10 @@ async function authenticate(req,res,next){
         next(); //enta mo7trm w authenticated
         }
     }
-    catch(err){
+    catch (err)
+    {
         res.status(403).send("kda a8lat");
     }
 };
 
 module.exports = authenticate;
-

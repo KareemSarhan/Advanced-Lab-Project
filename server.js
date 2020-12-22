@@ -18,6 +18,7 @@ const Location = require('./models/location.js');
 const academicMember = require('./models/academicMember');
 const Course = require('./models/course');
 const slot = require('./models/slot');
+const CompensationSlot = require('./models/CompensationSlot.js');
 const department = require('./models/department');
 const faculty = require('./models/faculty');
 const ReplacementRequest = require('./models/replacementrequest.js');

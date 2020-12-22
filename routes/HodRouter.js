@@ -709,6 +709,10 @@ HodRouter.route('/acceptLeaveReq/:reqID')
                 miss.missingDays = miss.missingDays - l1.numberOfdays;
                 miss.remainingDays = miss.remainingDays - l1.numberOfdays;
                 await miss.save();
+                if (req.body.requestID.includes("An")){
+                    //check if there are compensation slots
+                    //if yes add the extra slots to the academic member who accepted the request
+                }
             }
             res.json("Request updated successfully");
         }

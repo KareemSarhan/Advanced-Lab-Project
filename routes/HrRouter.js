@@ -328,18 +328,22 @@ HrRouter.route('/addDepartment')
                     return res.status(400).send("there does not exist a faculty with this name");
                 }else{
                     f = fa[0];
-                    const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+                    const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
                 
                     if(!h1){
                         return res.status(400).send("there does not exist an instructor with this id");
                     }
                     else{
-                        const h = (await academicMember.find({"Memberid": h1._id}))[0]
+                        const h = (await academicMember.find({"Memberid": h1._id}))[0];
+                        const instA =[];
+                        instA.push(h._id);
+                        console.log("hod added to instructors array of department");
                         const d = new department({
                             name: req.body.name,
                             code: c,
                             facultyName: req.body.faculty,
-                            headOfDep: h._id
+                            headOfDep: h._id,
+                            instructors: instA
                         });
                         //add a new department to this faculty
                         await d.save();
@@ -546,7 +550,7 @@ HrRouter.route('/updateCourse/:name')
     }else{
         //console.log(req.params.name);
         //verify that there is a course with the name = :name
-        const cour = await course.find({"name": req.params.name});
+        var cour = await course.find({"name": req.params.name});
         if(cour.length == 0){
             return res.status(400).send("name of course is not found");
         }
@@ -559,8 +563,9 @@ HrRouter.route('/updateCourse/:name')
              }
              if (req.body.numberOfSlotsNeeded != null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
                 //update the existing course
-                 await course.findOneAndUpdate({"name": req.params.name}, {"numberOfSlotsNeeded": req.body.numberOfSlotsNeeded});
-                 //res.send("course number of needed slots is updated")
+                const cov = cour.numberOfSlotsAssigned/req.body.numberOfSlotsNeeded;
+                await course.findOneAndUpdate({"name": req.params.name}, {"numberOfSlotsNeeded": req.body.numberOfSlotsNeeded , "coverage": cov});
+                console.log("course number of needed slots and coverage are updated")
          }
          res.send("course updated");
         }
