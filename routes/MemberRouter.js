@@ -231,7 +231,7 @@ else{
 
 
 MemberRouter.route('/signIn')
-.get(async(req,res,next) =>{
+.post(async(req,res,next) =>{
     try{
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);
@@ -276,7 +276,7 @@ MemberRouter.route('/signIn')
 });
 
 MemberRouter.route('/signOut')
-.get(async(req,res,next) =>{
+.post(async(req,res,next) =>{
     try{
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);

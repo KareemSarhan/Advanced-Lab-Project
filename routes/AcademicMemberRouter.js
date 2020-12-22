@@ -17,7 +17,7 @@ const Dayoffreq = require('../models/dayOffReq');
 const CompensationSlots = require('../models/CompensationSlot');
 const Linkreq = require('../models/slotLinkReq');
 const LEAVES = require('../models/Leaves');
-const AccidentalLeaves = require('../models/AccidentalLeaves');
+const DeletedToken = require("../models/DeletedTokens");
 
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
@@ -134,7 +134,7 @@ AcademicMemberRouter.route('/viewReplacementReq') //done written
 
                 res.send(ALLREQ);
             }
-            //hal kol l replacements wala l yekhoso l member da bs ??
+            
         }
         catch (error)
         {
@@ -1205,6 +1205,8 @@ AcademicMemberRouter.route('/cancelReq') //~~
                     }
                     else if (req.body.requestID.includes("An"))
                     {
+                        //increment the missing days incase the request was accepted
+                        //remove the extra slot from the member who accepted the compensation if any 
                         const today = new Date();
                         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
                         const requestDay = LeaveRequest.dateOfLeave.getDate();
