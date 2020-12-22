@@ -41,7 +41,7 @@ HodRouter.route('/assignInstructor')
              const found = await member.findOne({ id: currentid });
              if( !found)
              return res.status(401).send("Not authenticated");
-            if(typeOf(req.body.id)=='String' && typeOf(req.body.code)=='String')
+            if(typeOf(req.body.id)=='String' || typeOf(req.body.code)=='String')
             const insID = req.body.id
             const c = req.body.code
             const ufound = await academicMember.findOne({ Memberid: found._id });
@@ -127,7 +127,7 @@ HodRouter.route('/DeleteInstructor')
             //verify that this instructor is assigned to this course
             //delete this assignment
             else {
-                if(typeOf(req.body.id)=="String" && typeOf(req.body.code)=="String"){
+                if(typeOf(req.body.id)=="String" || typeOf(req.body.code)=="String"){
                 const courseIns = req.body.id;
                 const courseCode = req.body.code;
                 const m = await members.findOne({ id: courseIns });
@@ -210,7 +210,7 @@ HodRouter.route('/UpdateInstructor')
             //verify that this instructor is assigned to this course
             //update this assignment
             else {
-                if(typeOf(req.body.id)=='String' && typeOf(req.body.codeOld)== 'String' && typeOf(req.body.codeNew)== "String"){
+                if(typeOf(req.body.id)=='String' || typeOf(req.body.codeOld)== 'String' || typeOf(req.body.codeNew)== "String"){
                 const courseIns = req.body.id;
                 const courseCodeOld = req.body.codeOld;
                 const courseCodeNew = req.body.codeNew;
@@ -783,7 +783,7 @@ HodRouter.route('/acceptLeaveReq/:reqID')
                 miss.missingDays = miss.missingDays - l1.numberOfdays;
                 miss.remainingDays = miss.remainingDays - l1.numberOfdays;
                 await miss.save();
-                if(l1.type == "Annual"|| l1.type == "Accidental"){
+                if(l1.LeaveType == "Annual"|| l1.LeaveType == "Accidental"){
                     l1.AnnualBalance-=l1.numberOfdays;
                     await l1.save();
                 }
