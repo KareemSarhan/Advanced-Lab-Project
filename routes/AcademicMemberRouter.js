@@ -56,7 +56,7 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
             queryForMem = {
                 Memberid: FoundID
             };
-            const acfound = await academicMember.findOne(
+            var acfound = await academicMember.findOne(
             {
                 Memberid: FoundID
             });
@@ -72,7 +72,7 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
             acfoundforcomrem.save();
 
 
-            const acfound = await academicMember.findOne(
+            acfound = await academicMember.findOne(
                 queryForMem).populate(
             {
                 path: 'schedule',
