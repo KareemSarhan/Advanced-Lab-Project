@@ -314,7 +314,7 @@ HrRouter.route('/addDepartment')
         //}else if (req.body.headOfDepartment == null){
           //  return res.status(400).send("name of head of department should be given in body");
         }else{
-            if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')&& (typeof(req.body.headOfDepartment) == 'string')){
+            if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')){
             //all data required are given
              //make sure this department does not exist in other faculties
              const otherDep = (await department.find({"name": req.body.name}));
@@ -337,10 +337,10 @@ HrRouter.route('/addDepartment')
                      //   return res.status(400).send("there does not exist an instructor with this id");
                     //}
                    // else{
-                        const h = (await academicMember.find({"Memberid": h1._id}))[0];
+                        //const h = (await academicMember.find({"Memberid": h1._id}))[0];
                         const instA =[];
-                        instA.push(h._id);
-                        console.log("hod added to instructors array of department");
+                        //instA.push(h._id);
+                        //console.log("hod added to instructors array of department");
                         const d = new department({
                             name: req.body.name,
                             code: c,
@@ -368,7 +368,7 @@ HrRouter.route('/addDepartment')
         } 
     }
     }catch(err){
-        res.status(500).json({error:error.message})
+        res.status(500).json({err:err.message})
     }     
 });
 
@@ -738,12 +738,16 @@ HrRouter.route('/addStaffMember')
                             dOff = req.body.dayOff;
                             //get the last id available and increment it by 1
                             const ids = await members.find({ "id": { $regex: 'ac'}});
+                            if (ids.length == 0){
+                                nID = 1;
+                            }else{
                             console.log(ids);
                             const maxID = ids[ids.length - 1];
                             console.log(maxID);
                             const toBeParsed = maxID.id.substring(3);
                             const iID = parseInt(toBeParsed);
                             nID = iID + 1;  
+                            }
                         }   
                     }
                 }
