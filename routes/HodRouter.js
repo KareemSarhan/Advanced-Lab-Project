@@ -783,7 +783,7 @@ HodRouter.route('/acceptLeaveReq/:reqID')
                 miss.missingDays = miss.missingDays - l1.numberOfdays;
                 miss.remainingDays = miss.remainingDays - l1.numberOfdays;
                 await miss.save();
-                if(l1.type == "Annual"|| l1.type == "Accidental"){
+                if(l1.LeaveType == "Annual"|| l1.LeaveType == "Accidental"){
                     l1.AnnualBalance-=l1.numberOfdays;
                     await l1.save();
                 }
