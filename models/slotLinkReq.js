@@ -2,8 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const courseSchemaModel = require('./course');
 const courseSchema = courseSchemaModel.courseSchema;
-const slotLinkReqSchema = new mongoose.Schema(
-{
+
+
+const slotLinkReqSchema = new mongoose.Schema({
+
     requestID:{
         type: String
     },
