@@ -24,7 +24,7 @@ const Leaves = new mongoose.Schema({
         default: "Pending"
     },
     requestID: {
-        type: Number,
+        type: String,
         //unique: true
     },
     Leavetype: {
@@ -57,6 +57,10 @@ const Leaves = new mongoose.Schema({
     },
     HodComment: {
         type: String
+    },
+    AnnualBalance:{
+        type: Number,
+        default:30
     }
 });
 
