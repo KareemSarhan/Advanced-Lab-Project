@@ -166,6 +166,8 @@ HrRouter.route('/updateLocation/:name')
                         await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
                         res.send("location capacity is updated")
                     }
+                }else{
+                    return res.status(400).send("wrong data types");
                 }
             } 
         } 
@@ -309,8 +311,8 @@ HrRouter.route('/addDepartment')
             return res.status(400).send("name of department should be given in body");
         }else if (req.body.faculty == null){
             return res.status(400).send("name of faculty should be given in body");
-        }else if (req.body.headOfDepartment == null){
-            return res.status(400).send("name of head of department should be given in body");
+        //}else if (req.body.headOfDepartment == null){
+          //  return res.status(400).send("name of head of department should be given in body");
         }else{
             if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')&& (typeof(req.body.headOfDepartment) == 'string')){
             //all data required are given
@@ -329,12 +331,12 @@ HrRouter.route('/addDepartment')
                     return res.status(400).send("there does not exist a faculty with this name");
                 }else{
                     f = fa[0];
-                    const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
+                    //const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
                 
-                    if(!h1){
-                        return res.status(400).send("there does not exist an instructor with this id");
-                    }
-                    else{
+                    //if(!h1){
+                     //   return res.status(400).send("there does not exist an instructor with this id");
+                    //}
+                   // else{
                         const h = (await academicMember.find({"Memberid": h1._id}))[0];
                         const instA =[];
                         instA.push(h._id);
@@ -343,7 +345,7 @@ HrRouter.route('/addDepartment')
                             name: req.body.name,
                             code: c,
                             facultyName: req.body.faculty,
-                            headOfDep: h._id,
+                           // headOfDep: h._id,
                             instructors: instA
                         });
                         //add a new department to this faculty
@@ -359,7 +361,7 @@ HrRouter.route('/addDepartment')
                         await faculty.findByIdAndUpdate(f._id, {"departments" : x});
                         console.log("dep added to faculty");
                         res.send("department added");
-                        }
+                       // }
                     }
                 }
             }
@@ -690,10 +692,10 @@ HrRouter.route('/addStaffMember')
                 return res.status(400).send("this office is full");
             }else{
                 let flagAc = false;
-                let phoneNumber = "";
+                let phoneNumber = 0;
                 let SecondayMail = "";
                 let gender = "";
-                if (req.body.phoneNumber != null && typeof(req.body.phoneNumber) == 'string'){
+                if (req.body.phoneNumber != null && typeof(req.body.phoneNumber) == 'number'){
                     phoneNumber = req.body.phoneNumber;
                 }
                 if (req.body.SecondayMail != null && typeof(req.body.SecondayMail) == 'string'){
