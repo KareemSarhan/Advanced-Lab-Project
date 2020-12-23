@@ -469,8 +469,9 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
                     {
                         SlotID: slots._id
                     });
-                   console.log(found.dayOff)
-                    if(req.body.requestedDay.includes(found.dayOff)){
+                    console.log(found.dayOff)
+                    if (req.body.requestedDay.includes(found.dayOff))
+                    {
                         return res.status(400).send("This is your actual dayoff!!");
                     }
                     if (ActualSlot == null || !(ActualSlot.timing.includes(req.body.requestedDay)))
@@ -485,17 +486,20 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
                                 $regex: 'DayOff'
                             }
                         });
-                        
-                        if(reqID.length ==0){
-                            nID= 1 ;
-                        }else{
-                        const maxID = reqID[reqID.length - 1];
-                        console.log(maxID);
-                        const toBeParsed = maxID.requestID.substring(7);
-                        const iID = parseInt(toBeParsed);
-                        nID = iID + 1;
-                        console.log(nID);
-                    }
+
+                        if (reqID.length == 0)
+                        {
+                            nID = 1;
+                        }
+                        else
+                        {
+                            const maxID = reqID[reqID.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.requestID.substring(7);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;
+                            console.log(nID);
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
