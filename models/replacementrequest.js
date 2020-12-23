@@ -29,7 +29,8 @@ const ReplacementRequestSchema = new mongoose.Schema(
 
     requestedSlot:
     {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Slot',
         required: true
     },
 

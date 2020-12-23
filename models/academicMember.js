@@ -23,7 +23,7 @@ const academicMemberSchema = new mongoose.Schema(
     courses: [
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'course'
+        ref: 'Course'
     }],
     faculty:
     {
@@ -33,7 +33,12 @@ const academicMemberSchema = new mongoose.Schema(
     {
         type: String
     },
-    officeHourse: String
+    officeHourse: String,
+    CompensationSlots: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CompensationSlot'
+    }]
 });
 
 module.exports = mongoose.model('AcademicMember', academicMemberSchema);
