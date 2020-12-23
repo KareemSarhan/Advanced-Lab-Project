@@ -19,9 +19,6 @@ CourseInstRouter.use(authenticate);
 CourseInstRouter.use(bodyParser.json());
 
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the course coverage of the courses assigned to him
 CourseInstRouter.route('/viewCoverage')
     .get(async(req, res, next) =>
     {
@@ -73,9 +70,7 @@ CourseInstRouter.route('/viewCoverage')
         }
     });
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the slots assigned to this academic member
+
 CourseInstRouter.route('/viewSlotAssignment')
     .get(async(req, res, next) =>
     {
@@ -150,10 +145,6 @@ CourseInstRouter.route('/viewSlotAssignment')
 
     });
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the department of this member
-//get all academic members assigned to this department
 CourseInstRouter.route('/viewStaff')
     .get(async(req, res, next) =>
     {
@@ -253,11 +244,7 @@ CourseInstRouter.route('/viewStaff')
         }
     });
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the department of this member
-//get the course in this dep from params
-//get all academic members assigned to this course
+
 CourseInstRouter.route('/viewCourseStaff')
     .get(async(req, res, next) =>
     {
@@ -371,13 +358,6 @@ CourseInstRouter.route('/viewCourseStaff')
     });
 
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the department of this member
-//get the course in this dep from params
-//get all unassigned slots for the course given in the body
-//assign the given member in the body to this slot
-///  assig el member to course
 CourseInstRouter.route('/assignMemToSlot')
     .put(async(req, res, next) =>
     {
@@ -472,98 +452,7 @@ CourseInstRouter.route('/assignMemToSlot')
         }
     });
 
-CourseInstRouter.route('/AssignMemberToCourse')
-    .put(async(req, res, next) =>
-    {
-        try
-        {
-            const payload = jwt.verify(req.header('auth-token'), key);
-            if (!((payload.id).includes("ac")))
-            {
-                //console.log(payload.id);
-                return res.status(401).send("not authorized");
-            }
-            else
-            {
-                const loggedMember = await members.findOne(
-                {
-                    id: id
-                })
-                CourseID = req.body.CourseID;
-                AcID = req.body.AcID;
-                //check if el wad da bydy el course da
-                var Course = await course.findOne(
-                {
-                    _id: CourseID
-                });
-                if (!Course)
-                {
-                    res.send("CourseId doesnt belong to a course .")
-                    return
-                }
-                const Loggedinstructor = await academicMember.findOne(
-                {
-                    Memberid: loggedMember._id,
-                    courses: CourseID
-                })
-                if (!ac)
-                {
-                    res.send("This Academic Member is not a part of this course");
-                    return;
-                }
-                Course = await course.findOne(
-                {
-                    _id: CourseID,
-                    instructors: Loggedinstructor._id
-                });
-                if (!Course)
-                {
-                    res.send("This Academic Member is not a course intructor to this course");
-                    return;
-                }
-                var AssigedAcm = await academicMember.findOne(
-                {
-                    _id: AcID
-                })
-                if (!AssigedAcm)
-                {
-                    res.send("The TA that you want to assign doesnt exist");
-                    return;
-                }
-                AssigedAcm = await academicMember.findOne(
-                {
-                    _id: AcID,
-                    courses: CourseID
-                })
-                if (!AssigedAcm)
-                {
-                    res.send("The TA that you want to assign is already assigned to this course");
-                    return;
-                }
-                AssigedAcm.courses.push(Course._id);
-                AssigedAcm.save();
 
-                course.teachingAssistants.push(AssigedAcm._id)
-                course.save();
-
-                res.send("TA is now assigned . Course , Academic Member  tables UPDATED.");
-                return;
-            }
-
-        }
-        catch (error)
-        {
-            res.status(500).json(
-            {
-                error: error
-            })
-        }
-    });
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the department of this member
-//get the course in this dep from params
-//get the slot assigned
 CourseInstRouter.route('/unassignMemFromSlot')
     .put(async(req, res, next) =>
     {
@@ -650,35 +539,62 @@ CourseInstRouter.route('/unassignMemFromSlot')
         }
     });
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the department of this member
-//get the course in this dep from params
-//remove this member from the course teachers
-//remove his name from course slots
-//remove this course from the member's courses
-//make the academic member null
-CourseInstRouter.route('/removeMember')
+CourseInstRouter.route('/RemoveMemberFromCourse')
     .delete(async(req, res, next) =>
     {
-        try
+        // try
+        // {
+        const payload = jwt.verify(req.header('auth-token'), key);
+        if (!((payload.id).includes("ac")))
         {
-            const token = req.header('auth-token');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
-            {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
-            }
+            return res.status(401).send("not authorized");
+        }
+        else
+        {
             if (id.includes('ac'))
             {
                 CourseID = req.body.CourseID;
                 AcID = req.body.AcID;
+                if (!(typeof(CourseID) == "string" && typeof(AcID) == "string" &&
+                        validator.isMongoId(CourseID) && validator.isMongoId(AcID)))
+                {
+                    return res.send("Input type error");
+
+                }
+                const loggedMember = await members.findOne(
+                {
+                    id: payload.id
+                })
+
+                //check if el wad da bydy el course da
+                var Course = await course.findOne(
+                {
+                    _id: CourseID
+                });
+                if (!Course)
+                {
+                    res.send("CourseId doesnt belong to a course .")
+                    return
+                }
+                var loggedAcm = await academicMember.findOne(
+                {
+                    _id: loggedMember._id,
+                    type: "CourseInstructor"
+                })
+                if (!loggedAcm)
+                {
+                    return res.send("You are not a Course Instructor")
+                }
+                loggedAcm = await academicMember.findOne(
+                {
+                    _id: loggedMember._id,
+                    type: "CourseInstructor",
+                    Courses: CourseID
+                })
+                if (!loggedAcm)
+                {
+                    return res.send("You are not related to this course")
+                }
                 const accourse = await course.findOne(
                 {
                     _id: CourseID,
@@ -691,7 +607,7 @@ CourseInstRouter.route('/removeMember')
                 var Loggedinstructor = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id,
-                    type: "Course Instructor",
+                    type: "CourseInstructor",
                 })
                 if (!Loggedinstructor)
                 {
@@ -701,7 +617,7 @@ CourseInstRouter.route('/removeMember')
                 Loggedinstructor = await academicMember.findOne(
                 {
                     Memberid: loggedMember._id,
-                    type: "Course Instructor",
+                    type: "CourseInstructor",
                     courses: accourse._id
                 })
                 if (!Loggedinstructor)
@@ -715,95 +631,211 @@ CourseInstRouter.route('/removeMember')
                     _id: AcID,
                     courses: CourseID
                 })
-                if (!ac)
+                if (ac.type.equals("CourseInstructor"))
                 {
-                    res.send("This academic Member is not a part of this course");
-                    return;
+                    return res.send("Only the Head of department can delete Course Instructor.");
                 }
-                else
+                if (ac.type.equals("academic member") || ac.type.equals("CourseCoordinator"))
                 {
-
-
-                    // acadimic member
-                    console.log("ablllllll" + ac);
-                    ac.courses = ac.courses.filter(function(ele)
+                    if (!ac)
                     {
-                        return ele != CourseID;
-                    });
-                    console.log("b3dddddd" + ac);
-                    await ac.save();
-
-                    //slots
-                    const acslots = await slots.findOne(
+                        res.send("This academic Member is not a part of this course");
+                        return;
+                    }
+                    else
                     {
-                        course: CourseID,
-                        memberID: AcID
-                    })
-                    console.log("ablllllll Slooots " + acslots);
-                    slotscount = 0
-                    if (acslots != null)
-                    {
-                        for (let index = 0; index < acslots.length; index++)
+                        // acadimic member
+                        // console.log("ablllllll" + ac);
+                        ac.courses = ac.courses.filter(function(ele)
                         {
-                            acslots[index].memberID = null;
+                            return ele != CourseID;
+                        });
+                        // console.log("b3dddddd" + ac);
+                        await ac.save();
+
+                        //slots
+                        const acslots = await slots.findOne(
+                            {
+                                course: CourseID,
+                                memberID: AcID
+                            })
+                            // console.log("ablllllll Slooots " + acslots);
+                        slotscount = 0
+                        if (acslots != null)
+                        {
+                            for (let index = 0; index < acslots.length; index++)
+                            {
+                                acslots[index].memberID = null;
+                            }
+                            // console.log("b3dddddd" + acslots);
+                            slotscount = acslots.length;
+                            await acslots.save();
                         }
-                        console.log("b3dddddd" + acslots);
-                        slotscount = acslots.length;
-                        await acslots.save();
+                        //sha8aaaaaaaaaaaaaaaaaal
+                        //course
+                        // console.log("ablllllll courssesss  " + accourse);
+                        if (accourse.courseCoordinator == AcID)
+                        {
+                            accourse.courseCoordinator = null
+                            ac.type = "academic member"
+                        }
+
+                        //
+                        // accourse.instructors = accourse.instructors.filter(function(ele)
+                        // {
+                        //     return ele != AcID;
+                        // });
+                        accourse.teachingAssistants = accourse.teachingAssistants.filter(function(ele)
+                        {
+                            //low mesh equal true
+                            return ele != AcID;
+                        });
+                        accourse.numberOfSlotsAssigned = accourse.numberOfSlotsAssigned - slotscount;
+                        accourse.coverage = accourse.numberOfSlotsAssigned / accourse.numberOfSlotsNeeded;
+                        // console.log("b3dddddd" + accourse);
+                        await accourse.save();
+
+
+
+
+                        res.send("removed course assigment from slots , courses, academic member tables");
                     }
-                    //sha8aaaaaaaaaaaaaaaaaal
-                    //course
-                    console.log("ablllllll courssesss  " + accourse);
-                    if (accourse.courseCoordinator == AcID)
-                    {
-                        accourse.courseCoordinator = null
-                        ac.type = "Academic Member"
-                    }
-
-                    //
-                    accourse.instructors = accourse.instructors.filter(function(ele)
-                    {
-                        return ele != AcID;
-                    });
-                    accourse.teachingAssistants = accourse.teachingAssistants.filter(function(ele)
-                    {
-                        //low mesh equal true
-                        return ele != AcID;
-                    });
-                    accourse.numberOfSlotsAssigned = accourse.numberOfSlotsAssigned - slotscount;
-                    accourse.coverage = accourse.numberOfSlotsAssigned / accourse.numberOfSlotsNeeded;
-                    console.log("b3dddddd" + accourse);
-                    await accourse.save();
-
-
-
-
-                    res.send("removed course assigment from slots , courses, academic member tables");
                 }
+            }
 
-            }
-            else
-            {
-                res.send("This User isnt an academic member.")
-                return;
-            }
+
         }
-        catch (error)
-        {
-            res.status(500).json(
-            {
-                error: error
-            })
-        }
+        // }
+        // catch (error)
+        // {
+        //     res.status(500).json(
+        //     {
+        //         error: error
+        //     })
+        // }
     });
 
-//authenticate that this is a valid member
-//authorize that this is a CI member
-//get the department of this member
-//get the course in this dep from params
-//get the mem id from body
-//update the CC field of course to this member
-//update the type of this member
+
+
+
+CourseInstRouter.route('/AssignMemberToCourse')
+    .put(async(req, res, next) =>
+    {
+        // try
+        // {
+        const payload = jwt.verify(req.header('auth-token'), key);
+        if (!((payload.id).includes("ac")))
+        {
+            return res.status(401).send("not authorized");
+        }
+        else
+        {
+            CourseID = req.body.CourseID;
+            AcID = req.body.AcID;
+            if (!(typeof(CourseID) == "string" && typeof(AcID) == "string" &&
+                    validator.isMongoId(CourseID) && validator.isMongoId(AcID)))
+            {
+                return res.send("Input type error");
+
+            }
+            const loggedMember = await members.findOne(
+            {
+                id: payload.id
+            })
+
+            //check if el wad da bydy el course da
+            var Course = await course.findOne(
+            {
+                _id: CourseID
+            });
+            if (!Course)
+            {
+                res.send("CourseId doesnt belong to a course .")
+                return
+            }
+            var loggedAcm = await academicMember.findOne(
+            {
+                _id: loggedMember._id,
+                type: "CourseInstructor"
+            })
+            if (!loggedAcm)
+            {
+                return res.send("You are not a Course Instructor")
+            }
+            loggedAcm = await academicMember.findOne(
+            {
+                _id: loggedMember._id,
+                type: "CourseInstructor",
+                Courses: CourseID
+            })
+            if (!loggedAcm)
+            {
+                return res.send("You are not related to this course")
+            }
+            const Loggedinstructor = await academicMember.findOne(
+            {
+                Memberid: loggedMember._id,
+                courses: CourseID
+            })
+            console.log(loggedMember)
+            Loggedinstructor = await academicMember.findOne(
+            {
+                Memberid: loggedMember._id,
+                courses: CourseID
+            })
+            Course = await course.findOne(
+            {
+                _id: CourseID,
+                instructors: Loggedinstructor._id
+            });
+            if (!Course)
+            {
+                res.send("This Academic Member is not a course intructor to this course");
+                return;
+            }
+            var AssigedAcm = await academicMember.findOne(
+            {
+                _id: AcID
+            })
+            if (!AssigedAcm)
+            {
+                res.send("The TA that you want to assign doesnt exist");
+                return;
+            }
+            AssigedAcm = await academicMember.findOne(
+            {
+                _id: AcID,
+                courses: CourseID
+            })
+            if (AssigedAcm)
+            {
+                res.send("The TA that you want to assign is already assigned to this course");
+                return;
+            }
+            var AssigedAcm = await academicMember.findOne(
+            {
+                _id: AcID
+            })
+            AssigedAcm.courses.push(Course._id);
+            AssigedAcm.save();
+
+            Course.teachingAssistants.push(AssigedAcm._id)
+            Course.save();
+
+            res.send("TA is now assigned . Course , Academic Member  tables UPDATED.");
+            return;
+        }
+
+        // }
+        // catch (error)
+        // {
+        //     res.status(500).json(
+        //     {
+        //         error: error
+        //     })
+        // }
+    });
+
 CourseInstRouter.route('/assignCoordinator')
     .put(async(req, res, next) =>
     {
@@ -812,19 +844,46 @@ CourseInstRouter.route('/assignCoordinator')
             const payload = jwt.verify(req.header('auth-token'), key);
             if (!((payload.id).includes("ac")))
             {
-                //console.log(payload.id);
                 return res.status(401).send("not authorized");
             }
             else
             {
+                CourseID = req.body.CourseID;
+                AcID = req.body.AcID;
+                if (!(typeof(CourseID) == "string" && typeof(AcID) == "string" &&
+                        validator.isMongoId(CourseID) && validator.isMongoId(AcID)))
+                {
+                    return res.send("Input type error");
+
+                }
+
+
                 const loggedMember = await members.findOne(
                 {
                     id: id
                 })
-                CourseID = req.body.CourseID;
-                AcID = req.body.AcID;
+                var loggedAcm = await academicMember.findOne(
+                {
+                    _id: loggedMember._id,
+                    type: "CourseInstructor"
+                })
+                if (!loggedAcm)
+                {
+                    return res.send("You are not a Course Instructor")
+                }
+                loggedAcm = await academicMember.findOne(
+                {
+                    _id: loggedMember._id,
+                    type: "CourseInstructor",
+                    Courses: CourseID
+                })
+                if (!loggedAcm)
+                {
+                    return res.send("You are not related to this course")
+
+                }
                 //check if el wad da bydy el course da
-                const ac = await academicMember.findOne(
+                var ac = await academicMember.findOne(
                 {
                     _id: AcID,
                     //sheel de low sa7
@@ -845,7 +904,7 @@ CourseInstRouter.route('/assignCoordinator')
                     {
                         res.json(
                         {
-                            Msg: "This Instructor is already the Course instructor"
+                            Msg: "This Ta is already the Coordinator"
                         })
                         return;
                     }
@@ -855,7 +914,7 @@ CourseInstRouter.route('/assignCoordinator')
                     ac.save();
                     res.json(
                     {
-                        Msg: "This Instructor is now the Course instructor"
+                        Msg: "This Ta is now the Course Coordinator"
                     })
                     return;
                 }

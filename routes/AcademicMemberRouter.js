@@ -63,12 +63,14 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
 
 
             var acfoundforcomrem = await academicMember.findOne(queryForMem);
+            console.log(acfoundforcomrem.CompensationSlots)
 
             acfoundforcomrem.CompensationSlots = acfoundforcomrem.CompensationSlots.filter(function(Slot)
             {
-                //low a2dm return true
-                return new date(Slot.date) < new date();
+                //low true shelha
+                return new Date(Slot.Date) < new Date();
             });
+            console.log(acfoundforcomrem.CompensationSlots)
             acfoundforcomrem.save();
 
 
@@ -76,24 +78,26 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
                 queryForMem).populate(
             {
                 path: 'schedule',
-                select: '-_id timing type location'
+                select: '-_id course timing type location',
+                populate:
+                {
+                    path: 'location',
+                    select: '-_id name type'
+                }
             }).populate(
             {
-                path: 'schedule.location',
-                select: '-_id name type'
-            }).populate(
-            {
-                path: 'CompensationSlots',
-                select: '-_id slot Date'
-            }).populate(
-            {
-                path: 'CompensationSlots.slot',
-                select: '-_id timing type location'
-            }).populate(
-            {
-                path: 'CompensationSlots.slot.location',
-                select: '-_id name type'
-            });
+                path: 'schedule',
+                select: '-_id course timing type location',
+                populate:
+                {
+                    path: 'course',
+                    select: '-_id name  '
+                }
+            })
+
+
+
+
             res.json(
             {
                 "Schedule": acfound.schedule,
@@ -170,7 +174,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
             //authorize that this is a AM member
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
-           // console.log(DecodeToken);
+            // console.log(DecodeToken);
             const id = DecodeToken.id;
             if (!((id).includes("ac")))
             {
@@ -214,14 +218,18 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
                     }
                 });
                 console.log(reqID);
-                if(reqID.length ==0){
-                    nID= 1 ;
-                }else{
-                const maxID = reqID[reqID.length - 1];
-                console.log(maxID);
-                const toBeParsed = maxID.requestID.substring(2);
-                const iID = parseInt(toBeParsed);
-                nID = iID + 1;}
+                if (reqID.length == 0)
+                {
+                    nID = 1;
+                }
+                else
+                {
+                    const maxID = reqID[reqID.length - 1];
+                    console.log(maxID);
+                    const toBeParsed = maxID.requestID.substring(2);
+                    const iID = parseInt(toBeParsed);
+                    nID = iID + 1;
+                }
 
                 var assignedID = "";
                 if (flagAc)
@@ -242,7 +250,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
                 res.send("Request added");
                 console.log("Welmos7af added");
             }
-        
+
         }
 
 
@@ -296,7 +304,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
             {
                 return res.status(400).send("Please enter the requested slot!!");
             }
-            else if  (!(typeof(req.body.comment) == 'string'))
+            else if (!(typeof(req.body.comment) == 'string'))
             {
                 return res.status(400).send("Please enter the comment as String!!");
             }
@@ -357,16 +365,19 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
                     }
                 });
                 console.log(reqID);
-                if(reqID.length ==0){
-                    nID= 1 ;
-                }else{
-                const maxID = reqID[reqID.length - 1];
-                console.log(maxID);
-                const toBeParsed = maxID.requestID.substring(3);
-                const iID = parseInt(toBeParsed);
-                nID = iID + 1;
-            }
-                  console.log(nID)
+                if (reqID.length == 0)
+                {
+                    nID = 1;
+                }
+                else
+                {
+                    const maxID = reqID[reqID.length - 1];
+                    console.log(maxID);
+                    const toBeParsed = maxID.requestID.substring(3);
+                    const iID = parseInt(toBeParsed);
+                    nID = iID + 1;
+                }
+                console.log(nID)
                 var assignedID = "";
                 if (flagAc)
                 {
@@ -435,11 +446,11 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
             {
                 return res.status(400).send("Please enter your ID!!");
             }
-            else if (req.body.requestedDay == null || !(typeof(req.body.requestedDay=='string')))
+            else if (req.body.requestedDay == null || !(typeof(req.body.requestedDay == 'string')))
             {
                 return res.status(400).send("Please enter The requested Day!!");
             }
-            else if (!typeof(req.body.comment=='string'))
+            else if (!typeof(req.body.comment == 'string'))
             {
                 return res.status(400).send("Please enter The comment in string");
             }
@@ -553,7 +564,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
             {
                 Memberid: FoundID
             });
-            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)) || (req.body.StaffID!=FoundID))
+            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)) || (req.body.StaffID != FoundID))
             {
                 return res.status(400).send("Enter your ID");
             }
@@ -579,16 +590,19 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'Ac'
                             }
                         });
-                        if(AcID.length==0){
-                            nID=1;
-                        }else{
-                        console.log(AcID);
-                        const maxID = AcID[AcID.length - 1];
-                        console.log(maxID);
-                        const toBeParsed = maxID.requestID.substring(3);
-                        const iID = parseInt(toBeParsed);
-                        nID = iID + 1;
-                    }
+                        if (AcID.length == 0)
+                        {
+                            nID = 1;
+                        }
+                        else
+                        {
+                            console.log(AcID);
+                            const maxID = AcID[AcID.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.requestID.substring(3);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -636,16 +650,19 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'An'
                             }
                         });
-                        if(AcID.length==0){
-                            nID=1;
-                        }else{
-                        console.log(AcID);
-                        const maxID = AcID[AcID.length - 1];
-                        console.log(maxID);
-                        const toBeParsed = maxID.requestID.substring(3);
-                        const iID = parseInt(toBeParsed);
-                        nID = iID + 1;
-                    }
+                        if (AcID.length == 0)
+                        {
+                            nID = 1;
+                        }
+                        else
+                        {
+                            console.log(AcID);
+                            const maxID = AcID[AcID.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.requestID.substring(3);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;
+                        }
 
                         var assignedID = "";
                         if (flagAc)
@@ -691,16 +708,20 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             {
                                 $regex: 'C'
                             }
-                        });if(AcID.length==0){
-                            nID=1;
-                        }else{
-                        console.log(AcID);
-                        const maxID = AcID[AcID.length - 1];
-                        console.log(maxID);
-                        const toBeParsed = maxID.requestID.substring(2);
-                        const iID = parseInt(toBeParsed);
-                        nID = iID + 1;
-                    }
+                        });
+                        if (AcID.length == 0)
+                        {
+                            nID = 1;
+                        }
+                        else
+                        {
+                            console.log(AcID);
+                            const maxID = AcID[AcID.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.requestID.substring(2);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -747,15 +768,19 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             {
                                 $regex: 'M'
                             }
-                        });if(AcID.length==0){
-                            nID=1;
-                        }else{
-                        console.log(AcID);
-                        const maxID = AcID[AcID.length - 1];
-                        console.log(maxID);
-                        const toBeParsed = maxID.requestID.substring(3);
-                        const iID = parseInt(toBeParsed);
-                        nID = iID + 1;
+                        });
+                        if (AcID.length == 0)
+                        {
+                            nID = 1;
+                        }
+                        else
+                        {
+                            console.log(AcID);
+                            const maxID = AcID[AcID.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.requestID.substring(3);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;
                         }
                         var assignedID = "";
                         if (flagAc)
@@ -804,15 +829,18 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'S'
                             }
                         });
-                        if(AcID.length==0){
-                            nID=1;
-                        }else{
-                        console.log(AcID);
-                        const maxID = AcID[AcID.length - 1];
-                        console.log(maxID);
-                        const toBeParsed = maxID.requestID.substring(2);
-                        const iID = parseInt(toBeParsed);
-                        nID = iID + 1;
+                        if (AcID.length == 0)
+                        {
+                            nID = 1;
+                        }
+                        else
+                        {
+                            console.log(AcID);
+                            const maxID = AcID[AcID.length - 1];
+                            console.log(maxID);
+                            const toBeParsed = maxID.requestID.substring(2);
+                            const iID = parseInt(toBeParsed);
+                            nID = iID + 1;
                         }
                         var assignedID = "";
                         if (flagAc)
