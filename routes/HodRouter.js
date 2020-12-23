@@ -87,6 +87,10 @@ HodRouter.route('/assignInstructor')
                     if (co == null) {
                         return res.status(401).send("Course does not exist");
                     }
+                    for(j=0;j<a.courses.length;j++){
+                        if(a.courses[j].equals(co._id))
+                        return res.status(401).send("The instructor is already assigned to this course");
+                    }
                     const courseId = await course.findOne({ code: c });
                     const dep = await department.findOne({ name: ufound.department });
                     var flag = false;
@@ -161,35 +165,44 @@ HodRouter.route('/DeleteInstructor')
                     if (d == null)
                         return res.status(401).send("The course is not in your department");
                     for (i = 0; i < c.instructors.length; i++) {
-                        console.log(c.instructors[i]);
-                        console.log(a._id)
                         if (c.instructors[i].equals(a._id)) {
-                            c.instructors.pop(c.instructors[i]);
-                            a.courses.pop(c._id);
-                            await a.save();
+                            c.instructors.splice(i,1);
                             await c.save();
+                            for(j=0;j<a.courses.length;j++){
+                                if(a.courses[j].equals(c._id)){
+                                  a.courses.splice(j,1);
+                                  await a.save();
+                                }
+                            }
+                            
                         }
                         else {
                             return res.status(401).send("This instructor is not assigned to this course");
                         }
-
+                    
                         const s = await slot.find({ _id: a.schedule })
-                        for (i = 0; i < s.length; i++) {
+                        for (k = 0; k < s.length; k++) {
                             if (s != null) {
-                                console.log(s[i].memberID)
-                                console.log(a._id)
-                                if (s[i].memberID.equals(a._id) && s[i].course.equals(c._id)) {
-                                    s[i].memberID = null;
-                                    await s[i].save();
-                                    a.schedule.pop(s[i]._id);
-                                    await a.save()
+                                if (s[k].memberID.equals(a._id) && s[k].course.equals(c._id)) {
+                                    s[k].memberID = null;
+                                    await s[k].save();
+                                    if(c.numberOfSlotsAssigned>0){
                                     c.numberOfSlotsAssigned--;
                                     c.coverage = c.numberOfSlotsAssigned / c.numberOfSlotsNeeded;
                                     await c.save();
+                                    }
+                                    
+                                for(j=0;j<a.schedule.length;j++){
+                                    if(a.schedule[j].equals(s[k]._id) ){
+                                    a.schedule.splice(j,1);
+                                    await a.save()
                                 }
                             }
+                            
                         }
                     }
+                    }
+                }
                     res.json("instructor deleted successfully")
                 }
             }
@@ -285,38 +298,55 @@ HodRouter.route('/UpdateInstructor')
                             }
 
                         }
-                        c.instructors.pop(a.Memberid);
-                        c1.instructors.push(a.Memberid);
-                        await c.save();
-                        await c1.save();
-                        a.courses.pop(c._id);
-                        a.courses.push(c1._id);
-                        await a.save();
-
-                        const s = await slot.find(
-                            {
-                                _id: a.schedule
-                            })
-                        for (i = 0; i < s.length; i++) {
+                    
+                    for (i = 0; i < c.instructors.length; i++) {
+                        if (c.instructors[i].equals(a._id)) {
+                            c.instructors.splice(i,1);
+                            await c.save();
+                            for(j=0;j<a.courses.length;j++){
+                                if(a.courses[j].equals(c._id)){
+                                  a.courses.splice(j,1);
+                                  await a.save();
+                                }
+                            }
+                            c1.instructors.push(a._id);
+                                await c1.save();
+                            
+                        }
+                        else {
+                            return res.status(401).send("This instructor is not assigned to this course");
+                        }
+                    
+                        const s = await slot.find({ _id: a.schedule })
+                        for (k = 0; k < s.length; k++) {
                             if (s != null) {
-                                if (s[i].memberID.equals(a._id) && s[i].course.equals(c._id)) {
-                                    s[i].memberID = null;
-                                    await s[i].save();
-                                    a.schedule.pop(s[i]._id);
-                                    await a.save()
+                                if (s[k].memberID.equals(a._id) && s[k].course.equals(c._id)) {
+                                    s[k].memberID = null;
+                                    await s[k].save();
+                                    if(c.numberOfSlotsAssigned>0){
                                     c.numberOfSlotsAssigned--;
                                     c.coverage = c.numberOfSlotsAssigned / c.numberOfSlotsNeeded;
                                     await c.save();
+                                    }
+                                    
+                                for(j=0;j<a.schedule.length;j++){
+                                    if(a.schedule[j].equals(s[k]._id) ){
+                                    a.schedule.splice(j,1);
+                                    await a.save()
                                 }
                             }
+                            a.courses.push(c1._id);
+                                 await a.save();
                         }
-
                     }
+                    }
+                }
 
                     res.json("Instructor updated successfully")
                 }
             }
         }
+    }
         catch (error) {
             res.status(500).json(
                 {
@@ -586,7 +616,6 @@ HodRouter.route('/viewDaysOffAll')
                             _id: TA.Memberid
                         });
                     //  TAs.push(TA);
-                    console.log(staff)
                     allStaff.push([staff.name, staff.id, staff.dayOff]);
                 }
                 for (j = 0; j < depmembers.instructors.length; j++) {
@@ -811,8 +840,9 @@ HodRouter.route('/viewLeaveReq')
                         }
                     }
                 }
-                res.json(total);
+               
             }
+            res.json(total);
         }
         catch (error) {
             res.status(500).json(
