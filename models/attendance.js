@@ -16,7 +16,10 @@ const attendanceLogSchema = new mongoose.Schema(
     },
     signIn: Date,
     signOut: Date,
-    duration: Number
+    duration: {
+        type :Number,
+        default :0
+    }
         //this can be calculated from signin and signout
 });
 
