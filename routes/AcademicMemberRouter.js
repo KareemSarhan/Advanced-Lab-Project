@@ -171,7 +171,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
             //authorize that this is a AM member
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
-            console.log(DecodeToken);
+           // console.log(DecodeToken);
             const id = DecodeToken.id;
             if (!((id).includes("ac")))
             {
@@ -207,7 +207,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
             {
                 //get the last id available and increment it by 1
                 flagAc = true;
-                const reqID = await members.find(
+                const reqID = await ReplacementRequest.find(
                 {
                     "requestID":
                     {
@@ -215,11 +215,14 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
                     }
                 });
                 console.log(reqID);
+                if(reqID.length ==0){
+                    nID= 1 ;
+                }else{
                 const maxID = reqID[reqID.length - 1];
                 console.log(maxID);
                 const toBeParsed = maxID.requestID.substring(2);
                 const iID = parseInt(toBeParsed);
-                nID = iID + 1;
+                nID = iID + 1;}
 
                 var assignedID = "";
                 if (flagAc)
@@ -240,6 +243,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
                 res.send("Request added");
                 console.log("Welmos7af added");
             }
+        
         }
 
 
@@ -261,7 +265,6 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
             //authorize that this is a AM member
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
-            console.log(DecodeToken);
             const id = DecodeToken.id;
             if (!((id).includes("ac")))
             {
@@ -294,7 +297,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
             {
                 return res.status(400).send("Please enter the requested slot!!");
             }
-            else if (!(req.body.comment == 'string'))
+            else if  (!(typeof(req.body.comment) == 'string'))
             {
                 return res.status(400).send("Please enter the comment as String!!");
             }
@@ -347,24 +350,28 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
                     return
                 }
                 flagAc = true;
-                const SLID = await Linkreq.find(
+                const reqID = await Linkreq.find(
                 {
                     "requestID":
                     {
-                        $regex: 'Sl'
+                        $regex: 'SL'
                     }
                 });
-                console.log(SLID);
-                const maxID = SLID[SLID.length - 1];
+                console.log(reqID);
+                if(reqID.length ==0){
+                    nID= 1 ;
+                }else{
+                const maxID = reqID[reqID.length - 1];
                 console.log(maxID);
                 const toBeParsed = maxID.requestID.substring(3);
                 const iID = parseInt(toBeParsed);
                 nID = iID + 1;
-
+            }
+                  console.log(nID)
                 var assignedID = "";
                 if (flagAc)
                 {
-                    assignedID = "Sl-" + nID + "";
+                    assignedID = "SL-" + nID + "";
                 }
                 const LinkingRequest = new Linkreq(
                 {
@@ -429,11 +436,11 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
             {
                 return res.status(400).send("Please enter your ID!!");
             }
-            else if (req.body.requestedDay == null || !(validator.isDate(req.body.requestedDay)))
+            else if (req.body.requestedDay == null || !(typeof(req.body.requestedDay=='string')))
             {
                 return res.status(400).send("Please enter The requested Day!!");
             }
-            else if (!(req.body.comment == 'string'))
+            else if (!typeof(req.body.comment=='string'))
             {
                 return res.status(400).send("Please enter The comment in string");
             }
@@ -450,9 +457,12 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
                     const SlotID = scheduleslots[i];
                     const ActualSlot = await slots.findOne(
                     {
-                        SlotID: slot._id
+                        SlotID: slots._id
                     });
-                    if (ActualSlot == null || !(ActualSlot.timing.includes(dayoff)))
+                    const MEM= await member.findOne({
+                        _id:FoundID
+                    });
+                    if (ActualSlot == null || !(ActualSlot.timing.includes(MEM.dayOff)))
                     {
                         //check if he left a comment which is optional
                         //create a new request in the dayOff table requests table
@@ -465,13 +475,16 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
                                 $regex: 'DayOff'
                             }
                         });
+                        if(DayoffID.length==0){
+                            nID= 1;
+                        }else{
                         console.log(DayoffID);
                         const maxID = DayoffID[DayoffID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(7);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
-
+                    }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -540,7 +553,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
             {
                 Memberid: FoundID
             });
-            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)))
+            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)) || (req.body.StaffID!=FoundID))
             {
                 return res.status(400).send("Enter your ID");
             }
@@ -566,12 +579,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'Ac'
                             }
                         });
+                        if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(3);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
+                    }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -604,12 +621,13 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     {
                         return res.status(400).send("Please enter The replacement ID!!");
                     }
-                    else if (!(req.body.reason == 'string'))
+                    else if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please enter The reason in string!!");
                     }
                     else
                     {
+                        flagAc = true;
                         flagAc = true;
                         const AcID = await LEAVES.find(
                         {
@@ -618,12 +636,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'An'
                             }
                         });
+                        if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(3);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
+                    }
 
                         var assignedID = "";
                         if (flagAc)
@@ -648,15 +670,15 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                 }
                 else if (req.body.Leavetype == "Compensation")
                 {
-                    if (req.body.dateOfabsence == null || !(validator.isDate(req.body.dateOfLeave)))
+                    if (req.body.dateOfabsence == null || !(validator.isDate(req.body.dateOfabsence)))
                     {
-                        return res.status(400).send("Please enter The number of days!!");
+                        return res.status(400).send("Please enter The date of absence!!");
                     }
                     else if (req.body.dateOfcompensation == null || !(validator.isDate(req.body.dateOfcompensation)))
                     {
-                        return res.status(400).send("Please enter The date of leave!!");
+                        return res.status(400).send("Please enter The date of compensation!!");
                     }
-                    else if (req.body.reason == null || !(req.body.reason == 'string'))
+                    else if (req.body.reason == null || !typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send(" You must Enter a reason!!");
                     }
@@ -669,14 +691,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             {
                                 $regex: 'C'
                             }
-                        });
+                        });if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(2);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
-
+                    }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -707,11 +731,11 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     {
                         return res.status(400).send("Please enter The required document!!");
                     }
-                    if (!(req.body.reason == 'string'))
+                    if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please the reason in string");
                     }
-                    if (req.body.StaffID.gender != "female")
+                    if (!(req.body.StaffID.gender != "female"))
                     {
                         return res.status(400).send("The user should be a female Estargel !!");
                     }
@@ -723,14 +747,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             {
                                 $regex: 'M'
                             }
-                        });
+                        });if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(3);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
-
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -764,7 +790,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     {
                         return res.status(400).send("Please enter The date of document!!");
                     }
-                    else if (!(req.body.reason == 'string'))
+                    else if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please enter the reason in string !!");
                     }
@@ -778,12 +804,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'S'
                             }
                         });
+                        if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(2);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
