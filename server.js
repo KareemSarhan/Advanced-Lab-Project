@@ -98,7 +98,8 @@ async function da5lData2()
 {
     const salt = await bcrypt.genSalt(12); //if the number is increased the complexity of salting increases
     const hashedPassword = await bcrypt.hash("123456", salt);
-    const hr = new members({
+    const hr = new members(
+    {
         name: "testHR1",
         id: "hr-1",
         password: hashedPassword,
@@ -193,18 +194,18 @@ async function da5lData2()
     // console.log("done");
 };
 
- //console.log("check9");
- //da5lData2();
+//console.log("check9");
+//da5lData2();
 // console.log("check10");
 // const d = new Date();
 // const day = d.getDay();
 // console.log(day);
 
-    //  const s = "safa";
-    //  const a = "fa"
-    //  if ({ s: { $in: a}}){
-    //     console.log("ddddddddddd")
-    //  }
-    //console.log(typeof(123) == 'string');
-    //console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
+//  const s = "safa";
+//  const a = "fa"
+//  if ({ s: { $in: a}}){
+//     console.log("ddddddddddd")
+//  }
+//console.log(typeof(123) == 'string');
+//console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
 module.exports = app

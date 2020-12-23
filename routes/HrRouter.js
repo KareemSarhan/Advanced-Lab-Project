@@ -9,7 +9,7 @@ var validator = require('validator');
 const faculty = require('../models/faculty');
 const Location = require('../models/location.js');
 const academicMember = require('../models/academicMember');
-const { memberSchema, findById } = require('../models/members');
+const { memberSchema, findById, findOne } = require('../models/members');
 const members = require('../models/members');
 const slot = require('../models/slot');
 const department = require('../models/department');
@@ -64,7 +64,8 @@ HrRouter.route('/addLocation')
                         const loc = new Location({
                             name: req.body.name,
                             capacity : req.body.capacity,
-                            type: req.body.type
+                            type: req.body.type,
+                            capacitySoFar: 0
                         });
                         await loc.save();
                         res.send("location added");
@@ -76,7 +77,7 @@ HrRouter.route('/addLocation')
             }
         }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }
 });
 
@@ -123,7 +124,7 @@ HrRouter.route('/deleteLocation/:name')
         }  
     }
 }catch(err){
-        res.status(500).json({error:error.message})
+        res.status(500).json({err:err.message})
     }
 });
 
@@ -165,12 +166,14 @@ HrRouter.route('/updateLocation/:name')
                         await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
                         res.send("location capacity is updated")
                     }
+                }else{
+                    return res.status(400).send("wrong data types");
                 }
             } 
         } 
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }
 });
 
@@ -219,7 +222,7 @@ HrRouter.route('/addFaculty')
         }
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }
 });
 
@@ -253,7 +256,7 @@ HrRouter.route('/updateFaculty/:name')
         }
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }
 });
 
@@ -288,7 +291,7 @@ HrRouter.route('/deleteFaculty/:name')
         }   
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }
 });
 
@@ -308,49 +311,38 @@ HrRouter.route('/addDepartment')
             return res.status(400).send("name of department should be given in body");
         }else if (req.body.faculty == null){
             return res.status(400).send("name of faculty should be given in body");
-        }else if (req.body.headOfDepartment == null){
-            return res.status(400).send("name of head of department should be given in body");
+        //}else if (req.body.headOfDepartment == null){
+          //  return res.status(400).send("name of head of department should be given in body");
         }else{
-            if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')&& (typeof(req.body.headOfDepartment) == 'string')){
-            //all data required are given
-             //make sure this department does not exist in other faculties
-             const otherDep = (await department.find({"name": req.body.name}));
-             if (otherDep.length != 0){
-                 return res.status(400).send("there exists a department with this name");
-             }else{
-                let c = "";
-                if (req.body.code != null && typeof(req.body.code) == 'string'){
-                    c = req.body.code;
-                }
-                let f = null;
-                const fa = (await faculty.find({"name": req.body.faculty}));
-                if(fa.length == 0){
-                    return res.status(400).send("there does not exist a faculty with this name");
+            if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')){
+                //all data required are given
+                //make sure this department does not exist in other faculties
+                const otherDep = (await department.find({"name": req.body.name}));
+                if (otherDep.length != 0){
+                    return res.status(400).send("there exists a department with this name");
                 }else{
-                    f = fa[0];
-                    const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
-                
-                    if(!h1){
-                        return res.status(400).send("there does not exist an instructor with this id");
+                    let c = "";
+                    if (req.body.code != null && typeof(req.body.code) == 'string'){
+                        c = req.body.code;
                     }
-                    else{
-                        const h = (await academicMember.find({"Memberid": h1._id}))[0];
+                    let f = null;
+                    const fa = (await faculty.find({"name": req.body.faculty}));
+                    if(fa.length == 0){
+                        return res.status(400).send("there does not exist a faculty with this name");
+                    }else{
+                        f = fa[0];
                         const instA =[];
-                        instA.push(h._id);
-                        console.log("hod added to instructors array of department");
                         const d = new department({
                             name: req.body.name,
                             code: c,
                             facultyName: req.body.faculty,
-                            headOfDep: h._id,
                             instructors: instA
                         });
                         //add a new department to this faculty
                         await d.save();
                         console.log("dep added");
                         const dN = (await department.find({"name": req.body.name}))[0];
-                        //console.log(dN);
-                        
+                        //console.log(dN);    
                         let x = [];
                         x = f.departments;
                         x.push(dN._id);
@@ -358,14 +350,14 @@ HrRouter.route('/addDepartment')
                         await faculty.findByIdAndUpdate(f._id, {"departments" : x});
                         console.log("dep added to faculty");
                         res.send("department added");
-                        }
+                        // }
                     }
                 }
             }
         } 
     }
     }catch(err){
-        res.status(500).json({error:error.message})
+        res.status(500).json({err:err.message})
     }     
 });
 
@@ -395,7 +387,7 @@ HrRouter.route('/updateDepartment/:name')
                      console.log("code updated");
              }
              if (req.body.headOfDepartment != null && typeof(req.body.headOfDepartment) == 'string'){
-                const h1 = (await members.find({"id" : {$in:[req.body.headOfDepartment]}}))[0];
+                const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
                 if (h1){
                     //console.log(h1);
                     const h = (await academicMember.find({"Memberid": h1._id}))[0];
@@ -424,7 +416,7 @@ HrRouter.route('/updateDepartment/:name')
         }  
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
@@ -468,7 +460,7 @@ HrRouter.route('/deleteDepartment/:name')
         }  
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }   
 });
 
@@ -484,15 +476,15 @@ HrRouter.route('/addCourse')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null && typeof(req.body.name) == 'string'){
+        if (req.body.name == null || typeof(req.body.name) != 'string'){
             return res.status(400).send("name of course should be given in body");
-        }else if (req.body.code == null && typeof(req.body.code) == 'string'){
+        }else if (req.body.code == null || typeof(req.body.code) != 'string'){
             return res.status(400).send("course  code should be given in body");
-        }else if (req.body.numberOfSlotsNeeded == null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
+        }else if (req.body.numberOfSlotsNeeded == null || typeof(req.body.numberOfSlotsNeeded) != 'number'){
             return res.status(400).send("name of head of department should be given in body");
-        }else if (req.body.creditHours == null && typeof(req.body.creditHours) == 'number'){
+        }else if (req.body.creditHours == null || typeof(req.body.creditHours) != 'number'){
             return res.status(400).send("credit hours of course should be given in body");
-        }else if (req.body.department== null && typeof(req.body.department) == 'string'){
+        }else if (req.body.department== null || typeof(req.body.department) != 'string'){
             return res.status(400).send("name of department should be given in body");
         }else{
             //all data required are given
@@ -533,7 +525,7 @@ HrRouter.route('/addCourse')
         }       
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }    
 });
 
@@ -571,7 +563,7 @@ HrRouter.route('/updateCourse/:name')
         }
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
@@ -593,7 +585,7 @@ HrRouter.route('/deleteCourse/:name')
         }
         else{
             //get the department from the body
-            if (req.body.department == null && typeof(req.body.department) == 'string'){
+            if (req.body.department == null || typeof(req.body.department) != 'string'){
                 return res.status(400).send("name of department should be given in the body");
             }else{
                 //check if there exists a department with this name
@@ -652,7 +644,7 @@ HrRouter.route('/deleteCourse/:name')
         }  
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }  
 });
 
@@ -668,15 +660,15 @@ HrRouter.route('/addStaffMember')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null && typeof(req.body.name) == 'string'){
+        if (req.body.name == null || typeof(req.body.name) != 'string'){
             return res.status(400).send("name of member should be given in body");
-        }else if (req.body.type == null && typeof(req.body.type) == 'string'){
+        }else if (req.body.type == null || typeof(req.body.type) != 'string'){
             return res.status(400).send("type of member (whether academic or HR) should be given in body");
-        }else if (req.body.email== null && validator.isEmail(req.body.email)){
+        }else if (req.body.email== null || !(validator.isEmail(req.body.email))){
             return res.status(400).send("email of member should be given in body");
-        }else if (req.body.salary == null && typeof(req.body.salary) == 'number'){
+        }else if (req.body.salary == null || typeof(req.body.salary) != 'number'){
             return res.status(400).send("salary of member should be given in body");
-        }else if (req.body.officeLocation== null && typeof(req.body.officeLocation) == 'string'){
+        }else if (req.body.officeLocation== null || typeof(req.body.officeLocation) != 'string'){
             return res.status(400).send("office location should be given in body");
         }else{
             //check if the office is full
@@ -689,10 +681,10 @@ HrRouter.route('/addStaffMember')
                 return res.status(400).send("this office is full");
             }else{
                 let flagAc = false;
-                let phoneNumber = "";
+                let phoneNumber = 0;
                 let SecondayMail = "";
                 let gender = "";
-                if (req.body.phoneNumber != null && typeof(req.body.phoneNumber) == 'string'){
+                if (req.body.phoneNumber != null && typeof(req.body.phoneNumber) == 'number'){
                     phoneNumber = req.body.phoneNumber;
                 }
                 if (req.body.SecondayMail != null && typeof(req.body.SecondayMail) == 'string'){
@@ -717,13 +709,13 @@ HrRouter.route('/addStaffMember')
                     dOff = "Saturday"
                 }else{
                     // this is an academic member
-                    if (req.body.faculty == null && typeof(req.body.faculty) == 'string'){
+                    if (req.body.faculty == null || typeof(req.body.faculty) != 'string'){
                         return res.status(400).send("faculty should be given in body");
-                    }else if(req.body.department == null && typeof(req.body.department) == 'string'){
+                    }else if(req.body.department == null || typeof(req.body.department) != 'string'){
                         return res.status(400).send("department should be given in body");
-                    }else if (req.body.dayOff == null && typeof(req.body.dayOff) == 'string'){
+                    }else if (req.body.dayOff == null || typeof(req.body.dayOff) != 'string'){
                         return res.status(400).send("dayOff of academic member should be given in body");
-                    } else if (req.body.academicType== null && typeof(req.body.academicType) == 'string'){
+                    } else if (req.body.academicType== null || typeof(req.body.academicType) != 'string'){
                         return res.status(400).send("type of academic member should be given in body");
                     }else{
                         const fac = await faculty.find({"name": req.body.faculty});
@@ -735,12 +727,16 @@ HrRouter.route('/addStaffMember')
                             dOff = req.body.dayOff;
                             //get the last id available and increment it by 1
                             const ids = await members.find({ "id": { $regex: 'ac'}});
+                            if (ids.length == 0){
+                                nID = 1;
+                            }else{
                             console.log(ids);
                             const maxID = ids[ids.length - 1];
                             console.log(maxID);
                             const toBeParsed = maxID.id.substring(3);
                             const iID = parseInt(toBeParsed);
                             nID = iID + 1;  
+                            }
                         }   
                     }
                 }
@@ -765,7 +761,8 @@ HrRouter.route('/addStaffMember')
                     salary: req.body.salary,
                     phoneNumber: phoneNumber,
                     SecondayMail: SecondayMail,
-                    gender: gender
+                    gender: gender,
+                    dayOff: dOff
                 });
                 try{
                     await m.save();
@@ -812,7 +809,7 @@ HrRouter.route('/addStaffMember')
         }       
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }    
 });
 
@@ -862,7 +859,7 @@ HrRouter.route('/updateStaffMember/:id')
         }  
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
@@ -1001,8 +998,54 @@ HrRouter.route('/deleteStaffMember/:id')
         }
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }   
+});
+
+HrRouter.route('/assignHod/:depName')
+.put(async(req,res,next) =>{
+    try{
+    //authenticate that this is a valid member
+    //authorize that this is a Hr member
+    const payload = jwt.verify(req.header('auth-token'),key);
+    //console.log(payload.id);
+    if (!((payload.id).includes("hr"))){ 
+        //console.log(payload.id);
+        return res.status(401).send("not authorized");
+    }else{
+        //verify that there is a department with the name = :depName
+        var dep = await department.find({"name": req.params.depName});
+        if(dep.length == 0){
+            return res.status(400).send("department is not found");
+        }
+        else{
+             //verify that the needed credentials are given
+             if (req.body.id != null && typeof(req.body.id) == 'string'){
+                 var hodM = await members.findOne({"id": req.body.id});
+                 if (hodM){
+                     var hod = await academicMember.findOne({"Memberid": hodM});
+                     if (hod){
+                        if (hod.department != req.params.depName +""){
+                            return res.status(400).send("this member is not in this department");
+                        }else{
+                            await academicMember.findByIdAndUpdate(hod._id, {"type": "HeadOfDepartment"});
+                            console.log("type of member changed to hod");
+                            const inst = dep[0].instructors;
+                            inst.push(hod._id);
+                            //console.log(hod._id);
+                            await department.findByIdAndUpdate(dep[0]._id, {"instructors": inst, "headOfDep": hod._id});
+                            console.log("member added to instructors array in department");
+                            console.log("department hod is assigned to department");
+                            res.send("hod assigned");
+                        }
+                    }
+                }  
+            }
+        }
+    }
+}catch(err){
+    res.status(500).json({err:err.message})
+} 
 });
 
 HrRouter.route('/addSignIn/:id')
@@ -1026,18 +1069,18 @@ HrRouter.route('/addSignIn/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.body.year == null && typeof(req.body.year) == 'number'){
+        else if (req.body.year == null || typeof(req.body.year) != 'number'){
             return res.status(400).send("year should be given in body");
-        }else if (req.body.month == null && typeof(req.body.month) == 'number'){
+        }else if (req.body.month == null || typeof(req.body.month) != 'number'){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.body.day == null && typeof(req.body.day) == 'number'){
+        else if (req.body.day == null || typeof(req.body.day) != 'number'){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.body.hour == null && typeof(req.body.hour) == 'number'){
+        else if (req.body.hour == null || typeof(req.body.hour) != 'number'){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.body.minute == null && typeof(req.body.minute) == 'number'){
+        else if (req.body.minute == null || typeof(req.body.minute) != 'number'){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
@@ -1105,7 +1148,7 @@ HrRouter.route('/addSignIn/:id')
         }
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
@@ -1130,18 +1173,18 @@ HrRouter.route('/addSignOut/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.body.year == null && typeof(req.body.year) == 'number'){
+        else if (req.body.year == null || typeof(req.body.year) != 'number'){
             return res.status(400).send("year should be given in body");
-        }else if (req.body.month == null && typeof(req.body.month) == 'number'){
+        }else if (req.body.month == null || typeof(req.body.month) != 'number'){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.body.day == null && typeof(req.body.day) == 'number'){
+        else if (req.body.day == null || typeof(req.body.day) != 'number'){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.body.hour == null && typeof(req.body.hour) == 'number'){
+        else if (req.body.hour == null || typeof(req.body.hour) != 'number'){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.body.minute == null && typeof(req.body.minute) == 'number'){
+        else if (req.body.minute == null || typeof(req.body.minute) != 'number'){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
@@ -1208,7 +1251,7 @@ HrRouter.route('/addSignOut/:id')
         }
     }
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
@@ -1235,7 +1278,7 @@ HrRouter.route('/viewAttendance/:id')
       }
     }  
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 }         
 });
 
@@ -1256,7 +1299,7 @@ HrRouter.route('/viewMissing')
         console.log("missing shown");
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
@@ -1303,7 +1346,7 @@ HrRouter.route('/updateSalary/:id')
         }
     } 
 }catch(err){
-    res.status(500).json({error:error.message})
+    res.status(500).json({err:err.message})
 } 
 });
 
