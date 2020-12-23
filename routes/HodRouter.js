@@ -811,8 +811,9 @@ HodRouter.route('/viewLeaveReq')
                         }
                     }
                 }
-                res.json(total);
+               
             }
+            res.json(total);
         }
         catch (error) {
             res.status(500).json(
