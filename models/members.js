@@ -49,7 +49,11 @@ const memberSchema = new mongoose.Schema(
     phoneNumber: Number,
     SecondayMail: String,
     gender: String,
-    dayOff: String
+    dayOff: String,
+    AnnualBalance:{
+        type:Number,
+        default:30
+    }
 });
 
 module.exports = mongoose.model('Member', memberSchema);
