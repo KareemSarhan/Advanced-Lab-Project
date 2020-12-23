@@ -108,7 +108,7 @@ async function da5lData2()
         dayOff: "Saturday",
     });
     await hr.save();
-    console.log("hr added");
+    //console.log("hr added");
     // const o2 = await Location.find({"name": "c3.217"});
     // let o3;
     // if (o2 != null){
@@ -193,7 +193,7 @@ async function da5lData2()
     // console.log("done");
 };
 
- console.log("check9");
+ //console.log("check9");
  //da5lData2();
 // console.log("check10");
 // const d = new Date();
@@ -206,5 +206,5 @@ async function da5lData2()
     //     console.log("ddddddddddd")
     //  }
     //console.log(typeof(123) == 'string');
-    console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
+    //console.log(new Date(2020,7,15).getTime() > new Date(2020,8,15).getTime());
 module.exports = app
