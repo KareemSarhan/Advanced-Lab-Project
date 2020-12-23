@@ -736,11 +736,15 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     if (req.body.document == null || !(typeof(req.body.document == 'string')))
                     {
                         return res.status(400).send("Please enter The required document!!");
+                    } 
+                    if(req.body.numberOfdays==null || !(typeof(req.body.numberOfdays=='number'))){
+                        return res.status(400).send("Please Enter the number of days");
                     }
                     if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please the reason in string");
                     }
+                   
                     if (!(req.body.StaffID.gender != "female"))
                     {
                         return res.status(400).send("The user should be a female Estargel !!");
@@ -775,7 +779,9 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             Leavetype: req.body.Leavetype,
                             dateOfLeave: req.body.dateOfLeave,
                             document: req.body.document,
+                            numberOfdays: req.body.numberOfdays,
                             reason: req.body.reason
+
                         });
                         await LeaveRequest.save();
                         res.send(" Maternity Leave Request added");
@@ -795,6 +801,9 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     else if (req.body.dateOfdocument == null || !(validator.isDate(req.body.dateOfdocument)))
                     {
                         return res.status(400).send("Please enter The date of document!!");
+                    }
+                    if(req.body.numberOfdays==null || !(typeof(req.body.numberOfdays=='number'))){
+                        return res.status(400).send("Please Enter the number of days");
                     }
                     else if (!typeof(req.body.reason == 'string'))
                     {
@@ -833,6 +842,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             dateOfLeave: req.body.dateOfLeave,
                             document: req.body.document,
                             dateOfdocument: req.body.dateOfdocument,
+                            numberOfdays: req.body.numberOfdays,
                             reason: req.body.reason
                         });
                         await LeaveRequest.save();
@@ -1336,6 +1346,9 @@ AcademicMemberRouter.route('/cancelReq') //
             });
             const acID = acfound._id;
             //get the type of requests he is willing to cancel from the body
+            if(!(typeof(req.body.requestID=='string'))){
+                return res.status(400).send("ID of the request must be entered as string");
+            }
             if (req.body.requestID.includes("SL"))
             {
                 const slotrequest = await Linkreq.findOne(
@@ -1347,8 +1360,10 @@ AcademicMemberRouter.route('/cancelReq') //
                 {
                     return res.status(400).send("ID of the request is not found");
                 }
-                else if (acID != slotrequest.memberID)
+                else if (!(acID +"" == slotrequest.memberID))
                 {
+                    console.log(acID)
+                    console.log(slotrequest.memberID)
                     return res.status(400).send("you don't have a request of this ID");
 
                 }
@@ -1566,7 +1581,6 @@ AcademicMemberRouter.route('/cancelReq') //
 
 
         }
-
 
         catch (error)
         {
