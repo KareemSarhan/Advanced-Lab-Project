@@ -62,12 +62,14 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
 
 
             var acfoundforcomrem = await academicMember.findOne(queryForMem);
+            console.log(acfoundforcomrem.CompensationSlots)
 
             acfoundforcomrem.CompensationSlots = acfoundforcomrem.CompensationSlots.filter(function(Slot)
             {
-                //low a2dm return true
-                return new date(Slot.date) < new date();
+                //low true shelha
+                return new Date(Slot.Date) < new Date();
             });
+            console.log(acfoundforcomrem.CompensationSlots)
             acfoundforcomrem.save();
 
 
@@ -75,24 +77,26 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
                 queryForMem).populate(
             {
                 path: 'schedule',
-                select: '-_id timing type location'
+                select: '-_id course timing type location',
+                populate:
+                {
+                    path: 'location',
+                    select: '-_id name type'
+                }
             }).populate(
             {
-                path: 'schedule.location',
-                select: '-_id name type'
-            }).populate(
-            {
-                path: 'CompensationSlots',
-                select: '-_id slot Date'
-            }).populate(
-            {
-                path: 'CompensationSlots.slot',
-                select: '-_id timing type location'
-            }).populate(
-            {
-                path: 'CompensationSlots.slot.location',
-                select: '-_id name type'
-            });
+                path: 'schedule',
+                select: '-_id course timing type location',
+                populate:
+                {
+                    path: 'course',
+                    select: '-_id name  '
+                }
+            })
+
+
+
+
             res.json(
             {
                 "Schedule": acfound.schedule,
