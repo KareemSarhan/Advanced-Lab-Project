@@ -753,11 +753,6 @@ catch(error){
     
 });
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 034c4da05f166397dde8340acc0c7fa24de844b5
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{
     try{
