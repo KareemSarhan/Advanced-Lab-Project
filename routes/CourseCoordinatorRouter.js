@@ -267,7 +267,7 @@ CourseCoordinatorRouter.route('/addSlot')
             if (m.length == 0){
                 return res.status(401).send("there is no member with this id");
             }else{
-                var acMem = await academicMember.find({"Memberid": m[0]._id});
+                var acMem = await AM.find({"Memberid": m[0]._id});
                 if (acMem.length !=0){
                     //console.log("here");
                     if (acMem[0].type != "CourseCoordinator"){
@@ -300,7 +300,7 @@ CourseCoordinatorRouter.route('/addSlot')
                                     await s.save();
                                     console.log("slot created");
                                     //add this slot to the course slots
-                                    var addedSlot = (await slots.find({ $and: [{ "location": l[0]._id }, { "timing": req.body.timing }]}))[0];
+                                    var addedSlot = (await Slots.find({ $and: [{ "location": l[0]._id }, { "timing": req.body.timing }]}))[0];
                                     var courseSlots = c[0].slots;
                                     courseSlots.push(addedSlot. _id);
                                     //update the course assigned slots and unassigned slots and slots

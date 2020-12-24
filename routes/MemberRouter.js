@@ -96,7 +96,27 @@ MemberRouter.route('/viewProfile')
         res.send("not Authenticated")
         return
     }
+<<<<<<< HEAD
     
+=======
+    let miss = await missing.findOne({"Memberid": existingUser._id});
+    var mSalary = ((await members.findById(existingUser._id))).salary;
+    var originalSalary = mSalary;
+    if (miss != null){
+        var missingDays = miss.missingDays;
+        var missingHours = miss.missingHours;
+        var dayDed = missingDays * (mSalary/60);
+        let hourDed = 0;
+        let minDed = 0;
+        if (missingHours >= 3){
+            hourDed =Math.floor(missingHours) * (mSalary/180);
+            minDed = (missingHours - (Math.floor(missingHours))) * 60 * (mSalary/180*60);
+        }
+        mSalary = mSalary - dayDed - hourDed - minDed;
+        await members.findByIdAndUpdate(existingUser._id, {"salarySoFar": mSalary});
+        console.log("salary deducted");
+    }
+>>>>>>> 43f6d6efa8db46fc44049c5ff6216bf2c7f2c8d0
     if(id.includes('ac')){
     const academicMember = await AM.findOne({Memberid :existingUser._id});
      const OfficeID = existingUser.officeLocation;
@@ -110,8 +130,14 @@ MemberRouter.route('/viewProfile')
             department: academicMember.department,
             dayOff:existingUser.dayOff,
             Office : OfficeName.name,
+<<<<<<< HEAD
             AnnualBalance : existingUser.AnnualBalance,
             course : course
+=======
+            course : course,
+            salarySoFar: mSalary,
+            salary: originalSalary
+>>>>>>> 43f6d6efa8db46fc44049c5ff6216bf2c7f2c8d0
         }
     })
 }
@@ -121,7 +147,12 @@ res.json({
         name :existingUser.name,
         email:existingUser.email,
         Office : OfficeName.name,
+<<<<<<< HEAD
         AnnualBalance : existingUser.AnnualBalance
+=======
+        salarySoFar: mSalary,
+        salary: originalSalary
+>>>>>>> 43f6d6efa8db46fc44049c5ff6216bf2c7f2c8d0
     }
 });
 }
@@ -757,8 +788,6 @@ catch(error){
 
     
 });
-
-
 
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{
