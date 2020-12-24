@@ -23,7 +23,7 @@ const academicMemberSchema = new mongoose.Schema(
     courses: [
     {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'course'
+        ref: 'Course'
     }],
     faculty:
     {
@@ -34,7 +34,8 @@ const academicMemberSchema = new mongoose.Schema(
         type: String
     },
     officeHourse: String,
-    CompensationSlots: [{
+    CompensationSlots: [
+    {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CompensationSlot'
     }]

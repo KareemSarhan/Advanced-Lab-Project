@@ -150,7 +150,7 @@ else{
 
     if(NewSecondaryEmail){
         if(!(validator.isEmail(NewSecondaryEmail))){
-            res.send("that not a correct email.")
+            res.send("that is not a correct email.")
         }
         else{
     members.updateOne({id:id},{SecondayMail:NewSecondaryEmail} , function(err, res) {
@@ -283,7 +283,7 @@ MemberRouter.route('/signIn')
 
 MemberRouter.route('/signOut')
 .post(async(req,res,next) =>{
-    try{
+   try{
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
@@ -292,7 +292,7 @@ MemberRouter.route('/signOut')
     //console.log(existingID)
     const SignOutDate  = new Date();
     const deletedtoken = await DeletedToken.findOne({token:token});
-    const Notfound = false;
+    var Notfound = false;
     if(!existingUser){
         res.send("Not authenticated .")
         return;
@@ -365,7 +365,7 @@ var finalDuration;
    
    res.send("Good Bye!") 
             
-      }
+     }
       catch(error){
           res.status(500).json({error:error.message})
       }
@@ -753,6 +753,11 @@ catch(error){
     
 });
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 034c4da05f166397dde8340acc0c7fa24de844b5
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{
     try{
@@ -761,7 +766,7 @@ MemberRouter.route('/viewHours')
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});
         const deletedtoken = await DeletedToken.findOne({token:token});
-        const existingID =  await attendance.find({Memberid:existingUser._id});
+        const existingID =  await attendance.find({Memberid:existingUser._id,});
    
         if(!existingUser){
            res.send("Not authenticated ")
@@ -777,8 +782,9 @@ MemberRouter.route('/viewHours')
            var HoursMissing = 0 ;
            var Extrahours = 0 ;
            for(i = 0 ; i<existingID.length;i++ ){
+               //console.log(existingID[i].duration);
             SpentHour  = SpentHour+existingID[i].duration
-
+            //console.log(SpentHour)
            }
            HoursMissing=180-SpentHour;
            if(HoursMissing<0){
@@ -787,9 +793,17 @@ MemberRouter.route('/viewHours')
            if(SpentHour >180){
             Extrahours = SpentHour-180
            }
-           console.log(SpentHour)
-           console.log(HoursMissing)
-           console.log(Extrahours)
+        //    console.log(SpentHour)
+        //    console.log(HoursMissing)
+        //    console.log(Extrahours)
+        const FoundRecord = await missing.findOne({Memberid:existingUser._id})
+        if(FoundRecord){
+            missing.updateOne({_id:FoundRecord._id},{SpentHours:SpentHour,MissingHours:HoursMissing,} , function(err, res) {
+                if (err) throw err;
+              //  console.log("document updated 1");
+              });
+        }
+        else {
            const Missing = new Missings({
             Memberid : existingUser._id ,
             SpentHours : SpentHour,
@@ -797,14 +811,16 @@ MemberRouter.route('/viewHours')
             ExtraHour : Extrahours
         })
         await Missing.save()
-        res.json({
-            YourHours :{
-            SpentHours : SpentHour,
-            MissingHours:HoursMissing,
-            ExtraHour : Extrahours
-            }
-        });
+        
+    }
        }
+       res.json({
+        YourHours :{
+        SpentHours : SpentHour,
+        MissingHours:HoursMissing,
+        ExtraHour : Extrahours
+        }
+    });
     }
     catch(error){
         res.status(500).json({error:error.message})

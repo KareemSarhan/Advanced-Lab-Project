@@ -20,11 +20,10 @@ const LEAVES = require('../models/Leaves');
 var validator = require('validator');
 const DeletedToken = require("../models/DeletedTokens");
 const missing = require('../models/missing');
-
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
 
-AcademicMemberRouter.route('/viewSchedule') //done  //written 
+AcademicMemberRouter.route('/viewSchedule') //done  //written tested 
     .get(async(req, res, next) =>
     {
         try
@@ -64,12 +63,14 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
 
 
             var acfoundforcomrem = await academicMember.findOne(queryForMem);
+            console.log(acfoundforcomrem.CompensationSlots)
 
             acfoundforcomrem.CompensationSlots = acfoundforcomrem.CompensationSlots.filter(function(Slot)
             {
-                //low a2dm return true
-                return new date(Slot.date) < new date();
+                //low true shelha
+                return new Date(Slot.Date) < new Date();
             });
+            console.log(acfoundforcomrem.CompensationSlots)
             acfoundforcomrem.save();
 
 
@@ -77,24 +78,26 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
                 queryForMem).populate(
             {
                 path: 'schedule',
-                select: '-_id timing type location'
+                select: '-_id course timing type location',
+                populate:
+                {
+                    path: 'location',
+                    select: '-_id name type'
+                }
             }).populate(
             {
-                path: 'schedule.location',
-                select: '-_id name type'
-            }).populate(
-            {
-                path: 'CompensationSlots',
-                select: '-_id slot Date'
-            }).populate(
-            {
-                path: 'CompensationSlots.slot',
-                select: '-_id timing type location'
-            }).populate(
-            {
-                path: 'CompensationSlots.slot.location',
-                select: '-_id name type'
-            });
+                path: 'schedule',
+                select: '-_id course timing type location',
+                populate:
+                {
+                    path: 'course',
+                    select: '-_id name  '
+                }
+            })
+
+
+
+
             res.json(
             {
                 "Schedule": acfound.schedule,
@@ -111,7 +114,7 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written
         }
     });
 
-AcademicMemberRouter.route('/viewReplacementReq') //done and written
+AcademicMemberRouter.route('/viewReplacementReq') //done and written tested
     .get(async(req, res, next) =>
     {
         try
@@ -162,7 +165,7 @@ AcademicMemberRouter.route('/viewReplacementReq') //done and written
         }
     });
 
-AcademicMemberRouter.route('/sendReplacementReq') // done and written  
+AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
     .post(async(req, res, next) =>
     {
         try
@@ -171,7 +174,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
             //authorize that this is a AM member
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
-            console.log(DecodeToken);
+           // console.log(DecodeToken);
             const id = DecodeToken.id;
             if (!((id).includes("ac")))
             {
@@ -199,15 +202,17 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
             {
                 return res.status(400).send("Please provide  the day!");
             }
-            else if (req.body.requestedSlot == null || !(validator.isMongoId(req.body.requestedSlot)))
+            else if ((req.body.requestedSlot == null) || !(validator.isMongoId(req.body.requestedSlot)))
             {
                 return res.status(400).send("Please provide which slot of the day!");
+            } else if(!(typeof(req.body.comment=='string'))){
+                return res.status(400).send("Please provide the comment as string!");
             }
             else
             {
                 //get the last id available and increment it by 1
                 flagAc = true;
-                const reqID = await members.find(
+                const reqID = await ReplacementRequest.find(
                 {
                     "requestID":
                     {
@@ -215,11 +220,14 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
                     }
                 });
                 console.log(reqID);
+                if(reqID.length ==0){
+                    nID= 1 ;
+                }else{
                 const maxID = reqID[reqID.length - 1];
                 console.log(maxID);
                 const toBeParsed = maxID.requestID.substring(2);
                 const iID = parseInt(toBeParsed);
-                nID = iID + 1;
+                nID = iID + 1;}
 
                 var assignedID = "";
                 if (flagAc)
@@ -234,12 +242,14 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
                     memberID: req.body.memberID,
                     requestedID: req.body.requestedID,
                     requestedDay: req.body.requestedDay,
-                    requestedSlot: req.body.requestedSlot
+                    requestedSlot: req.body.requestedSlot,
+                    comment: req.body.comment
                 });
                 await ReplacementReq.save();
                 res.send("Request added");
                 console.log("Welmos7af added");
             }
+        
         }
 
 
@@ -252,7 +262,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written
         }
     });
 
-AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  
+AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
     .post(async(req, res, next) =>
     {
         try
@@ -261,7 +271,6 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
             //authorize that this is a AM member
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
-            console.log(DecodeToken);
             const id = DecodeToken.id;
             if (!((id).includes("ac")))
             {
@@ -294,7 +303,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
             {
                 return res.status(400).send("Please enter the requested slot!!");
             }
-            else if (!(req.body.comment == 'string'))
+            else if  (!(typeof(req.body.comment) == 'string'))
             {
                 return res.status(400).send("Please enter the comment as String!!");
             }
@@ -347,24 +356,28 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
                     return
                 }
                 flagAc = true;
-                const SLID = await Linkreq.find(
+                const reqID = await Linkreq.find(
                 {
                     "requestID":
                     {
-                        $regex: 'Sl'
+                        $regex: 'SL'
                     }
                 });
-                console.log(SLID);
-                const maxID = SLID[SLID.length - 1];
+                console.log(reqID);
+                if(reqID.length ==0){
+                    nID= 1 ;
+                }else{
+                const maxID = reqID[reqID.length - 1];
                 console.log(maxID);
                 const toBeParsed = maxID.requestID.substring(3);
                 const iID = parseInt(toBeParsed);
                 nID = iID + 1;
-
+            }
+                  console.log(nID)
                 var assignedID = "";
                 if (flagAc)
                 {
-                    assignedID = "Sl-" + nID + "";
+                    assignedID = "SL-" + nID + "";
                 }
                 const LinkingRequest = new Linkreq(
                 {
@@ -390,7 +403,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written
         }
     });
 
-AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
+AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
     .post(async(req, res, next) =>
     {
         //authenticate that this is a valid member
@@ -429,11 +442,11 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
             {
                 return res.status(400).send("Please enter your ID!!");
             }
-            else if (req.body.requestedDay == null || !(validator.isDate(req.body.requestedDay)))
+            else if (req.body.requestedDay == null || !(typeof(req.body.requestedDay=='string')))
             {
                 return res.status(400).send("Please enter The requested Day!!");
             }
-            else if (!(req.body.comment == 'string'))
+            else if (!typeof(req.body.comment=='string'))
             {
                 return res.status(400).send("Please enter The comment in string");
             }
@@ -450,28 +463,35 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
                     const SlotID = scheduleslots[i];
                     const ActualSlot = await slots.findOne(
                     {
-                        SlotID: slot._id
+                        SlotID: slots._id
                     });
-                    if (ActualSlot == null || !(ActualSlot.timing.includes(dayoff)))
+                   console.log(found.dayOff)
+                    if(req.body.requestedDay.includes(found.dayOff)){
+                        return res.status(400).send("This is your actual dayoff!!");
+                    }
+                    if (ActualSlot == null || !(ActualSlot.timing.includes(req.body.requestedDay)))
                     {
                         //check if he left a comment which is optional
                         //create a new request in the dayOff table requests table
-
                         flagAc = true;
-                        const DayoffID = await Dayoffreq.find(
+                        const reqID = await Dayoffreq.find(
                         {
                             "requestID":
                             {
                                 $regex: 'DayOff'
                             }
                         });
-                        console.log(DayoffID);
-                        const maxID = DayoffID[DayoffID.length - 1];
+                        
+                        if(reqID.length ==0){
+                            nID= 1 ;
+                        }else{
+                        const maxID = reqID[reqID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(7);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
-
+                        console.log(nID);
+                    }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -506,7 +526,7 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written
         }
     });
 
-AcademicMemberRouter.route('/sendLeaveReq') //donee and written
+AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
     .post(async(req, res, next) =>
     {
         try
@@ -540,7 +560,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
             {
                 Memberid: FoundID
             });
-            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)))
+            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)) || (req.body.StaffID!=FoundID))
             {
                 return res.status(400).send("Enter your ID");
             }
@@ -566,12 +586,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'Ac'
                             }
                         });
+                        if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(3);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
+                    }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -586,7 +610,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             reason: req.body.reason
                         });
                         await LeaveRequest.save();
-                        res.send("Leave Request added");
+                        res.send("Accidental Leave Request added");
                         console.log("Welmos7af added");
                     }
                 }
@@ -604,12 +628,13 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     {
                         return res.status(400).send("Please enter The replacement ID!!");
                     }
-                    else if (!(req.body.reason == 'string'))
+                    else if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please enter The reason in string!!");
                     }
                     else
                     {
+                        flagAc = true;
                         flagAc = true;
                         const AcID = await LEAVES.find(
                         {
@@ -618,12 +643,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'An'
                             }
                         });
+                        if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(3);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
+                    }
 
                         var assignedID = "";
                         if (flagAc)
@@ -641,22 +670,22 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             reason: req.body.reason
                         });
                         await LeaveRequest.save();
-                        res.send("Leave Request added");
+                        res.send("Annual Leave Request added");
                         console.log("Welmos7af added");
                     }
 
                 }
                 else if (req.body.Leavetype == "Compensation")
                 {
-                    if (req.body.dateOfabsence == null || !(validator.isDate(req.body.dateOfLeave)))
+                    if (req.body.dateOfabsence == null || !(validator.isDate(req.body.dateOfabsence)))
                     {
-                        return res.status(400).send("Please enter The number of days!!");
+                        return res.status(400).send("Please enter The date of absence!!");
                     }
                     else if (req.body.dateOfcompensation == null || !(validator.isDate(req.body.dateOfcompensation)))
                     {
-                        return res.status(400).send("Please enter The date of leave!!");
+                        return res.status(400).send("Please enter The date of compensation!!");
                     }
-                    else if (req.body.reason == null || !(req.body.reason == 'string'))
+                    else if (req.body.reason == null || !typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send(" You must Enter a reason!!");
                     }
@@ -669,14 +698,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             {
                                 $regex: 'C'
                             }
-                        });
+                        });if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(2);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
-
+                    }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -692,7 +723,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             reason: req.body.reason
                         });
                         await LeaveRequest.save();
-                        res.send("Leave Request added");
+                        res.send("Compensation Leave Request added");
                         console.log("Welmos7af added");
                     }
 
@@ -706,12 +737,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     if (req.body.document == null || !(typeof(req.body.document == 'string')))
                     {
                         return res.status(400).send("Please enter The required document!!");
+                    } 
+                    if(req.body.numberOfdays==null || !(typeof(req.body.numberOfdays=='number'))){
+                        return res.status(400).send("Please Enter the number of days");
                     }
-                    if (!(req.body.reason == 'string'))
+                    if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please the reason in string");
                     }
-                    if (req.body.StaffID.gender != "female")
+                   
+                    if (!(req.body.StaffID.gender != "female"))
                     {
                         return res.status(400).send("The user should be a female Estargel !!");
                     }
@@ -723,14 +758,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             {
                                 $regex: 'M'
                             }
-                        });
+                        });if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(3);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
-
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -743,7 +780,9 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             Leavetype: req.body.Leavetype,
                             dateOfLeave: req.body.dateOfLeave,
                             document: req.body.document,
+                            numberOfdays: req.body.numberOfdays,
                             reason: req.body.reason
+
                         });
                         await LeaveRequest.save();
                         res.send(" Maternity Leave Request added");
@@ -764,7 +803,10 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                     {
                         return res.status(400).send("Please enter The date of document!!");
                     }
-                    else if (!(req.body.reason == 'string'))
+                    if(req.body.numberOfdays==null || !(typeof(req.body.numberOfdays=='number'))){
+                        return res.status(400).send("Please Enter the number of days");
+                    }
+                    else if (!typeof(req.body.reason == 'string'))
                     {
                         return res.status(400).send("Please enter the reason in string !!");
                     }
@@ -778,12 +820,16 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                                 $regex: 'S'
                             }
                         });
+                        if(AcID.length==0){
+                            nID=1;
+                        }else{
                         console.log(AcID);
                         const maxID = AcID[AcID.length - 1];
                         console.log(maxID);
                         const toBeParsed = maxID.requestID.substring(2);
                         const iID = parseInt(toBeParsed);
                         nID = iID + 1;
+                        }
                         var assignedID = "";
                         if (flagAc)
                         {
@@ -797,6 +843,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
                             dateOfLeave: req.body.dateOfLeave,
                             document: req.body.document,
                             dateOfdocument: req.body.dateOfdocument,
+                            numberOfdays: req.body.numberOfdays,
                             reason: req.body.reason
                         });
                         await LeaveRequest.save();
@@ -819,7 +866,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written
         }
     });
 
-AcademicMemberRouter.route('/notification') //done /written in doc
+AcademicMemberRouter.route('/notification') //done /written in doc tested
     .get(async(req, res, next) =>
     {
         try
@@ -909,7 +956,7 @@ AcademicMemberRouter.route('/notification') //done /written in doc
         }
     });
 
-AcademicMemberRouter.route('/viewAllReq') //done  / written
+AcademicMemberRouter.route('/viewAllReq') //done  / written tested
     .get(async(req, res, next) =>
     {
         try
@@ -980,7 +1027,7 @@ AcademicMemberRouter.route('/viewAllReq') //done  / written
         }
     });
 
-AcademicMemberRouter.route('/viewAcceptedReq') //done  / written
+AcademicMemberRouter.route('/viewAcceptedReq') //done  / written tested
     .get(async(req, res, next) =>
     {
         try
@@ -1074,7 +1121,7 @@ AcademicMemberRouter.route('/viewAcceptedReq') //done  / written
         }
     });
 
-AcademicMemberRouter.route('/viewPendingReq') //done  /written
+AcademicMemberRouter.route('/viewPendingReq') //done  /written tested
     .get(async(req, res, next) =>
     {
         try
@@ -1169,7 +1216,7 @@ AcademicMemberRouter.route('/viewPendingReq') //done  /written
         }
     });
 
-AcademicMemberRouter.route('/viewRejectedReq') //done /written //etf2o ala upper or lower case
+AcademicMemberRouter.route('/viewRejectedReq') //done /written tested
     .get(async(req, res, next) =>
     {
         try
@@ -1263,143 +1310,132 @@ AcademicMemberRouter.route('/viewRejectedReq') //done /written //etf2o ala upper
         }
     });
 
-AcademicMemberRouter.route('/cancelReq') //not tested
+AcademicMemberRouter.route('/cancelReq') // tested 
     .delete(async(req, res, next) =>
     {
         try
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const payload = jwt.verify(req.header('auth-token'), key);
-            if (!((payload.id).includes("ac")))
+            //get the memberID from the token
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            //console.log(DecodeToken);
+            const id = DecodeToken.id;
+            if (!((id).includes("ac")))
             {
                 return res.status(401).send("not authorized");
             }
-            else
+            const deletedtoken = await DeletedToken.findOne(
             {
-                //         //get the memberID from the token
-                const token = req.header('auth-token');
-                const DecodeToken = jwt_decode(token);
-                const CurrentID = DecodeToken.id;
-                const found = await member.findOne(
+                token: token
+            });
+            if (deletedtoken)
+            {
+                res.send("Sorry you are logged out .")
+                return
+            }
+            const CurrentID = DecodeToken.id;
+            const found = await member.findOne(
+            {
+                id: CurrentID
+            });
+            var FoundID = found._id;
+            const acfound = await academicMember.findOne(
+            {
+                Memberid: FoundID
+            });
+            const acID = acfound._id;
+            //get the type of requests he is willing to cancel from the body
+            if(!(typeof(req.body.requestID=='string'))){
+                return res.status(400).send("ID of the request must be entered as string");
+            }
+            if (req.body.requestID.includes("SL")) //--tested
+            {
+                const slotrequest = await Linkreq.findOne(
                 {
-                    id: CurrentID
+                    requestID: req.body.requestID
                 });
-                var FoundID = found._id;
-                const acfound = await academicMember.findOne(
+                // console.log(slotrequest.memberID)
+                if (slotrequest == null)
                 {
-                    Memberid: FoundID
-                });
-                const acID = acfound._id;
-                //get the type of requests he is willing to cancel from the body
-                if (req.body.requestID.includes("SL"))
+                    return res.status(400).send("ID of the request is not found");
+                }
+                else if (!(acID +"" == slotrequest.memberID))
                 {
-                    const slotrequest = await Linkreq.findOne(
-                    {
-                        requestID: req.body.requestID
-                    });
-                    // console.log(slotrequest.memberID)
-                    if (slotrequest == null)
-                    {
-                        return res.status(400).send("ID of the request is not found");
-                    }
-                    else if (acID != slotrequest.memberID)
-                    {
-                        return res.status(400).send("you don't have a request of this ID");
+                    console.log(acID)
+                    console.log(slotrequest.memberID)
+                    return res.status(400).send("you don't have a request of this ID");
 
+                }
+                else
+                {
+                    //if the request is still pending just delete the record   
+                    //if the request got accepted but its day did not come reverse any taken action  
+
+                    if (slotrequest.status == "Pending" || (slotrequest.status == "Accepted"))
+                    {
+                        await Linkreq.findOneAndDelete(
+                        {
+                            "requestID": req.body.requestID
+                        });
+                        res.send("Slot Link request deleted!")
+                    }
+                }
+            }
+             if (req.body.requestID.includes("R"))//tested
+            {
+                const Reprequest = await ReplacementRequest.findOne(
+                {
+                    requestID: req.body.requestID
+                });
+                // console.log(slotrequest.memberID)
+                         if(!(acID +""==Reprequest.memberID)){
+                             console.log(acID!=Reprequest.memberID)
+                            return res.status(400).send("you don't have a request of this ID");
+                } else
+                if (Reprequest == null)
+                {
+                    return res.status(400).send("ID of the request is not found");
+                }
+                else
+                {
+                    //if the request is still pending just delete the record   
+                    //if the request got accepted but its day did not come reverse any taken action   
+                    const today = new Date();
+                     const requestDay = Reprequest.requestedDay;
+
+                    // const requestMonth = Reprequest.requestedDay.getMonth();
+                    // const requestYear = Reprequest.requestedDay.getFullYear();
+                    console.log(requestDay)
+                    if (Reprequest.status == "Pending" || (Reprequest.status == "Accepted" && (requestDay > today.getTime())))
+                    {
+                        await ReplacementRequest.findOneAndDelete(
+                        {
+                            "requestID": req.body.requestID
+                        });
+                        res.send("Replacement request deleted!")
                     }
                     else
                     {
-                        //if the request is still pending just delete the record   
-                        //if the request got accepted but its day did not come reverse any taken action  
+                        return res.status(400).send("request date passed or rejected!");
 
-                        if (slotrequest.status == "Pending")
-                        {
-                            await Linkreq.findOneAndDelete(
-                            {
-                                "requestID": req.body.requestID
-                            });
-                            res.send("Slot Link request deleted!")
-                        }
                     }
-                }
-                else if (req.body.requestID.includes("R"))
-                {
-                    const Reprequest = await ReplacementRequest.findOne(
-                    {
-                        requestID: req.body.requestID
-                    });
-                     console.log(slotrequest.memberID)
-                     if (Reprequest == null)
-                    {
-                        return res.status(400).send("ID of the request is not found");
-                    }
-                    if(acID!=Reprequest.memberID){
-                        console.log(acID!=Reprequest.memberID)
-                        return res.status(400).send("you don't have a request of this ID");
-                    } 
-                    else
-                    {
-                        //if the request is still pending just delete the record   
-                        //if the request got accepted but its day did not come reverse any taken action   
-                        const today = new Date();
-                        //var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        //const requestDay = Reprequest.requestedDay.getDate();
-                        //const requestMonth = Reprequest.requestedDay.getMonth();
-                        //const requestYear = Reprequest.requestedDay.getFullYear();
-                        const requestDay = Reprequest.requestedDay.getTime();
-                        console.log(today.getDate())
-                        if (Reprequest.status == "Pending" || (Reprequest.status == "Accepted" && (requestDay > today.getTime())))
-                        {
-                            if ( (Reprequest.status == "Accepted" && (requestDay > today.getTime()))){
-                                //change it in the leaves table
-                                //check in leaves if the annual got accepted remove the extra slot
-                                //else remove the id
-                                const annReq = await LEAVES.findOne({$and:[{"StaffID": acID}, {"replacementID": Reprequest.memberID}]});
-                                if (annReq){
-                                    if (annReq.status == "Accepted"){
-                                        const compSlot = (await ReplacementRequest.findById(Reprequest._id)).requestedSlot;
-                                        const compId = (await CompensationSlots.findOne({"slot": compSlot}));
-                                        const repComp = (await academicMember.findById(Reprequest.memberID)).CompensationSlots;
-                                        for (let e = 0; e < repComp.length; e++){
-                                            if (repComp[e] == compId._id + ""){
-                                                reqComp.splice(e,1);
-                                                break;
-                                            }
-                                        }
-                                        await academicMember.findByIdAndUpdate(Reprequest.memberID, {"CompensationSlots": repComp});
-                                        console.log("extra slot removed");
-                                    }else{
-                                        const annLeave = await LEAVES.findOneAndUpdate({$and:[{"StaffID": acID}, {"replacementID": Reprequest.memberID}]},{"replacementID": null});
-                                        console.log("requested id removed");
-                                    }
-                                }
-                            }
-                            await ReplacementRequest.findOneAndDelete(
-                                {
-                                    "requestID": req.body.requestID
-                                });
-                                res.send("Replacement request deleted!");
-                        }
-                        else
-                        {
-                            return res.status(400).send("request date passed or rejected!");
 
-                        }
-                    }
                 }
-                else if (req.body.requestID.includes("DayOff"))
+                   }
+                    if (req.body.requestID.includes("DayOff")) //tested 
                 {
                     const DayOffrequest = await Dayoffreq.findOne(
                     {
                         requestID: req.body.requestID
-                    });
+                    }); 
+                    console.log(DayOffrequest)
 
-                    // console.log(slotrequest.memberID)
-                    //          if(acID!=Reprequest.memberID){
-                    //              console.log(acID!=Reprequest.memberID)
-                    //             return res.status(400).send("you don't have a request of this ID");
-                    // } else
+                             if(!(acID+""==DayOffrequest.memberID)){
+                                 console.log(acID!=DayOffrequest.memberID)
+                                return res.status(400).send("you don't have a request of this ID");
+                    } else
                     if (DayOffrequest == null)
                     {
                         return res.status(400).send("ID of the request is not found");
@@ -1408,12 +1444,8 @@ AcademicMemberRouter.route('/cancelReq') //not tested
                     {
                         //if the request is still pending just delete the record   
                         //if the request got accepted but its day did not come reverse any taken action   
-                        const today = new Date();
-                        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        //    const requestDay=DayOffrequest.requestedDay.getDate();
-                        //    const requestMonth=DayOffrequest.requestedDay.getMonth();
-                        //    const requestYear=DayOffrequest.requestedDay.getFullYear();
-                        console.log(today.getDate())
+                        
+                        
                         if (DayOffrequest.status == "Pending")
                         {
                             await Dayoffreq.findOneAndDelete(
@@ -1424,28 +1456,28 @@ AcademicMemberRouter.route('/cancelReq') //not tested
                         }
                         else
                         {
-                            return res.status(400).send("Cannot delete request is rejected!");
+                            return res.status(400).send("Cannot delete request is Accepted or rejected!");
 
                         }
+
                     }
                 }
-                else if (req.body.requestID.includes("An" || "Ac" || "C" || "M" || "S"))
-                {
+                 if (req.body.requestID.includes("Ac")) //tested 
+                {     
                     const LeaveRequest = await LEAVES.findOne(
                     {
                         requestID: req.body.requestID
                     });
-                    //          if(acID!=Reprequest.memberID){
-                    //              console.log(acID!=Reprequest.memberID)
-                    //             return res.status(400).send("you don't have a request of this ID");
-                    // } else
+                             if(!(FoundID+""==LeaveRequest.StaffID)){
+                                // console.log(LeaveRequest.memberID)
+                                return res.status(400).send("you don't have a request of this ID");
+                    } else
                     if (LeaveRequest == null)
                     {
                         return res.status(400).send("ID of the request is not found");
                     }
                     else
-                    //if the request is still pending just delete the record    
-                    if (req.body.requestID.includes("Ac") && (LeaveRequest.status == "Pending"))
+                    if (LeaveRequest.status == "Pending" )
                     {
                         await LEAVES.findOneAndDelete(
                         {
@@ -1453,46 +1485,45 @@ AcademicMemberRouter.route('/cancelReq') //not tested
                         });
                         return res.send("Accidental Leave Request deleted!")
 
+                    }else{
+                        return res.send("Accidental Leave Request cannot be deleted!")
                     }
-                    else if (req.body.requestID.includes("An"))
-                    {
+                }
+                    else if (req.body.requestID.includes("An"))// tested 
+                    { 
+                        const LeaveRequest = await LEAVES.findOne(
+                            {
+                                requestID: req.body.requestID
+                            });
+                         if(!(FoundID+""==LeaveRequest.StaffID)){
+                                        // console.log(LeaveRequest.memberID)
+                         return res.status(400).send("you don't have a request of this ID");
+                            } else if (LeaveRequest == null)
+                            {
+                             return res.status(400).send("ID of the request is not found");
+                            }
                         //increment the missing days incase the request was accepted
-                        //remove the extra slot from the member who accepted the compensation if any 
                         const today = new Date();
-                        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        
-                       // const requestDay = LeaveRequest.dateOfLeave.getDate();
-                        //const requestMonth = LeaveRequest.dateOfLeave.getMonth();
-                        //const requestYear = LeaveRequest.dateOfLeave.getFullYear();
-                        const requestDay = LeaveRequest.dateOfLeave.getTime();
-                        if (LeaveRequest.status == "Pending" || (LeaveRequest.status == "Accepted" && (requestDay > today.getTime())))
+                        const requestDay = LeaveRequest.dateOfLeave;
+                        if (LeaveRequest.status == "Pending" ) 
                         {
-                            //update missing days
-                            const daysAnn = LeaveRequest.numberOfdays;
-                            const oldMi = await missing.findOne({"Memberid": FoundID});
-                            var oldD = 0;
-                            if (oldMi){
-                                oldD = oldMi.missingDays + daysAnn;
-                                await missing.findOneAndUpdate({"Memberid": FoundID},{"missingDays": oldD});
-                                console.log("missing days added again");
-                            }
-                            if (LEAVES.replacementID != null){
-                                const compSlot = (await ReplacementRequest.findById(Leaves.replacementID)).requestedSlot;
-                                const compId = (await CompensationSlots.findOne({"slot": compSlot}));
-                                const repComp = (await academicMember.findById(Reprequest.memberID)).CompensationSlots;
-                                for (let e = 0; e < repComp.length; e++){
-                                    if (repComp[e] == compId._id + ""){
-                                        reqComp.splice(e,1);
-                                        break;
-                                    }
-                                }
-                                await academicMember.findByIdAndUpdate(Reprequest.memberID, {"CompensationSlots": repComp});
-                                console.log("extra slot removed");
-                            }
                             await LEAVES.findOneAndDelete(
                             {
                                 "requestID": req.body.requestID
                             });
+                            return res.send("Annual Leave Request deleted!")
+                        } 
+                         if (LeaveRequest.status == "Accepted" && (requestDay > today.getTime())){
+                             console.log(found.AnnualBalance)
+                             
+                            found.AnnualBalance=found.AnnualBalance + LeaveRequest.numberOfdays
+                            await found.save();
+                            console.log(found.AnnualBalance)
+                            await LEAVES.findOneAndDelete(
+                                {
+                                    "requestID": req.body.requestID
+                                });
+                              
                             return res.send("Annual Leave Request deleted!")
                         }
                         else
@@ -1500,29 +1531,47 @@ AcademicMemberRouter.route('/cancelReq') //not tested
                             return res.send(" Annual Leave Request day passed or rejected!")
                         }
                     }
-                    else if (req.body.requestID.includes("C"))
+                   
+                    else if (req.body.requestID.includes("C")) //tested 
                     {
-                        const today = new Date();
-                        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        //const requestDay = LeaveRequest.dateOfcompensation.getDate();
-                        //const requestMonth = LeaveRequest.dateOfcompensation.getMonth();
-                        //const requestYear = LeaveRequest.dateOfcompensation.getFullYear();
-                        const requestDay = LeaveRequest.dateOfcompensation.getTime();
-                        if (LeaveRequest.status == "Pending" || (LeaveRequest.status == "Accepted" && (requestDay > today.getTime())))
-                        {
-                             //update missing days
-                             const oldMi = await missing.findOne({"Memberid": FoundID});
-                             var oldD = 0;
-                             if (oldMi){
-                                 oldD = oldMi.missingDays + 1;
-                                 await missing.findOneAndUpdate({"Memberid": FoundID},{"missingDays": oldD});
-                                 console.log("missing day added again");
-                             }
+                        const LeaveRequest = await LEAVES.findOne(
+                            {
+                                requestID: req.body.requestID
+                            });
+                         if(!(FoundID+""==LeaveRequest.StaffID)){
+
+                            return res.status(400).send("you don't have a request of this ID");
                             
+                        } else if (LeaveRequest == null)
+                            {
+                             return res.status(400).send("ID of the request is not found");
+                            }
+
+                        const today = new Date();
+                        const requestDay = LeaveRequest.dateOfcompensation
+                        if (LeaveRequest.status == "Pending" ) 
+                        {
                             await LEAVES.findOneAndDelete(
                             {
                                 "requestID": req.body.requestID
                             });
+                            return res.send(" Compensation Leave Request deleted!")
+                        }
+                        else if(LeaveRequest.status == "Accepted" && (requestDay > today.getTime())){
+
+                            const missingdays= await missing.findOne({
+                                Memberid:FoundID
+                            });
+                            missingdays.missingDays=missingdays.missingDays+1;
+
+                            // console.log(missingdays.missingDays)
+                            await missingdays.save();
+                           // console.log(missingdays.missingDays)
+                            await LEAVES.findOneAndDelete(
+                            {
+                                "requestID": req.body.requestID
+                            });
+                            console.log(missingdays.missingDays)
                             return res.send(" Compensation Leave Request deleted!")
                         }
                         else
@@ -1531,52 +1580,10 @@ AcademicMemberRouter.route('/cancelReq') //not tested
                         }
 
                     }
-                    else if (req.body.requestID.includes("M"))
-                    {
-                        const today = new Date();
-                        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        const requestDay = LeaveRequest.dateOfLeave.getDate();
-                        const requestMonth = LeaveRequest.dateOfLeave.getMonth();
-                        const requestYear = LeaveRequest.dateOfLeave.getFullYear();
-                        if (LeaveRequest.status == "Pending")
-                        {
-                            await LEAVES.findOneAndDelete(
-                            {
-                                "requestID": req.body.requestID
-                            });
-                            return res.send(" Maternity Leave Request deleted!")
-                        }
-                        else
-                        {
-                            return res.send(" Maternity Leave  Request day passed or rejected!")
-                        }
-                    }
-                    else if (req.body.requestID.includes("S"))
-                    {
-                        const today = new Date();
-                        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                        const requestDay = LeaveRequest.dateOfLeave.getDate();
-                        const requestMonth = LeaveRequest.dateOfLeave.getMonth();
-                        const requestYear = LeaveRequest.dateOfLeave.getFullYear();
-                        if (LeaveRequest.status == "Pending")
-                        {
-                            await LEAVES.findOneAndDelete(
-                            {
-                                "requestID": req.body.requestID
-                            });
-                            return res.send(" Sick Leave Request deleted!")
-                        }
-                        else
-                        {
-                            return res.send(" Sick Leave Request day passed or rejected!")
-                        }
-                    }
-                }
+                   
+                
 
             }
-
-
-        }
         catch (error)
         {
             res.status(500).json(
@@ -1587,7 +1594,7 @@ AcademicMemberRouter.route('/cancelReq') //not tested
     });
 
 
-    AcademicMemberRouter.route('/AcceptReq')
+AcademicMemberRouter.route('/AcceptReq')//done written --tested
     .post(async(req, res, next) =>
     {
         try
@@ -1630,6 +1637,7 @@ AcademicMemberRouter.route('/cancelReq') //not tested
                 }
                 request.status = "Accepted"
                 request.save();
+                return res.send("Request Accepted YAAAY")
             }
         }
         catch
@@ -1637,11 +1645,4 @@ AcademicMemberRouter.route('/cancelReq') //not tested
 
         }
     });
-
-
-
-
-
-
-
 module.exports = AcademicMemberRouter;

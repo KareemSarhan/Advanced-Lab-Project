@@ -109,7 +109,7 @@ async function da5lData2()
         dayOff: "Saturday",
     });
     await hr.save();
-    console.log("hr added");
+    //console.log("hr added");
     // const o2 = await Location.find({"name": "c3.217"});
     // let o3;
     // if (o2 != null){

@@ -38,7 +38,7 @@ CourseCoordinatorRouter.route('/viewSlotLinkReq')
       //  console.log(CCofCourse.name)
         const typeOfAM = existingAM.type;
         const SLslotsReq = await slotLinkReqs.find({courseID:CCofCourse._id})
-        console.log(typeOfAM)
+        //console.log(typeOfAM)
         
         if(!existingUser){
             res.send("Not authenticated .")
@@ -51,6 +51,9 @@ CourseCoordinatorRouter.route('/viewSlotLinkReq')
     if(!(typeOfAM=="CourseCoordinator")){
         res.send("Not authorized .")
         return
+    }
+    if(!SLslotsReq){
+        res.send("No requests for this course .")
     }
     else{
         res.json({
@@ -197,6 +200,12 @@ CourseCoordinatorRouter.route('/rejectslotLinkReq')
     const existingUser = await members.findOne({id:id});
     const deletedtoken = await DeletedToken.findOne({token:token});
     const existingAM = await AM.findOne({Memberid:existingUser._id})
+    const TAid = req.body.id;
+    const MemberTA = await members.findOne({id:TAid})
+    const TA_id = await AM.findOne({Memberid:MemberTA._id})
+    //console.log(TA_id +"hiiii")
+
+
     if(!existingUser){
         res.send("Not authenticated .")
         return;
@@ -210,17 +219,15 @@ if(!(typeOfAM=="CourseCoordinator")){
     res.send("Not authorized .")
     return
 }
-const TAid = req.body.id;
 if(!(TAid)){
     res.send("Please enter an Id for the acedmic member you want .")
     return
 }
-else{
-    const TA_id = await AM.findOne({Memberid:TAid._id})
-}
+
+
     const CCofCourse = await courses.findOne({courseCoordinator:existingAM._id})
    // console.log(CCofCourse.name)
-    const Wantedreq = await slotLinkReqs.find({courseID:CCofCourse._id , memberid : TA_id})
+    const Wantedreq = await slotLinkReqs.find({courseID:CCofCourse._id , memberid : TA_id._id})
     
     if(!Wantedreq){
         res.send("No request with this id ")
@@ -229,7 +236,7 @@ else{
    
    
 else{
-    slotLinkReqs.updateOne({_id:Wantedreq._id},{status:"Rejected"} , function(err, res) {
+    slotLinkReqs.updateOne({memberID:TA_id._id,courseID:CCofCourse._id},{status:"Rejected"} , function(err, res) {
         if (err) throw err;
         console.log("document updated 1");
       });
@@ -326,9 +333,9 @@ CourseCoordinatorRouter.route('/updateSlot')
     const NewLocation =req.body.NewLocation  //name
 
     const FindMem= await members.findOne({id:SlotMember})
-  //  console.log(FindMem)
+   // console.log(FindMem + "hiiiiii") 
     const FindAM = await AM.findOne({Memberid:FindMem._id})
-    // console.log(FindAM)
+   // console.log(FindAM  + "helloo")
 
 
     const token  = req.header('auth-token');
@@ -337,10 +344,10 @@ CourseCoordinatorRouter.route('/updateSlot')
     const deletedtoken = await DeletedToken.findOne({token:token});
     const existingUser = await members.findOne({id:id});
     //console.log(existingUser)
-    const existingAM = await AM.findOne({Memberid:existingUser._id})
+   const existingAM = await AM.findOne({Memberid:existingUser._id})
    // console.log(existingAM)
     const CCofCourse = await courses.findOne({courseCoordinator:existingAM._id})
-    //console.log(CCofCourse)
+    //console.log(CCofCourse +"embedded") 
     const getLocation = await location.findOne({name:NewLocation})
    // console.log(getLocation)
     const typeOfAM = existingAM.type;
