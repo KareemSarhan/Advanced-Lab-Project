@@ -19,7 +19,7 @@ const missingSchema = new mongoose.Schema(
         default:0},
     remainingDays: {
         type: Number,
-        default:0},
+        default:335},
     ExtraHours:{
         type: Number,
         default:0},
@@ -28,7 +28,7 @@ const missingSchema = new mongoose.Schema(
         default:0},
     remainingHours: {
         type: Number,
-        default:0},
+        default:165},
 });
 
 module.exports = mongoose.model('missing', missingSchema);

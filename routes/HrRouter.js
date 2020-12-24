@@ -603,16 +603,18 @@ HrRouter.route('/deleteCourse/:name')
                             //console.log(s[i]);
                             const teacher = s[i].memberid;
                             const corTeacher = await academicMember.findById(teacher);
-                            const sched = corTeacher.schedule;
-                            for (let q = 0 ; q < sched.length; q++){
-                                if (sched[q]._id == s[i]._id + ""){
-                                    sched.splice(q,1);
+                            if(corTeacher){
+                                const sched = corTeacher.schedule;
+                                for (let q = 0 ; q < sched.length; q++){
+                                    if (sched[q]._id == s[i]._id + ""){
+                                        sched.splice(q,1);
+                                    }
                                 }
-                            }
-                            await academicMember.findByIdAndUpdate(teacher, {"schedule": sched});
-                            console.log("slot deleted from member schedule");
+                                await academicMember.findByIdAndUpdate(teacher, {"schedule": sched});
+                                console.log("slot deleted from member schedule");
+                            }   
                             await slot.findByIdAndDelete(s[i]._id);
-                            console.log("slot deleted");
+                                console.log("slot deleted");
                         }  
                     }
                     //delete the course from academic members and make the coordinator back to academic member
