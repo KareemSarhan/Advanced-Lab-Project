@@ -555,7 +555,9 @@ HrRouter.route('/updateCourse/:name')
              }
              if (req.body.numberOfSlotsNeeded != null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
                 //update the existing course
-                const cov = cour.numberOfSlotsAssigned/req.body.numberOfSlotsNeeded;
+                //console.log(cour[0].numberOfSlotsAssigned);
+                const cov = cour[0].numberOfSlotsAssigned/req.body.numberOfSlotsNeeded;
+                //console.log(cov);
                 await course.findOneAndUpdate({"name": req.params.name}, {"numberOfSlotsNeeded": req.body.numberOfSlotsNeeded , "coverage": cov});
                 console.log("course number of needed slots and coverage are updated")
          }
@@ -579,7 +581,7 @@ HrRouter.route('/deleteCourse/:name')
         return res.status(401).send("not authorized");
     }else{
         //verify that there is a department with the name = :name
-        const cour = await course.find({"name": req.params.name});
+        var cour = await course.find({"name": req.params.name});
         if(cour.length == 0){
             return res.status(400).send("name of course is not found");
         }
@@ -597,7 +599,7 @@ HrRouter.route('/deleteCourse/:name')
                     const s = await slot.find({});
                     //console.log(s);
                     for (let i = 0 ; i < s.length ; i++){
-                        if (s[i].course == cour._id + ""){
+                        if (s[i].course == cour[0]._id + ""){
                             //console.log(s[i]);
                             const teacher = s[i].memberid;
                             const corTeacher = await academicMember.findById(teacher);
@@ -614,12 +616,12 @@ HrRouter.route('/deleteCourse/:name')
                         }  
                     }
                     //delete the course from academic members and make the coordinator back to academic member
-                    const coordinator = cour.courseCoordinator;
+                    const coordinator = cour[0].courseCoordinator;
                     const m = await academicMember.find({});
                     for (let j = 0 ; j < m.length ; j++){
                         const mC = m[j].courses;
                         for (let z = 0 ; z < mC.length; z++){
-                            if (mC._id == cour._id + ""){
+                            if (mC._id == cour[0]._id + ""){
                                 mC.splice(z,1);
                             }
                         }
@@ -631,7 +633,7 @@ HrRouter.route('/deleteCourse/:name')
                     //delete the course from department
                     const dC = dep[0].courses;
                     for (let w = 0 ; w < dC.length ; w++){
-                        if (dC._id == cour._id + ""){
+                        if (dC._id == cour[0]._id + ""){
                             dC.splice(w,1);
                         }
                     }
@@ -796,12 +798,16 @@ HrRouter.route('/addStaffMember')
                         oldMem.push(acID[0]._id);
                         await department.findOneAndUpdate({"name":req.body.department}, {"instructors": oldMem});
                         console.log("academic member added to instructors of this department");
+                        await faculty.findOneAndUpdate({"name":req.body.faculty}, {"instructors": oldMem});
+                        console.log("academic member added to instructors of this faculty");
                     }else{
                         //an academic member
                         oldMem = dep[0].teachingAssistants;
                         oldMem.push(acID[0]._id);
                         await department.findOneAndUpdate({"name":req.body.department}, {"teachingAssistants": oldMem});
                         console.log("academic member added to teaching assistants of this department");
+                        await faculty.findOneAndUpdate({"name":req.body.faculty}, {"teachingAssistants": oldMem});
+                        console.log("academic member added to teachingAssistants of this faculty");
                     }
                 }
             }
@@ -842,16 +848,20 @@ HrRouter.route('/updateStaffMember/:id')
                     const prevOid = mem[0].officeLocation;
                     console.log(mem[0].officeLocation);
                     const oldC = (await Location.findById(prevOid)).capacitySoFar;
-                    const nC = oldC - 1;
-                    await Location.findByIdAndUpdate(prevOid, {"capacitySoFar": nC});
-                    console.log("old office capacity decremented");
-                    const nextC = nextO[0].capacitySoFar + 1;
-                    await Location.findByIdAndUpdate(nextO[0]._id, {"capacitySoFar": nextC});
-                    console.log("new office capacity so far is incremented");
-                    //update this member
-                    await members.findOneAndUpdate({"id": req.params.id}, {"officeLocation": nextO[0]._id});
-                    console.log("member office updated");
+                    if(nextO[0].capacitySoFar + 1 <= nextO[0].capacity){
+                        const nC = oldC - 1;
+                        await Location.findByIdAndUpdate(prevOid, {"capacitySoFar": nC});
+                        console.log("old office capacity decremented");
+                        const nextC = nextO[0].capacitySoFar + 1;
+                        await Location.findByIdAndUpdate(nextO[0]._id, {"capacitySoFar": nextC});
+                        console.log("new office capacity so far is incremented");
+                        //update this member
+                        await members.findOneAndUpdate({"id": req.params.id}, {"officeLocation": nextO[0]._id});
+                        console.log("member office updated");
+                    }else{
+                        return res.status(400).send("capacity of new office exceeded");
                     }
+                }
              }else{
                 return res.status(400).send("wrong data type");
              }
@@ -1086,12 +1096,12 @@ HrRouter.route('/addSignIn/:id')
             var SpentHours;
             var SpentMin ;
             var finalDuration;
-            const d = new Date(req.body.year, req.body.month, req.body.day, req.body.hour, req.body.minute);
+            const d = new Date(req.body.year, req.body.month-1, req.body.day, req.body.hour, req.body.minute);
             var rec = attendance.find({ $and: [{ "Memberid": mem[0]._id }, { "signIn": null}]});
             if (rec.length != 0){
                 //check that the record is the same date as the body
                 const givenYear = req.body.year;
-                const givenMonth = req.body.month;
+                const givenMonth = req.body.month -1;
                 const givenDay = req.body.day;
                 const recYear = rec[0].signOut.getFullYear();
                 const recMonth = rec[0].signOut.getMonth(); + 1; //because index in month starts by 0
@@ -1190,35 +1200,38 @@ HrRouter.route('/addSignOut/:id')
             var SpentHours;
             var SpentMin ;
             var finalDuration;
-            const d = new Date(req.body.year, req.body.month, req.body.day, req.body.hour, req.body.minute);
-            var rec = find({ $and: [{ "Memberid": mem[0]._id }, { "signOut": null}]});
+            const d = new Date(req.body.year, req.body.month-1, req.body.day, req.body.hour, req.body.minute);
+            var rec = await attendance.find({ $and: [{ "Memberid": mem[0]._id }, { "signOut": null}]});
             if (rec.length != 0){
+                
                 //check that the record is the same date as the body
                 const givenYear = req.body.year;
-                const givenMonth = req.body.month;
+                const givenMonth = req.body.month - 1;
                 const givenDay = req.body.day;
                 const recYear = rec[0].signIn.getFullYear();
                 const recMonth = rec[0].signIn.getMonth(); + 1; //because index in month starts by 0
                 const recDay = rec[0].signIn.getDate();
                 if (givenYear == recYear && givenMonth == recMonth && givenDay == recDay){
+                    
                     await attendance.findByIdAndUpdate(rec[0]._id, {"signOut": d});
                     console.log("sign out added");
                     var correspondingSignOutHours= req.body.hour;
+                    console.log(correspondingSignOutHours);
                     var correspondingSignOutMinutes=req.body.minute;
                     var signIn = rec[0].signIn;
                     var correspondingSignInHour=signIn.getHours();
                     var correspondingSignInMin=signIn.getMinutes();
-                    if(correspondingSignOutHour>19){
+                    if(correspondingSignInHour<7){
                         var time2 = new Date('1995-12-17T02:00:00')
                         var time = new Date('1995-12-17T19:00:00')
                         var timeHour2 = time2.getHours();
                         var timeHour = time.getHours();
-                        finalDuration = (timeHour- (correspondingSignInHours-timeHour2))
-                        console.log( correspondingSignInHours + "  d5l " + finalDuration + timeHour) ;
+                        finalDuration = (timeHour- (correspondingSignOutHours-timeHour2))
+                        console.log( correspondingSignOutHours + "  d5l " + finalDuration + timeHour) ;
                     }
                     else{
-                    SpentHours = (correspondingSignOutHour- correspondingSignInHours)
-                    SpentMin = (correspondingSignOutMin- correspondingSignInMinutes)/60
+                    SpentHours = ( correspondingSignOutHours-correspondingSignInHour)
+                    SpentMin = ( correspondingSignOutMinutes-correspondingSignInMin)/60
                     if(SpentMin<0){
                         SpentMin=SpentMin/-1;
                        }
@@ -1267,7 +1280,7 @@ HrRouter.route('/viewAttendance/:id')
         return res.status(401).send("not authorized");
     }else{
       //verify that there is a member with this id
-      const m = await memberSchema.find({"id": req.params.id});
+      const m = await members.find({"id": req.params.id});
       if (m.length == 0){
         return res.status(400).send("there is no member with this id");
       }else{
@@ -1323,15 +1336,16 @@ HrRouter.route('/updateSalary/:id')
             if (req.body.newSalary != null && typeof(req.body.newSalary) == 'number'){
                 //update the salary
                 //validate that it is a number
-                await members.findByIdAndUpdate(m[0]._id, {"salary": newSalary});
+               await members.findByIdAndUpdate(m[0]._id, {"salary": req.body.newSalary});
+
             }
             //apply the deductions if any
-            let missing = await missings.findOne({"Memberid": m[0]._id});
-            if (missing != null){
-                const missingDays = missing.missingDays;
-                const missingHours = missing.missingHours;
-                const mSalary = await members.findById(m[0]._id);
-                const dayDed = missingDays * (mSalary/60);
+            let miss = await missing.findOne({"Memberid": m[0]._id});
+            if (miss != null){
+                var missingDays = miss.missingDays;
+                var missingHours = miss.missingHours;
+                var mSalary = ((await members.findById(m[0]._id))).salary;
+                var dayDed = missingDays * (mSalary/60);
                 let hourDed = 0;
                 let minDed = 0;
                 if (missingHours >= 3){

@@ -553,10 +553,9 @@ MemberRouter.route('/viewMissingDays')
      const DecodeToken = jwt_decode(token);
      const id = DecodeToken.id;
      const existingUser = await members.findOne({id:id});
-     const AllDays =['Sunday','Monday','Tuesday', 'Wednesday','Thursday','Friday', 'Saturday'];
      const deletedtoken = await DeletedToken.findOne({token:token});
+     var TheAbsentDays =[];
 
-      const StartDay = 11;
       
     if(deletedtoken){
         res.send('you are logged out.')
@@ -564,6 +563,7 @@ MemberRouter.route('/viewMissingDays')
     }
     //get all the records with the id from token
     var GetAttendeddays = await  attendance.find({"Memberid": existingUser._id});
+    //console.log(GetAttendeddays);
      
      if(!existingUser){
         res.send("Not authenticated ")
@@ -572,8 +572,8 @@ MemberRouter.route('/viewMissingDays')
 
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
-        const startDate = newDate(currentYear, currentMonth, 11);
-        const finishDate = newDate(currentYear, currentMonth+1, 10);
+        const startDate = new Date(currentYear, currentMonth, 11);
+        const finishDate = new Date(currentYear, currentMonth+1, 10);
         var numberOfDaysInMonth = 0 ;
 
         // checking if the month is 31 30 or 29 days 
@@ -591,96 +591,140 @@ MemberRouter.route('/viewMissingDays')
         var daysOftheMonth = [];
         //filling days of the month from 11 of this month till the 10th of the coming month .
         for(i=0 ;i<numberOfDaysInMonth;i++){
+            //console.log(new Date(currentYear,currentMonth,12+i));
                 daysOftheMonth.push(new Date(currentYear,currentMonth,12+i))
         }
         for(i=1;i<=11;i++){
+            //console.log(new Date(currentYear,currentMonth+1,i));
             daysOftheMonth.push(new Date(currentYear,currentMonth+1,i))
 
         }
+        //console.log(daysOftheMonth);
         // getting all records from the member from 11 of this month till 10 of the following month  .
+
+        //console.log(GetAttendeddays + "get attended days")
         for (let j = 0 ; j < GetAttendeddays.length ; j++){
-            if ((GetAttendeddays[j].getTime() >= startDate.getTime())&&(GetAttendeddays[j].getTime() <= finishDate.getTime())){
+            
+            var mon = GetAttendeddays[j].signIn.getMonth();
+            var year = GetAttendeddays[j].signIn.getFullYear();
+            var d = GetAttendeddays[j].signIn.getDate() + 1;
+            var dateOnly = new Date(year, mon, d);
+            //console.log(dateOnly);
+            if ((dateOnly.getTime() >= startDate.getTime())&&(dateOnly.getTime() <= finishDate.getTime())){
                 monthAttendance.push(GetAttendeddays[j]);
-            }else if(GetAttendeddays[j].getTime() <= finishDate.getTime()){
+            }else if(GetAttendeddays[j].signIn.getTime() > finishDate.getTime()){
                 break;
                 //to avoid getting not needed data
             }
         }
+      //console.log(monthAttendance)
         var current;
         var uniqueDays = 0;
         var UniqueAttendenceDays = [];
+
 
         //getting unique records attendence for this member .
         for(i=0 ;i < monthAttendance.length ; i ++){
             if(monthAttendance[i].signIn != undefined){
                 if(current==null){
                     current = monthAttendance[i].signIn;
+                    UniqueAttendenceDays.push(monthAttendance[i])
                     uniqueDays++;
                 }
-                else if(current.getTime() != (monthAttendance[i].signIn).getTime()){
-                    UniqueAttendenceDays.push(monthAttendance[i])
+                else if((current.getDate()) != (monthAttendance[i].signIn.getDate())){
+                  //  console.log(monthAttendance[i] )
                     current = monthAttendance[i].signIn;
+                    UniqueAttendenceDays.push(monthAttendance[i])
                     uniqueDays++;
                 }
                 //else this is the same day but different sign in time
             }    
         }
+      // console.log("taniiii console "+UniqueAttendenceDays +uniqueDays);
 
         var numberOfmissingDays = 0 ;
+      //  console.log("taleeet console "+UniqueAttendenceDays);
+
         //getting the days with no sign Outs 
         for(i=0 ; i <UniqueAttendenceDays.length;i++){
             if(UniqueAttendenceDays[i].signOut==null || UniqueAttendenceDays[i].signOut== undefined){
+             //   console.log(UniqueAttendenceDays[i])
+                TheAbsentDays.push(UniqueAttendenceDays[i]);
                 numberOfmissingDays++;
             }
-            
+        }
+        //console.log(TheAbsentDays);
+       // console.log("taleeet console "+UniqueAttendenceDays);
 
-        }
         //getting all the days he missed even if dayOff and fridays 
+        //console.log(daysOftheMonth)
         var daysMissed =[]
-        for(i=0 ; i < UniqueAttendenceDays.length ; i++ ){
-            if(UniqueAttendenceDays[i].signIn.getDate() != daysOftheMonth[i].getDate() && UniqueAttendenceDays[i].signIn.getMonth() === daysOftheMonth[i].getMonth()){
-                daysMissed.push(daysOftheMonth[i])
+        for(i=0 ; i < daysOftheMonth.length ; i++ ){
+            var found = false;
+            for (let y = 0; y < UniqueAttendenceDays.length; y++){
+                const y2 = UniqueAttendenceDays[y].signIn.getFullYear();
+                const m2 = UniqueAttendenceDays[y].signIn.getMonth();
+                const d2 = UniqueAttendenceDays[y].signIn.getDate() + 1;
+                const dOnly2 = new Date(y2,m2,d2);
+                if (dOnly2.getTime() == daysOftheMonth[i].getTime()){
+                    found = true;
+                }
             }
+            if (found == false){
+                daysMissed.push(daysOftheMonth[i]);
+            }
+            // if (dOnly2.getTime() != daysOftheMonth[i].getTime()){
+                
+            //     console.log(dOnly2 )
+            //     console.log(daysOftheMonth[i] )
+            //     if(dOnly2.getTime() != daysOftheMonth[i].getTime()){
+            //         //console.log(dOnly2 )
+            //         //console.log(daysOftheMonth[i] )
+            //         daysMissed.push(daysOftheMonth[i])
+            //     }
+            // }else{
+            //     daysMissed.push(daysOftheMonth[i])
+            // }
         }
+       // console.log("taleeet console "+UniqueAttendenceDays);
+        //console.log(daysMissed);
         // getting the day off for the member in term of number 
         const MemberDayOff =existingUser.dayOff;
         var DayOffnumber = 0;
-        if(MemberDayOff=="Sunady"){
+        if(MemberDayOff=="Sunday"){
             DayOffnumber = 0 
-
-        } 
-        if(MemberDayOff=="Monday"){
+        } else if(MemberDayOff=="Monday"){
             DayOffnumber = 1
 
-        } 
-        if(MemberDayOff=="Tuesday"){
+        } else if(MemberDayOff=="Tuesday"){
             DayOffnumber = 2
 
-        } if(MemberDayOff=="Wednesday"){
+        } else if(MemberDayOff=="Wednesday"){
             DayOffnumber = 3 
 
-        } if(MemberDayOff=="Thursday"){
+        } else if(MemberDayOff=="Thursday"){
             DayOffnumber = 4
 
-        } if(MemberDayOff=="Friday"){
+        } else if(MemberDayOff=="Friday"){
             DayOffnumber = 5
 
-        } if(MemberDayOff=="Saturday"){
+        } else if(MemberDayOff=="Saturday"){
             DayOffnumber = 6
         }
               // getting the days he/she did not attend filtered from fridays and daysOff
-        var TheAbsentDays =[];
         for(i=0 ; i <daysMissed.length;i++){
-            if(daysMissed[i].getDay() != 5 ){
+            console.log(daysMissed[i].getDay() );
+            if(daysMissed[i].getDay() != 5 && daysMissed[i].getDay() != DayOffnumber ){
+                //console.log(daysMissed[i].getDay() );
+                //console.log(daysMissed[i]);
                 numberOfmissingDays++;
                 TheAbsentDays.push(daysMissed[i]);
+                
             }
-            if(daysMissed[i].getDay() != DayOffnumber){
-                numberOfmissingDays++;
-                TheAbsentDays.push(daysMissed[i]);
-
-            }
+           
         }
+        //console.log(TheAbsentDays.length);
+        //console.log(numberOfmissingDays);
 
         //if a member was not found with a record it will create a new record and add it to missings else it will only update the missing days 
        const FoundMember = await missing.findOne({Memberid : existingUser._id})
@@ -698,7 +742,8 @@ MemberRouter.route('/viewMissingDays')
           });
 
        }
- res.send("Your Missing Days are " + numberOfmissingDays)
+ //res.send("Your Missing Days are " + numberOfmissingDays  + TheAbsentDays )
+ res.json({TheAbsentDays})
     
 }
 catch(error){
@@ -707,7 +752,6 @@ catch(error){
 
     
 });
-
 
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{

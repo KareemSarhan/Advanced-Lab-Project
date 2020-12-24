@@ -14,11 +14,21 @@ const missingSchema = new mongoose.Schema(
         required: true,
         ref: 'Member'
     },
-    missingDays: Number,
-    remainingDays: Number,
-    ExtraHours:Number,
-    missingHours: Number,
-    remainingHours: Number
+    missingDays: {
+        type: Number,
+        default:0},
+    remainingDays: {
+        type: Number,
+        default:0},
+    ExtraHours:{
+        type: Number,
+        default:0},
+    missingHours: {
+        type: Number,
+        default:0},
+    remainingHours: {
+        type: Number,
+        default:0},
 });
 
 module.exports = mongoose.model('missing', missingSchema);
