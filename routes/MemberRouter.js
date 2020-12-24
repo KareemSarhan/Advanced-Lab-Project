@@ -89,11 +89,14 @@ MemberRouter.route('/viewProfile')
     const deletedtoken = await DeletedToken.findOne({token:token});
    if(deletedtoken){
         res.send("Sorry you are logged out .")
+        return
     }
-     else{
+   
     if(!existingUser){
         res.send("not Authenticated")
+        return
     }
+    
     if(id.includes('ac')){
     const academicMember = await AM.findOne({Memberid :existingUser._id});
      const OfficeID = existingUser.officeLocation;
@@ -107,6 +110,7 @@ MemberRouter.route('/viewProfile')
             department: academicMember.department,
             dayOff:existingUser.dayOff,
             Office : OfficeName.name,
+            AnnualBalance : existingUser.AnnualBalance,
             course : course
         }
     })
@@ -116,12 +120,13 @@ res.json({
     Member :{
         name :existingUser.name,
         email:existingUser.email,
-        Office : OfficeName.name
+        Office : OfficeName.name,
+        AnnualBalance : existingUser.AnnualBalance
     }
 });
 }
      }
-    }
+    
     catch(error){
         res.status(500).json({error:error.message})
     }

@@ -413,20 +413,23 @@ CourseCoordinatorRouter.route('/deleteSlot')
     try{
     const SlotMember = req.body.SlotMember
     const SlotTiming = req.body.SlotTiming
+    // console.log(SlotMember)
+    // console.log(SlotTiming)
+
     
     const FindMem= await members.findOne({id:SlotMember})
-   // console.log(FindMem)
+    //console.log(FindMem)
     const FindAM = await AM.findOne({Memberid:FindMem._id})
-  //  console.log(FindAM)
+    console.log(FindAM)
 
     const token  = req.header('auth-token');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});
     const existingUser = await members.findOne({id:id});
-    //console.log(existingUser)
+   // console.log(existingUser)
     const existingAM = await AM.findOne({Memberid:existingUser._id})
-   // console.log(existingAM)
+  //  console.log(existingAM)
     const CCofCourse = await courses.findOne({courseCoordinator:existingAM._id})
    // console.log(CCofCourse)
     const typeOfAM = existingAM.type;
@@ -443,13 +446,21 @@ if(!(typeOfAM=="CourseCoordinator")){
     res.send("Not authorized .")
     return
 }
-if(!SlotMember || !!SlotTiming ){
+if(!SlotMember || !SlotTiming ){
     res.send("Please enter the required data .")
     return
 }
 
 else{
-   const WantedSlot = await slot.findOne({course:CCofCourse._id , timing:SlotTiming , memberID :FindAM._id  });
+    console.log(CCofCourse._id )
+    console.log(SlotTiming)
+    console.log(FindAM._id)
+   var WantedSlot = await slot.findOne({course:CCofCourse._id , timing:SlotTiming , memberID :FindAM._id  });
+   console.log(WantedSlot)
+   if(!WantedSlot){
+       res.send("Not found slot")
+       return
+   }
    //console.log(WantedSlot._id)
    //console.log(wantedSlotID)
    const SchedualeOfTA = FindAM.schedule;
@@ -460,7 +471,7 @@ else{
         SchedualeOfTA.splice(i,1);
        }
    }
-   console.log(SchedualeOfTA)
+  // console.log(SchedualeOfTA)
   const SlotsOfCourse =CCofCourse.slots
   //console.log(CCofCourse.slots)
   for(i=0 ; i <SlotsOfCourse.length;i++){
@@ -471,7 +482,7 @@ else{
        }
 
   }
-  console.log(SlotsOfCourse)
+  //console.log(SlotsOfCourse)
   const NewnumberOfSlotsNeeded = CCofCourse.numberOfSlotsNeeded-1;
  //console.log(CCofCourse.numberOfSlotsNeeded)
   const NewnumberOfSlotsAssigned=CCofCourse.numberOfSlotsAssigned-1
