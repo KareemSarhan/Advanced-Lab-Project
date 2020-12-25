@@ -15,7 +15,7 @@ async function authenticate(req, res, next)
     if (!verified)
     {
         //there is no token
-        return res.status(403).send("kda 8alat");
+        return res.status(401).send("Authentication is required and has failed or has not yet been provided.");
     }
     //authentication method can throw exception so use try and catch
     try
@@ -43,7 +43,7 @@ async function authenticate(req, res, next)
     }
     catch (err)
     {
-        res.status(403).send("kda a8lat");
+        return res.status(401).send("Authentication is required and has failed or has not yet been provided.");
     }
 };
 
