@@ -230,7 +230,7 @@ CourseCoordinatorRouter.route('/AcceptSlotLinkReq')
                 await AcmSlot.save();
                 await Acm.save();
 
-                res.send("Request Accepted, Acadmic member have been Assigned to this Slot.");
+                res.send("Request Accepted, Academic member have been Assigned to this Slot.");
 
 
 
