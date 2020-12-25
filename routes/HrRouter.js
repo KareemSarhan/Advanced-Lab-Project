@@ -601,10 +601,15 @@ HrRouter.route('/deleteCourse/:name')
                     const s = await slot.find({});
                     //console.log(s);
                     for (let i = 0 ; i < s.length ; i++){
+                        //console.log(s[i].course);
+                        //console.log(cour[0]._id + "");
+                        //console.log(s[i].course == cour[0]._id + "");
                         if (s[i].course == cour[0]._id + ""){
                             //console.log(s[i]);
-                            const teacher = s[i].memberid;
+                            const teacher = s[i].memberID;
+                            //console.log(teacher);
                             const corTeacher = await academicMember.findById(teacher);
+                           // console.log(corTeacher);
                             if(corTeacher){
                                 const sched = corTeacher.schedule;
                                 for (let q = 0 ; q < sched.length; q++){
@@ -624,8 +629,9 @@ HrRouter.route('/deleteCourse/:name')
                     const m = await academicMember.find({});
                     for (let j = 0 ; j < m.length ; j++){
                         const mC = m[j].courses;
+                        //console.log(mC);
                         for (let z = 0 ; z < mC.length; z++){
-                            if (mC._id == cour[0]._id + ""){
+                            if (mC[z] == cour[0]._id + ""){
                                 mC.splice(z,1);
                             }
                         }
