@@ -626,133 +626,168 @@ CourseCoordinatorRouter.route('/updateSlot')
 
 
 CourseCoordinatorRouter.route('/deleteSlot')
-.delete(async(req,res,next) =>{
-    try{
-    const SlotMember = req.body.SlotMember
-    const SlotTiming = req.body.SlotTiming
-    // console.log(SlotMember)
-    // console.log(SlotTiming)
+    .delete(async(req, res, next) =>
+    {
+        try
+        {
+            const SlotMember = req.body.SlotMember
+            const SlotTiming = req.body.SlotTiming
+                // console.log(SlotMember)
+                // console.log(SlotTiming)
 
-    
-    const FindMem= await members.findOne({id:SlotMember})
-    //console.log(FindMem)
-    const FindAM = await AM.findOne({Memberid:FindMem._id})
-    console.log(FindAM)
 
-    const token  = req.header('auth-token');
-    const DecodeToken = jwt_decode(token);
-    const id = DecodeToken.id;
-    const deletedtoken = await DeletedToken.findOne({token:token});
-    const existingUser = await members.findOne({id:id});
-   // console.log(existingUser)
-    const existingAM = await AM.findOne({Memberid:existingUser._id})
-  //  console.log(existingAM)
-    const CCofCourse = await courses.findOne({courseCoordinator:existingAM._id})
-   // console.log(CCofCourse)
-    const typeOfAM = existingAM.type;
+            const FindMem = await members.findOne(
+                {
+                    id: SlotMember
+                })
+                //console.log(FindMem)
+            const FindAM = await AM.findOne(
+            {
+                Memberid: FindMem._id
+            })
+            console.log(FindAM)
 
-if(!existingUser){
-        res.send("Not authenticated .")
-        return;
-    }
-if(deletedtoken){
-    res.send("Sorry you are logged out .")
-    return
-}
-if(!(typeOfAM=="CourseCoordinator")){
-    res.send("Not authorized .")
-    return
-}
-if(!SlotMember || !SlotTiming ){
-    res.send("Please enter the required data .")
-    return
-}
+            const token = req.header('auth-token');
+            const DecodeToken = jwt_decode(token);
+            const id = DecodeToken.id;
+            const deletedtoken = await DeletedToken.findOne(
+            {
+                token: token
+            });
+            const existingUser = await members.findOne(
+            {
+                id: id
+            });
+            // console.log(existingUser)
+            const existingAM = await AM.findOne(
+                {
+                    Memberid: existingUser._id
+                })
+                //  console.log(existingAM)
+            const CCofCourse = await courses.findOne(
+                {
+                    courseCoordinator: existingAM._id
+                })
+                // console.log(CCofCourse)
+            const typeOfAM = existingAM.type;
 
-else{
-    console.log(CCofCourse._id )
-    console.log(SlotTiming)
-    console.log(FindAM._id)
-   var WantedSlot = await slot.findOne({course:CCofCourse._id , timing:SlotTiming , memberID :FindAM._id  });
-   console.log(WantedSlot)
-   if(!WantedSlot){
-       res.send("Not found slot")
-       return
-   }
-   //console.log(WantedSlot._id)
-   //console.log(wantedSlotID)
-   const SchedualeOfTA = FindAM.schedule;
-   for(i=0 ; i < SchedualeOfTA.length;i++){
-    //console.log("here 4")
-       if(SchedualeOfTA[i]==WantedSlot._id + ""){
-           console.log("here 1 ")
-        SchedualeOfTA.splice(i,1);
-       }
-   }
-  // console.log(SchedualeOfTA)
-  const SlotsOfCourse =CCofCourse.slots
-  //console.log(CCofCourse.slots)
-  for(i=0 ; i <SlotsOfCourse.length;i++){
-    //console.log("here 3")
-    if(SlotsOfCourse[i].equals(WantedSlot._id )){
-        console.log("here 2")
-        SlotsOfCourse.splice(i,1);
-       }
+            if (!existingUser)
+            {
+                res.send("Not authenticated .")
+                return;
+            }
+            if (deletedtoken)
+            {
+                res.send("Sorry you are logged out .")
+                return
+            }
+            if (!(typeOfAM == "CourseCoordinator"))
+            {
+                res.send("Not authorized .")
+                return
+            }
+            if (!SlotMember || !SlotTiming)
+            {
+                res.send("Please enter the required data .")
+                return
+            }
 
-  }
-  //console.log(SlotsOfCourse)
-  const NewnumberOfSlotsNeeded = CCofCourse.numberOfSlotsNeeded-1;
- //console.log(CCofCourse.numberOfSlotsNeeded)
-  const NewnumberOfSlotsAssigned=CCofCourse.numberOfSlotsAssigned-1
- // console.log(CCofCourse.numberOfSlotsAssigned)
+            else
+            {
+                console.log(CCofCourse._id)
+                console.log(SlotTiming)
+                console.log(FindAM._id)
+                var WantedSlot = await slot.findOne(
+                {
+                    course: CCofCourse._id,
+                    timing: SlotTiming,
+                    memberID: FindAM._id
+                });
+                console.log(WantedSlot)
+                if (!WantedSlot)
+                {
+                    res.send("Not found slot")
+                    return
+                }
+                //console.log(WantedSlot._id)
+                //console.log(wantedSlotID)
+                const SchedualeOfTA = FindAM.schedule;
+                for (i = 0; i < SchedualeOfTA.length; i++)
+                {
+                    //console.log("here 4")
+                    if (SchedualeOfTA[i] == WantedSlot._id + "")
+                    {
+                        console.log("here 1 ")
+                        SchedualeOfTA.splice(i, 1);
+                    }
+                }
+                // console.log(SchedualeOfTA)
+                const SlotsOfCourse = CCofCourse.slots
+                    //console.log(CCofCourse.slots)
+                for (i = 0; i < SlotsOfCourse.length; i++)
+                {
+                    //console.log("here 3")
+                    if (SlotsOfCourse[i].equals(WantedSlot._id))
+                    {
+                        console.log("here 2")
+                        SlotsOfCourse.splice(i, 1);
+                    }
 
                 }
-                console.log(SlotsOfCourse)
+                //console.log(SlotsOfCourse)
                 const NewnumberOfSlotsNeeded = CCofCourse.numberOfSlotsNeeded - 1;
                 //console.log(CCofCourse.numberOfSlotsNeeded)
                 const NewnumberOfSlotsAssigned = CCofCourse.numberOfSlotsAssigned - 1
                     // console.log(CCofCourse.numberOfSlotsAssigned)
 
-                const NewCoverage = NewnumberOfSlotsAssigned / NewnumberOfSlotsNeeded
-                    //console.log(NewCoverage)
-
-                await courses.updateOne(
-                {
-                    _id: CCofCourse._id
-                },
-                {
-                    numberOfSlotsNeeded: NewnumberOfSlotsNeeded,
-                    numberOfSlotsAssigned: NewnumberOfSlotsAssigned,
-                    coverage: NewCoverage,
-                    slots: SlotsOfCourse
-                }, function(err, res)
-                {
-                    if (err) throw err;
-                    // console.log("document updated 1");
-                });
-                await AM.updateOne(
-                {
-                    _id: FindAM._id
-                },
-                {
-                    schedule: SchedualeOfTA
-                }, function(err, res)
-                {
-                    if (err) throw err;
-                    // console.log("document updated 1");
-                });
-
-
-                await Slots.findOneAndDelete(
-                    {
-                        _id: WantedSlot._id
-                    })
-                    // console.log(SlotsOfCourse.length)
-                    //    console.log(SchedualeOfTA.length)
-                    //    console.log(SchedualeOfTA)
-
-
             }
+            console.log(SlotsOfCourse)
+            const NewnumberOfSlotsNeeded = CCofCourse.numberOfSlotsNeeded - 1;
+            //console.log(CCofCourse.numberOfSlotsNeeded)
+            const NewnumberOfSlotsAssigned = CCofCourse.numberOfSlotsAssigned - 1
+                // console.log(CCofCourse.numberOfSlotsAssigned)
+
+            const NewCoverage = NewnumberOfSlotsAssigned / NewnumberOfSlotsNeeded
+                //console.log(NewCoverage)
+
+            await courses.updateOne(
+            {
+                _id: CCofCourse._id
+            },
+            {
+                numberOfSlotsNeeded: NewnumberOfSlotsNeeded,
+                numberOfSlotsAssigned: NewnumberOfSlotsAssigned,
+                coverage: NewCoverage,
+                slots: SlotsOfCourse
+            }, function(err, res)
+            {
+                if (err) throw err;
+                // console.log("document updated 1");
+            });
+            await AM.updateOne(
+            {
+                _id: FindAM._id
+            },
+            {
+                schedule: SchedualeOfTA
+            }, function(err, res)
+            {
+                if (err) throw err;
+                // console.log("document updated 1");
+            });
+
+
+            await Slots.findOneAndDelete(
+                {
+                    _id: WantedSlot._id
+                })
+                // console.log(SlotsOfCourse.length)
+                //    console.log(SchedualeOfTA.length)
+                //    console.log(SchedualeOfTA)
+
+
             res.send("Deleted slot.")
+
         }
         catch (error)
         {
