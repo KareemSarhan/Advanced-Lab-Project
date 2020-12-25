@@ -18,7 +18,6 @@ Kareem Sarhan            T-26            43-4577
 
 
 
-
 File to run: server.js this is located in the root folder 
 You can run this file by typing (nodemon start) in the terminal
 Port : 3000
