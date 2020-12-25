@@ -446,15 +446,17 @@ HrRouter.route('/deleteDepartment/:name')
             const head = dep[0].headOfDep;
             await academicMember.findByIdAndUpdate(head, {"type": "CourseInstructor"});
             const f = await faculty.find({"name": dep[0].facultyName});
-            const fd = f[0].departments;
-            for (let j = 0 ; j < fd.length; j++){
-                if (fd[j] == dep[0]._id +""){
-                    fd.splice(j,1);
+            if (f.length != 0){
+                const fd = f[0].departments;
+                for (let j = 0 ; j < fd.length; j++){
+                    if (fd[j] == dep[0]._id +""){
+                        fd.splice(j,1);
+                    }
                 }
+                console.log(f[0]);
+                console.log(fd);
+                await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
             }
-            console.log(f[0]);
-            console.log(fd);
-            await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
             await department.findOneAndDelete({"name": req.params.name});
             res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
         }  
@@ -610,7 +612,7 @@ HrRouter.route('/deleteCourse/:name')
                                         sched.splice(q,1);
                                     }
                                 }
-                                await academicMember.findByIdAndUpdate(teacher, {"schedule": sched});
+                                await academicMember.findByIdAndUpdate(corTeacher._id, {"schedule": sched});
                                 console.log("slot deleted from member schedule");
                             }   
                             await slot.findByIdAndDelete(s[i]._id);
@@ -635,11 +637,11 @@ HrRouter.route('/deleteCourse/:name')
                     //delete the course from department
                     const dC = dep[0].courses;
                     for (let w = 0 ; w < dC.length ; w++){
-                        if (dC._id == cour[0]._id + ""){
+                        if (dC[w]._id == cour[0]._id + ""){
                             dC.splice(w,1);
                         }
                     }
-                    await department.findByIdAndUpdate(dep._id, {"courses": dC});
+                    await department.findByIdAndUpdate(dep[0]._id, {"courses": dC});
                     console.log("course removed from department");
                     await course.findByIdAndDelete(cour[0]._id);
                     res.send("course deleted");
@@ -914,77 +916,81 @@ HrRouter.route('/deleteStaffMember/:id')
                 //remove this member from the department's array of instructors or teaching assistants
                 //remove this member from the faculty's array of instructors or teaching assistants
                 //remove this member from the course's array of instructors or teaching assistants
-                var actualDep = (await department.find({"name": dep}))[0];
-                var actualFac = (await faculty.find({"name": fac}))[0];
-                if (acType == "CourseInstructor" || acType == "HeadOfDepartment"){
-                    var depIns = actualDep.instructors;
-                    for (let i = 0 ; i < depIns.length; i++){
-                        if (depIns[i] == acMem._id + ""){
-                            depIns.splice(i,1);
-                            break;
-                        }
-                    }
-                    var facIns = actualFac.instructors;
-                    for (let j = 0 ; j < facIns.length; j++){
-                        if (facIns[j] == acMem._id + ""){
-                            facIns.splice(j,1);
-                            break;
-                        }
-                    }
-                    await department.findByIdAndUpdate(actualDep._id, {"instructors": depIns});
-                    console.log("member removed from department's instructors");
-                    await faculty.findByIdAndUpdate(actualFac._id, {"instructors": facIns});
-                    console.log("member removed from faculty's instructors");
-                    for (let q = 0 ; q < c.length; q++){
-                        var actualC = (await course.findById(c[q]));
-                        var actualCIns = actualC.instructors;
-                        for (let e = 0; e < actualCIns.length; e++){
-                            if (actualCIns[e] == acMem._id + ""){
-                                actualCIns.splice(e,1);
+                var aDep = (await department.find({"name": dep}));
+                var aFac = (await faculty.find({"name": fac}));
+                if (aDep.length !=0 && aFac.length !=0){
+                    var actualDep = aDep[0];
+                    var actualFac = aFac[0];
+                    if (acType == "CourseInstructor" || acType == "HeadOfDepartment"){
+                        var depIns = actualDep.instructors;
+                        for (let i = 0 ; i < depIns.length; i++){
+                            if (depIns[i] == acMem._id + ""){
+                                depIns.splice(i,1);
                                 break;
                             }
                         }
-                        await course.findByIdAndUpdate(actualC._id, {"instructors": actualIns});
-                        console.log("member removed from course's instructors");
-                    }
-                    if (acType == "HeadOfDepartment"){
-                        await department.findByIdAndUpdate(actualDep._id, {"headOfDep": "N/A"});
-                        console.log("member removed from being head of his department");
-                    }
-                }else if(acType == "CourseCoordinator" || acType == "academic member"){
-                    var depTas = actualDep.teachingAssistants;
-                    for (let x = 0 ; x < depTas.length; x++){
-                        if (depTas[x] == acMem._id + ""){
-                            depTas.splice(x,1);
-                            break;
-                        }
-                    }
-                    var facTas = actualFac.teachingAssistants;
-                    for (let y = 0 ; y < facTas.length; y++){
-                        if (facTas[y] == acMem._id + ""){
-                            facTas.splice(y,1);
-                            break;
-                        }
-                    }
-                    await department.findByIdAndUpdate(actualDep._id, {"teachingAssistants": depTas});
-                    console.log("member removed from department's teaching assistants");
-                    await faculty.findByIdAndUpdate(actualFac._id, {"teachingAssistants": facTas});
-                    console.log("member removed from faculty's teaching assistants");
-                    for (let w = 0 ; w < c.length; w++){
-                        var actualC2 = (await course.findById(c[w]));
-                        var actualCTas = actualC2.teachingAssistants;
-                        for (let t = 0; t < actualCTas.length; t++){
-                            if (actualCTas[t] == acMem._id + ""){
-                                actualCTas.splice(t,1);
+                        var facIns = actualFac.instructors;
+                        for (let j = 0 ; j < facIns.length; j++){
+                            if (facIns[j] == acMem._id + ""){
+                                facIns.splice(j,1);
                                 break;
                             }
                         }
-                        await course.findByIdAndUpdate(actualC._id, {"teachingAssistants": actualCTas});
-                        console.log("member removed from course's teaching assistants");
-                    }
-                    if (acType == "CourseCoordinator"){
-                        await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": "N/A"});
-                        console.log("member removed from being course coordinator of the corresponding course");
+                        await department.findByIdAndUpdate(actualDep._id, {"instructors": depIns});
+                        console.log("member removed from department's instructors");
+                        await faculty.findByIdAndUpdate(actualFac._id, {"instructors": facIns});
+                        console.log("member removed from faculty's instructors");
+                        for (let q = 0 ; q < c.length; q++){
+                            var actualC = (await course.findById(c[q]));
+                            var actualCIns = actualC.instructors;
+                            for (let e = 0; e < actualCIns.length; e++){
+                                if (actualCIns[e] == acMem._id + ""){
+                                    actualCIns.splice(e,1);
+                                    break;
+                                }
+                            }
+                            await course.findByIdAndUpdate(actualC._id, {"instructors": actualIns});
+                            console.log("member removed from course's instructors");
+                        }
+                        if (acType == "HeadOfDepartment"){
+                            await department.findByIdAndUpdate(actualDep._id, {"headOfDep": "N/A"});
+                            console.log("member removed from being head of his department");
+                        }
+                    }else if(acType == "CourseCoordinator" || acType == "academic member"){
+                        var depTas = actualDep.teachingAssistants;
+                        for (let x = 0 ; x < depTas.length; x++){
+                            if (depTas[x] == acMem._id + ""){
+                                depTas.splice(x,1);
+                                break;
+                            }
+                        }
+                        var facTas = actualFac.teachingAssistants;
+                        for (let y = 0 ; y < facTas.length; y++){
+                            if (facTas[y] == acMem._id + ""){
+                                facTas.splice(y,1);
+                                break;
+                            }
+                        }
+                        await department.findByIdAndUpdate(actualDep._id, {"teachingAssistants": depTas});
+                        console.log("member removed from department's teaching assistants");
+                        await faculty.findByIdAndUpdate(actualFac._id, {"teachingAssistants": facTas});
+                        console.log("member removed from faculty's teaching assistants");
+                        for (let w = 0 ; w < c.length; w++){
+                            var actualC2 = (await course.findById(c[w]));
+                            var actualCTas = actualC2.teachingAssistants;
+                            for (let t = 0; t < actualCTas.length; t++){
+                                if (actualCTas[t] == acMem._id + ""){
+                                    actualCTas.splice(t,1);
+                                    break;
+                                }
+                            }
+                            await course.findByIdAndUpdate(actualC._id, {"teachingAssistants": actualCTas});
+                            console.log("member removed from course's teaching assistants");
+                        }
+                        if (acType == "CourseCoordinator"){
+                            await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": "N/A"});
+                            console.log("member removed from being course coordinator of the corresponding course");
+                        }
                     }
                 }
                 //remove this member from slots and increment the number of unAssigned slots and recalculate the coverage
@@ -1005,6 +1011,9 @@ HrRouter.route('/deleteStaffMember/:id')
                 console.log("member removed from members table");
                 await academicMember.findByIdAndDelete(acMem._id);
                 console.log("member removed from academic members table");
+            }else{
+                await members.findByIdAndDelete(mem[0]._id);
+                console.log("member removed from members table");
             }
             res.send("member deleted");
         }
