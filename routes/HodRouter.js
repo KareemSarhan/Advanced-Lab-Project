@@ -409,12 +409,16 @@ HodRouter.route('/viewMembersDep')
                         {
                             _id: TA1.officeLocation
                         });
+                        
                     course = [];
                     for (j = 0; j < TA.courses.length; j++) {
                         c = await courses.findOne({ _id: TA.courses[j] });
                         if (c != null)
                             course.push(c.code)
                     }
+                    if(loc == null)
+                         allStaff.push([TA1.name, TA1.id, TA1.email, course, TA.type, TA.faculty, TA.department,null,TA.officeHourse, TA1.dayOff]);
+                    else
                     allStaff.push([TA1.name, TA1.id, TA1.email, course, TA.type, TA.faculty, TA.department, loc.name, TA.officeHourse, TA1.dayOff]);
                 }
                 for (i = 0; i < depmembers.instructors.length; i++) {
@@ -438,6 +442,9 @@ HodRouter.route('/viewMembersDep')
                             });
                         course.push(c.code)
                     }
+                    if(loc == null)
+                    allStaff.push([courseInstructor.name, courseInstructor.id, courseInstructor.email, course, courseInstructor1.type, courseInstructor1.faculty, courseInstructor1.department,null, courseInstructor1.officeHourse, courseInstructor.dayOff]);
+                    else
                     allStaff.push([courseInstructor.name, courseInstructor.id, courseInstructor.email, course, courseInstructor1.type, courseInstructor1.faculty, courseInstructor1.department, loc.name, courseInstructor1.officeHourse, courseInstructor.dayOff]);
                 }
 
@@ -526,6 +533,9 @@ HodRouter.route('/viewMembers/:cID')
                             if (c1 != null)
                                 course.push(c1.code)
                         }
+                        if(loc ==null)
+                        All.push([cTA.name, cTA.id, cTA.email, course, ta.type, ta.faculty, ta.department, null, ta.officeHourse, cTA.dayOff]);
+                        else
                         All.push([cTA.name, cTA.id, cTA.email, course, ta.type, ta.faculty, ta.department, loc.name, ta.officeHourse, cTA.dayOff]);
                     }
                     //All.push([cTA.name,cTA.id,cTA.email,course,ta.type,ta.faculty,ta.department,ta.officeHourse]);
@@ -550,6 +560,9 @@ HodRouter.route('/viewMembers/:cID')
                             if (c1 != null)
                                 course.push(c1.code)
                         }
+                        if(loc == null)
+                        All.push([ins.name, ins.id, ins.email, course, ins1.type, ins1.faculty, ins1.department, null, ins1.officeHourse, ins.dayOff]);
+                        else
                         All.push([ins.name, ins.id, ins.email, course, ins1.type, ins1.faculty, ins1.department, loc.name, ins1.officeHourse, ins.dayOff]);
                     }
                 }
