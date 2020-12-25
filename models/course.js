@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const academicMemberSchemaModel = require('./academicMember');
-const academicMemberSchema = academicMemberSchemaModel.academicMemberSchema;
-const slotSchemaModel = require('./slot');
-const slotSchema = slotSchemaModel.slotSchema;
 
 const courseSchema = new mongoose.Schema(
 {
