@@ -14,11 +14,18 @@ const key = 'shawerma';
 const members = require('../models/members')
 const location = require('../models/location')
 const AM = require('../models/academicMember')
+const academicMember = require('../models/academicMember')
+
 const DeletedToken = require("../models/DeletedTokens")
 const attendance = require("../models/attendance");
 const Missings = require("../models/missing");
 const courses = require("../models/course")
+const course = require("../models/course")
+
 const slotLinkReqs = require("../models/slotLinkReq");
+const SlotLinkReqs = require("../models/slotLinkReq");
+const slots = require("../models/slot")
+
 const Slots = require("../models/slot")
 const
 {
@@ -152,12 +159,7 @@ CourseCoordinatorRouter.route('/AcceptSlotLinkReq')
                 }
 
 
-
                 const CourseID = Request.courseID;
-                if (!(typeof(CourseID) == "string" && validator.isMongoId(CourseID)))
-                {
-                    return res.status(400).send("Input Type Error");
-                }
                 var AcmCourse = await course.findOne(
                 {
                     _id: CourseID
@@ -167,17 +169,13 @@ CourseCoordinatorRouter.route('/AcceptSlotLinkReq')
                     return res.status(404).send("No Course Exists With This ID.")
                 }
 
-                if (!AcmCourse.courseCoordinator + "" != LoggedAcm._id + "")
+                if (AcmCourse.courseCoordinator + "" != LoggedAcm._id + "")
                 {
                     return res.status(403).send("You Are Not The Course Coordinator For This Course.")
 
                 }
 
                 AcID = Request.memberID;
-                if (!(typeof(AcID) == "string" && validator.isMongoId(AcID)))
-                {
-                    return res.status(400).send("Input Type Error");
-                }
 
                 var Acm = await academicMember.findOne(
                 {
@@ -195,15 +193,12 @@ CourseCoordinatorRouter.route('/AcceptSlotLinkReq')
                 // {
                 //     return res.status(403).send("This Academic Member Is A Course Instructor.")
                 // }
-                if (!Acm.courses.includes(CourseID))
+                if (!Acm.courses.includes(CourseID + ""))
                 {
+                    console.log(Acm)
                     return res.status(403).send("This Academic Member Is Not Assigned To This Course.")
                 }
                 SlotID = Request.requestedSlot;
-                if (!(typeof(SlotID) == "string" && validator.isMongoId(SlotID)))
-                {
-                    return res.status(400).send("Input Type Error");
-                }
                 var AcmSlot = await slots.findOne(
                 {
                     _id: SlotID
@@ -262,7 +257,6 @@ CourseCoordinatorRouter.route('/AcceptSlotLinkReq')
             })
         }
     });
-
 
 CourseCoordinatorRouter.route('/rejectslotLinkReq')
     .put(async(req, res, next) =>
@@ -482,10 +476,6 @@ CourseCoordinatorRouter.route('/addSlot')
         }
     });
 
-
-
-
-
 CourseCoordinatorRouter.route('/updateSlot')
     .post(async(req, res, next) =>
     {
@@ -619,11 +609,6 @@ CourseCoordinatorRouter.route('/updateSlot')
         //get the course id and slot given
         //update the corresponding slot
     });
-
-
-
-
-
 
 CourseCoordinatorRouter.route('/deleteSlot')
     .delete(async(req, res, next) =>
