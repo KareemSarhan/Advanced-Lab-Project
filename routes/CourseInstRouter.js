@@ -42,6 +42,7 @@ CourseInstRouter.route('/ViewCoverage')
                     Memberid: loggedMember._id,
                     type: "CourseInstructor"
                 })
+
                 if (!LoggedAcm)
                 {
                     return res.status(403).send("You are not a Course Instructor.")
@@ -439,7 +440,8 @@ CourseInstRouter.route('/AssignMemberToSlot')
                 {
                     return res.status(404).send("No Course Exists With This ID.")
                 }
-
+                console.log(AcmCourse.instructors)
+                console.log(LoggedAcm._id)
                 if (!AcmCourse.instructors.includes(LoggedAcm._id))
                 {
                     return res.status(403).send("You Are Not A Course Instructor For This Course.")
@@ -505,7 +507,7 @@ CourseInstRouter.route('/AssignMemberToSlot')
                 await AcmSlot.save();
                 await Acm.save();
 
-                res.send("Acadmic member have been Assigned to this Slot.");
+                res.send("Academic member have been Assigned to this Slot.");
 
             }
 
@@ -625,7 +627,7 @@ CourseInstRouter.route('/RemoveMemberFromSlot')
                 await AcmSlot.save();
                 await Acm.save();
 
-                res.send("Acadmic member have been Removed From this Slot.");
+                res.send("Academic member have been Removed From this Slot.");
 
             }
 
@@ -718,7 +720,7 @@ CourseInstRouter.route('/AddMemberToCourse')
                 await AcmCourse.save();
                 await Acm.save();
 
-                res.send("Acadmic member have been Added to this Course.");
+                res.send("Academic member have been Added to this Course.");
 
             }
 
@@ -811,7 +813,7 @@ CourseInstRouter.route('/RemoveMemberFromCourse')
                 AcmCourse.coverage = AcmCourse.numberOfSlotsAssigned / AcmCourse.numberOfSlotsNeeded;
                 Acm.courses = Acm.courses.filter(function(Course)
                 {
-                    return Course._id === AcmCourse._id;
+                    return (Course._id + "" != AcmCourse._id + "");
                 });
                 //low howa coursecoord
                 if (AcmCourse.courseCoordinator + "" === Acm._id + "")
@@ -823,7 +825,7 @@ CourseInstRouter.route('/RemoveMemberFromCourse')
                 {
                     AcmCourse.teachingAssistants = AcmCourse.teachingAssistants.filter(function(Academic)
                     {
-                        return (Academic + "" === Acm._id + "");
+                        return (Academic + "" != Acm._id + "");
                     });
                 }
                 if (AcmCourse.instructors.includes(Acm._id))
@@ -846,7 +848,7 @@ CourseInstRouter.route('/RemoveMemberFromCourse')
                 await AcmCourse.save();
                 await Acm.save();
 
-                res.send("Acadmic member have been removed from Course");
+                res.send("Academic member have been removed from Course");
 
             }
 
@@ -940,7 +942,7 @@ CourseInstRouter.route('/UpdateMemberCourse')
                 AcmFromCourse.coverage = AcmFromCourse.numberOfSlotsAssigned / AcmFromCourse.numberOfSlotsNeeded;
                 Acm.courses = Acm.courses.filter(function(Course)
                 {
-                    return Course._id === AcmFromCourse._id;
+                    return Course._id + "" != AcmFromCourse._id + "";
                 });
                 //low howa coursecoord
                 if (AcmFromCourse.courseCoordinator + "" === Acm._id + "")
@@ -952,7 +954,7 @@ CourseInstRouter.route('/UpdateMemberCourse')
                 {
                     AcmFromCourse.teachingAssistants = AcmFromCourse.teachingAssistants.filter(function(Academic)
                     {
-                        return (Academic + "" === Acm._id + "");
+                        return (Academic + "" != Acm._id + "");
                     });
                 }
                 if (AcmFromCourse.instructors.includes(Acm._id))
@@ -1020,7 +1022,7 @@ CourseInstRouter.route('/UpdateMemberCourse')
                 await AcmToCourse.save();
                 await Acm.save();
 
-                res.send("Acadmic member have been removed from the First Course and added to the Second Course");
+                res.send("Academic member have been removed from the First Course and added to the Second Course");
 
             }
 
@@ -1120,7 +1122,7 @@ CourseInstRouter.route('/AssignAsCoordinator')
                 await AcmCourse.save();
                 await Acm.save();
 
-                res.send("Acadmic member is now the Course Coordinator");
+                res.send("Academic member is now the Course Coordinator");
 
             }
 
