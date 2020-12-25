@@ -94,6 +94,23 @@ MemberRouter.route('/viewProfile')
     if(!existingUser){
         res.send("not Authenticated")
     }
+    let miss = await missing.findOne({"Memberid": existingUser._id});
+    var mSalary = ((await members.findById(existingUser._id))).salary;
+    var originalSalary = mSalary;
+    if (miss != null){
+        var missingDays = miss.missingDays;
+        var missingHours = miss.missingHours;
+        var dayDed = missingDays * (mSalary/60);
+        let hourDed = 0;
+        let minDed = 0;
+        if (missingHours >= 3){
+            hourDed =Math.floor(missingHours) * (mSalary/180);
+            minDed = (missingHours - (Math.floor(missingHours))) * 60 * (mSalary/180*60);
+        }
+        mSalary = mSalary - dayDed - hourDed - minDed;
+        await members.findByIdAndUpdate(existingUser._id, {"salarySoFar": mSalary});
+        console.log("salary deducted");
+    }
     if(id.includes('ac')){
     const academicMember = await AM.findOne({Memberid :existingUser._id});
      const OfficeID = existingUser.officeLocation;
@@ -107,7 +124,9 @@ MemberRouter.route('/viewProfile')
             department: academicMember.department,
             dayOff:existingUser.dayOff,
             Office : OfficeName.name,
-            course : course
+            course : course,
+            salarySoFar: mSalary,
+            salary: originalSalary
         }
     })
 }
@@ -116,7 +135,9 @@ res.json({
     Member :{
         name :existingUser.name,
         email:existingUser.email,
-        Office : OfficeName.name
+        Office : OfficeName.name,
+        salarySoFar: mSalary,
+        salary: originalSalary
     }
 });
 }
