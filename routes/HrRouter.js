@@ -280,11 +280,11 @@ HrRouter.route('/deleteFaculty/:name')
             //delete the existing faculty and handle academic members
             const m = await academicMember.find({"faculty": req.params.name});
             for (let i = 0 ; i < m.length; i++){
-                await academicMember.findByIdAndUpdate(m[i]._id, {"faculty": "N/A"});
+                await academicMember.findByIdAndUpdate(m[i]._id, {"faculty": null});
             }
             const d = await department.find({"facultyName": req.params.name});
             for (let j = 0 ; j < d.length; j++){
-                await department.findByIdAndUpdate(d[j]._id, {"facultyName": "N/A"});
+                await department.findByIdAndUpdate(d[j]._id, {"facultyName": null});
             }
             await faculty.findOneAndDelete({"name": req.params.name});
             res.send("faculty deleted ,faculty name at corresponding department is removed ,faculty name for corresponding academic members is removed" );
@@ -441,7 +441,7 @@ HrRouter.route('/deleteDepartment/:name')
             //update the academic members table by removing the HOD field of the corresponding head
             const m = await academicMember.find({"department": req.params.name});
             for (let i = 0 ; i < m.length; i++){
-                await academicMember.findByIdAndUpdate(m[i]._id, {"department": "N/A" });
+                await academicMember.findByIdAndUpdate(m[i]._id, {"department": null });
             }
             const head = dep[0].headOfDep;
             await academicMember.findByIdAndUpdate(head, {"type": "CourseInstructor"});
@@ -953,7 +953,7 @@ HrRouter.route('/deleteStaffMember/:id')
                             console.log("member removed from course's instructors");
                         }
                         if (acType == "HeadOfDepartment"){
-                            await department.findByIdAndUpdate(actualDep._id, {"headOfDep": "N/A"});
+                            await department.findByIdAndUpdate(actualDep._id, {"headOfDep": null});
                             console.log("member removed from being head of his department");
                         }
                     }else if(acType == "CourseCoordinator" || acType == "academic member"){
@@ -988,7 +988,7 @@ HrRouter.route('/deleteStaffMember/:id')
                             console.log("member removed from course's teaching assistants");
                         }
                         if (acType == "CourseCoordinator"){
-                            await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": "N/A"});
+                            await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": null});
                             console.log("member removed from being course coordinator of the corresponding course");
                         }
                     }
