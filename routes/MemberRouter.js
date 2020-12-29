@@ -24,6 +24,7 @@ MemberRouter.use(bodyParser.json());
 MemberRouter.route('/login')
 .post(async(req,res,next) =>{
     try {
+        console.log("hellooooooo")
         //validation
         const {email,password}=req.body;
        
