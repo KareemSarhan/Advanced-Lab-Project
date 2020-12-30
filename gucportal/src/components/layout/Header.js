@@ -3,7 +3,14 @@ import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container
 import Carousel from 'react-bootstrap/Carousel';
 
 import axios from 'axios'
-
+const handleViewProfile = () => {
+    axios.get('http://localhost:3001/Member/viewProfile').then(response => {
+    //   setUserSession(response.data.token, response.data.user);
+      console.log("ay 7agaaaaa")
+    }).catch(error => {
+  
+    });
+  }
 class Header extends Component{
     state = {
         isOpen: false
@@ -23,7 +30,7 @@ class Header extends Component{
                     <Navbar.Toggle  onClick= {this.toggle} aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse isOpen = {this.state.isOpen} id="responsive-navbar-nav">
                         <Nav className="ml-auto">
-                        <Nav.Link href="#home">Profile</Nav.Link>
+                        <Nav.Link href="#home" onClick={handleViewProfile}>Profile </Nav.Link>
                         <Nav.Link href="#link">Notifications</Nav.Link>
                         <Nav.Link href="#link">Sign-In</Nav.Link>
                         <Nav.Link href="#link">Sign-Out</Nav.Link>
