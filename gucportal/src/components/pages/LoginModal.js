@@ -18,12 +18,14 @@ function LoginModal() {
             password: password
         };
         console.log(mem);
-        axios.post('/Member/login', mem).then(()=>{
+        axios.post('/Member/login', mem).then((res)=>{
             console.log("success");
-            handleClose();
+            //console.log(res.data.msg)
+            
         }).catch((err)=>{
             console.log("error");
         });
+        handleClose();
     }
   
     return (

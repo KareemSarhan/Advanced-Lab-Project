@@ -35,6 +35,7 @@ MemberRouter.route('/login')
             res.send("Please enter a correct email format .")
         }
         const existingUser = await members.findOne({email:email});
+        console.log(existingUser);
         if(!(validator.isEmail(email))){
             res.send(a)
             return;

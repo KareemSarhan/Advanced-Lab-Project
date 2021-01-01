@@ -21,7 +21,7 @@ const HrRouter = express.Router();
 
 HrRouter.use(bodyParser.json());
 HrRouter.use(express.json());
-HrRouter.use(authenticate);
+//HrRouter.use(authenticate);
 
 HrRouter.route('/addLocation')
 .post( async(req,res,next) =>{
@@ -133,21 +133,29 @@ HrRouter.route('/updateLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+
+    //const payload = jwt.verify(req.header('auth-token'),key);
+
     //console.log(payload.id);
-    if (!((payload.id).includes("hr"))){ 
+    
+    //if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
-        return res.status(401).send("not authorized");
-    }else{
+       // return res.status(401).send("not authorized");
+   // }else{
         //verify that there is a location with the name = id
-        const loc = await Location.find({"name": req.params.name});
+        
+        const loc = await Location.find({"name": req.body.name});
         if(loc.length == 0){
+            
             return res.status(400).send("name of location is not found");
         }
         else{
              //verify that the needed credentials are given
              if (req.body.capacity != null){
-                    if (typeof(req.body.capacity) == 'number'){
+                
+                    //if (typeof(req.body.capacity) == 'number'){
+                        if (true){
+                        console.log(req.body.name);
                     //check that the capacity is suitable
                     const cap = req.body.capacity;
                     let maxCap = 0;
@@ -162,6 +170,7 @@ HrRouter.route('/updateLocation/:name')
                     if (req.body.capacity > maxCap){
                         return res.status(400).send("this new capacity exceeds the max capacity of the location");
                     }else{
+                        
                         //update the existing location
                         await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
                         res.send("location capacity is updated")
@@ -171,9 +180,9 @@ HrRouter.route('/updateLocation/:name')
                 }
             } 
         } 
-    }
+    //}
 }catch(err){
-    res.status(500).json({err:err.message})
+   res.status(500).json({err:err.message})
 }
 });
 
