@@ -30,6 +30,7 @@ import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
 import ReplacementRequest from "./components/replacementrequest.component";
+import viewProfile from "./components/pages/viewProfile"
 
 class App extends Component {
   render(){
@@ -65,7 +66,7 @@ class App extends Component {
       <div className="container">
       <Navbar />
 <br/>
-      <Route path="/notification" component={Notification} />
+      <Route path="/viewProfile" component={viewProfile} />
       <Route path="/schedule" component={Schedule} />
       <Route path="/homepage" component={Home} />
       <Route path="/replacementrequest" component={ReplacementRequest} />
