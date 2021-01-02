@@ -31,11 +31,8 @@ function LoginModal() {
         },
         err =>
         {
-          console.log(err)
-        }).catch()
-        {
-        
-        }
+          console.log("Feeeeeeee errorrrrrrrr"+err)
+        })
     }
   
     return (
