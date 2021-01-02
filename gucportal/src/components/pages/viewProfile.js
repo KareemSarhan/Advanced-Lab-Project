@@ -23,15 +23,13 @@ const Members = props => (
 
 
 
-    {/* <td>
-      <Link to={"/edit/"+props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
-    </td> */}
+    
   </tr>
 )
 
 
 
- class viewProfile extends Component {
+ class ViewProfile extends Component {
   constructor(props) {
     super(props);
 
@@ -40,7 +38,7 @@ const Members = props => (
     this.state = {Members: []};
   }
   componentDidMount() {
-    axios.get('http://localhost:5000/Member/viewProfile')
+    axios.get('/Member/viewProfile',{headers:{"authtoken":localStorage.getItem("authtoken")}})
       .then(response => {
         this.setState({ Members: response.data })
       })
@@ -82,4 +80,4 @@ const Members = props => (
     }
 }
 
-export default viewProfile;
+export default ViewProfile;

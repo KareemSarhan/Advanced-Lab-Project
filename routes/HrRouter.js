@@ -21,14 +21,14 @@ const HrRouter = express.Router();
 
 HrRouter.use(bodyParser.json());
 HrRouter.use(express.json());
-//HrRouter.use(authenticate);
+HrRouter.use(authenticate);
 
 HrRouter.route('/addLocation')
 .post( async(req,res,next) =>{
     try{
         //authenticate that this is a valid member
         //authorize that this is a Hr member
-        const payload = jwt.verify(req.header('authtoken'),key);
+        const payload = jwt.verify(req.headers.authtoken,key);
         //console.log(payload.id);
         if (!((payload.id).includes("hr"))){ 
             //console.log(payload.id);
@@ -133,15 +133,15 @@ HrRouter.route('/updateLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-
-    //const payload = jwt.verify(req.header('authtoken'),key);
+console.log("afsaffafafaffssafsa")
+    const payload = jwt.verify(req.headers.authtoken,key);
 
     //console.log(payload.id);
     
-    //if (!((payload.id).includes("hr"))){ 
+    if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
-       // return res.status(401).send("not authorized");
-   // }else{
+        return res.status(401).send("not authorized");
+    }else{
         //verify that there is a location with the name = id
         
         const loc = await Location.find({"name": req.body.name});
@@ -180,7 +180,7 @@ HrRouter.route('/updateLocation/:name')
                 }
             } 
         } 
-    //}
+    }
 }catch(err){
    res.status(500).json({err:err.message})
 }

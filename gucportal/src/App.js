@@ -30,7 +30,9 @@ import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
 import ReplacementRequest from "./components/replacementrequest.component";
-import viewProfile from "./components/pages/viewProfile"
+import ViewProfile from "./components/pages/viewProfile"
+import ViewAllAttendance from "./components/pages/Attendance"
+
 
 class App extends Component {
   render(){
@@ -40,8 +42,8 @@ class App extends Component {
         <Header /><br/>
         <br/>
         <br/>
-        <Login /><br/>
-        <AddLocation /><br/>
+        {/* <Login /><br/> */}
+        {/* <AddLocation /><br/>
         <UpdateLocation /> <br/>
         <DeleteLocation /><br/>
         <AddFaculty /><br/>
@@ -60,16 +62,15 @@ class App extends Component {
         <AssignHod /><br/>
         <AddSignIn /><br/>
         <AddSignOut /><br/>
-        <UpdateSalary /><br/>
+        <UpdateSalary /><br/> */}
         
         <Router>
       <div className="container">
-      <Navbar />
-<br/>
-      <Route path="/viewProfile" component={viewProfile} />
-      <Route path="/schedule" component={Schedule} />
-      <Route path="/homepage" component={Home} />
-      <Route path="/replacementrequest" component={ReplacementRequest} />
+   <br/>
+   <Route path="/" exact component={Login} />
+      <Route path="/viewProfile" exact component={ViewProfile} />
+      <Route path="/viewAllAttendance" component={ViewAllAttendance} />
+      
     </div>
     </Router>
       </div>

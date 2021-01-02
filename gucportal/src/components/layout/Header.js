@@ -4,10 +4,12 @@ import Carousel from 'react-bootstrap/Carousel';
 import viewProfile from '../pages/viewProfile'
 
 import axios from 'axios'
-const handleViewProfile = () => {
-    axios.get('http://localhost:3001/Member/viewProfile').then(response => {
+const handleViewProfile = (e) => {
+    e.preventDefault();
+    axios.get('/Member/viewProfile').then(response => {
     //   setUserSession(response.data.token, response.data.user);
       console.log("ay 7agaaaaa")
+      
     }).catch(error => {
   
     });
@@ -31,7 +33,7 @@ class Header extends Component{
                     <Navbar.Toggle  onClick= {this.toggle} aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse isOpen = {this.state.isOpen} id="responsive-navbar-nav">
                         <Nav className="ml-auto">
-                        <Nav.Link href="/viewProfile" onClick={handleViewProfile}>Profile </Nav.Link>
+                        <Nav.Link href="/viewProfile">Profile</Nav.Link>
                         <Nav.Link href="#link">Notifications</Nav.Link>
                         <Nav.Link href="#link">Sign-In</Nav.Link>
                         <Nav.Link href="#link">Sign-Out</Nav.Link>
@@ -39,7 +41,7 @@ class Header extends Component{
                         <NavDropdown title="Attendance" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">View Missing Hours</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">View Missing Days</NavDropdown.Item>
-                            <NavDropdown.Item href="viewAllAttendance">View Attendance</NavDropdown.Item>
+                            <NavDropdown.Item href="/viewAllAttendance">View Attendance</NavDropdown.Item>
 
 
                             <NavDropdown.Divider />

@@ -86,7 +86,7 @@ MemberRouter.route('/logout')
 MemberRouter.route('/viewProfile')
 .get(async(req,res,next) =>{
     try{
-    const token  = req.header('authtoken');
+    const token  = req.headers.authtoken;
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -115,11 +115,13 @@ MemberRouter.route('/viewProfile')
         await members.findByIdAndUpdate(existingUser._id, {"salarySoFar": mSalary});
         console.log("salary deducted");
     }
+    const OfficeID = existingUser.officeLocation;
+    const OfficeName = await location.findOne({_id:OfficeID});
     if(id.includes('ac')){
     const academicMember = await AM.findOne({Memberid :existingUser._id});
-     const OfficeID = existingUser.officeLocation;
-     const OfficeName = await location.findOne({_id:OfficeID});
+     
      const course = academicMember.course;
+     console.log(token);
     res.json({
         Member :{
             name :existingUser.name,

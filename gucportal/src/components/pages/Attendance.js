@@ -33,7 +33,7 @@ const Members = props => (
     this.state = {Members: []};
   }
   componentDidMount() {
-    axios.get('http://localhost:5000/Member/viewAllAttendance')
+    axios.get('Member/viewAllAttendance',{headers:{"authtoken":localStorage.getItem("authtoken")}})
       .then(response => {
         this.setState({ Members: response.data })
       })
@@ -46,8 +46,8 @@ const Members = props => (
     render() {
         return (
             <div> 
-                <h3>My Attendence log</h3>
-                <ViewAllAttendanceByMonth/> <br>6</br>
+                <h3>My Attendance log</h3>
+                <ViewAllAttendanceByMonth/> <br></br>
         <table className="table">
           <thead className="thead-light">
             <tr>

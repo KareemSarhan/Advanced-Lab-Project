@@ -77,7 +77,6 @@ function UpdatePro() {
   render(){
   return(
       <div>
-          <h1>HDFHF</h1>
           <UpdatePro/>
       </div>
   );

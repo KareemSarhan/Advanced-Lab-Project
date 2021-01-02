@@ -12,13 +12,20 @@ function UpdateLocationModal() {
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
     const handleCapacity = (e) => setCapacity(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
+
         const loc = {
             name: name,
             capacity: capacity
         };
-        console.log(loc);
-        axios.put('/Hr/updateLocation/'+name, loc).then((res)=>{
+        //console.log("7amadaa"+localStorage.getItem("authtoken"));
+        axios.put('/Hr/updateLocation/'+name, loc,
+        {
+          headers:
+          { "authtoken": localStorage.getItem("authtoken")}
+        }
+        ).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
             
