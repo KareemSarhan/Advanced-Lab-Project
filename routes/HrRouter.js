@@ -28,7 +28,7 @@ HrRouter.route('/addLocation')
     try{
         //authenticate that this is a valid member
         //authorize that this is a Hr member
-        const payload = jwt.verify(req.header('authtoken'),key);
+        const payload = jwt.verify(req.headers.authtoken,key);
         //console.log(payload.id);
         if (!((payload.id).includes("hr"))){ 
             //console.log(payload.id);
@@ -134,7 +134,7 @@ HrRouter.route('/updateLocation/:name')
     //authenticate that this is a valid member
     //authorize that this is a Hr member
 console.log("afsaffafafaffssafsa")
-    const payload = jwt.verify(req.headers('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
 
     //console.log(payload.id);
     

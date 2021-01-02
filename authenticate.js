@@ -9,8 +9,9 @@ const DeletedToken = require("./models/DeletedTokens")
 
 async function authenticate(req, res, next)
 {
-    console.log(req)
-    const verified = req.header('authtoken');
+    //console.log(req)
+    const verified = req.headers.authtoken;
+    console.log("authtoken mn gowa auth "+ verified)
     //console.log("here");
     if (!verified)
     {
@@ -20,7 +21,7 @@ async function authenticate(req, res, next)
     //authentication method can throw exception so use try and catch
     try
     {
-        const token = req.header('authtoken');
+        const token = req.headers.authtoken;
         //console.log(token);
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
