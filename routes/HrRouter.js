@@ -130,19 +130,19 @@ HrRouter.route('/deleteLocation/:name')
 
 HrRouter.route('/updateLocation/:name')
 .put( async(req,res,next) =>{
-    
+    console.log("here2")
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
 
-    //const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
 
     //console.log(payload.id);
     
-    //if (!((payload.id).includes("hr"))){ 
+    if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
-       // return res.status(401).send("not authorized");
-   // }else{
+        return res.status(401).send("not authorized");
+    }else{
         //verify that there is a location with the name = id
         
         const loc = await Location.find({"name": req.body.name});
@@ -181,7 +181,7 @@ HrRouter.route('/updateLocation/:name')
                 }
             } 
         } 
-    //}
+    }
 }catch(err){
    res.status(500).json({err:err.message})
 }

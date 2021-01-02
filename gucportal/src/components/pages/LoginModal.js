@@ -24,8 +24,10 @@ function LoginModal() {
           res =>
           {
             console.log(res)
-            console.log(res.headers.authtoken)
-            localStorage.setItem("authtoken",res.data.authtoken)
+            console.log(res.headers.authtoken);
+            const to = res.headers.authtoken
+            localStorage.setItem("authtoken",to)
+            console.log(localStorage.getItem("authtoken"));
             handleClose();
 
         },
