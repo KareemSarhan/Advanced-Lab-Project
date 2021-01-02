@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route} from "react-router-dom";
+import { BrowserRouter as Router, Route,Switch} from "react-router-dom";
 import Header from './components/layout/Header';
 import Login from './components/pages/LoginModal';
 import AddLocation from './components/pages/HR_Components/AddLocationModal';
@@ -15,28 +15,35 @@ import DeleteDepartment from './components/pages/HR_Components/DeleteDepartmentM
 import AddCourse from './components/pages/HR_Components/AddCourseModal';
 import UpdateCourse from './components/pages/HR_Components/UpdateCourseModal';
 import DeleteCourse from './components/pages/HR_Components/DeleteCourseModal';
+import ViewProfile from './components/pages/viewProfile'
+import updateProfile from './components/pages/UpdateProfile'
+import ViewAllAttendance from './components/pages/Attendance'
+
 
 class App extends Component {
   render(){
   return (
+    <div>
       <div className="app">
         <Header /><br/>
         <br/>
         <br/>
-        <Login /><br/>
-        <AddLocation /><br/>
-        <UpdateLocation /> <br/>
-        <DeleteLocation /><br/>
-        <AddFaculty /><br/>
-        <UpdateFaculty /><br/>
-        <DeleteFaculty /><br/>
-        <AddDepartment /><br/>
-        <UpdateDepartment /><br/>
-        <DeleteDepartment /><br/>
-        <AddCourse /><br/>
-        <UpdateCourse /><br/>
-        <DeleteCourse /><br/>
+        
       </div>
+
+       <Router>
+      <div >
+      <Switch>
+      <Route path="/viewProfile" exact component={ViewProfile} />
+      <Route path="/" exact component={Login} />
+      <Route path="/viewAllAttendance" exact component={ViewAllAttendance} />
+
+      </Switch>
+
+      </div>
+    </Router>
+    </div>
+      
     
   );
 }

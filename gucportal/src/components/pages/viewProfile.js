@@ -1,18 +1,28 @@
 import React, { Component } from 'react'
 import axios from "axios";
+import UpdateProfile from "./UpdateProfile"
+import ResetPassword from "./ResetPass"
+
+
 
 const Members = props => (
   <tr>
     <td>{props.member.name}</td>
-    <td>{props.member.id}</td>
     <td>{props.member.email}</td>
-    <td>{props.member.course}</td>
-    <td>{props.member.type}</td>
     <td>{props.member.faculty}</td>
     <td>{props.member.department}</td>
-    <td>{props.member.officeLocation}</td>
-    <td>{props.member.officeHourse}</td>
     <td>{props.member.dayOff}</td>
+    <td>{props.member.Office}</td>
+    <td>{props.member.course}</td>
+    <td>{props.member.salarySoFar}</td>
+    <td>{props.member.salary}</td>
+    <td>{props.member.phoneNumber}</td>
+    <td>{props.member.SecondaryEmail}</td>
+    <td>{props.member.OfficeHours}</td>
+
+
+
+
     {/* <td>
       <Link to={"/edit/"+props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
     </td> */}
@@ -21,7 +31,7 @@ const Members = props => (
 
 
 
-export class viewProfile extends Component {
+ class viewProfile extends Component {
   constructor(props) {
     super(props);
 
@@ -42,24 +52,31 @@ export class viewProfile extends Component {
 
     render() {
         return (
-            <div>
-                <h3>Members</h3>
+            <div> 
+                <h3>My profile</h3>
+                <div>
+                <UpdateProfile/><br/><ResetPassword/>
+                </div>
         <table className="table">
           <thead className="thead-light">
             <tr>
               <th>Name</th>
-              <th>ID</th>
               <th>Email</th>
-              <th>Courses</th>
-              <th>Type</th>
               <th>Faculty</th>
               <th>Department</th>
+              <th>DayOff</th>
               <th>Office</th>
+              <th>Course</th>
+              <th>SalarySoFar</th>
+              <th>Salary</th>
+              <th>phone Number</th>
+              <th>Secondary Email</th>
               <th>Office Hours</th>
-              <th>Day Off</th>
+
             </tr>
           </thead>
         </table>
+     
             </div>
         )
     }
