@@ -25,17 +25,14 @@ function LoginModal() {
           {
             console.log(res)
             console.log(res.headers.authtoken)
-            localStorage.setItem("authtoken",res.data.authtoken)
+            localStorage.setItem("authtoken",res.headers.authtoken)
             handleClose();
 
         },
         err =>
         {
-          console.log(err)
-        }).catch()
-        {
-        
-        }
+          console.log("Feeeeeeee errorrrrrrrr"+err)
+        })
     }
   
     return (

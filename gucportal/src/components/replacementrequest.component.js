@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import{DropdownButton,Dropdown} from 'react-bootstrap'
 
 const Replacement = props => (
     <tr>
-      <td>{props.replacementrequest.RequestID}</td>
-      <td>{props.replacementrequest.RequestedID}</td>
-      <td>{props.replacementrequest.RequestedDay.substring(0,10)}</td>
-      <td>{props.replacementrequest.RequestedSlot}</td>
-      <td>{props.replacementrequest.Status}</td>
-      <td>{props.replacementrequest.comment}</td>
-
+      {/* <td>{"526682361"}</td>
+      <td>{"sad56446551dsf5"}</td> */}
+      {/* <td>{props.replacementrequests.RequestID}</td>
+      <td>{props.replacementrequests.RequestedID}</td>
+      <td>{props.replacementrequests.RequestedDay.substring(0,10)}</td>
+      <td>{props.replacementrequests.RequestedSlot}</td>
+      <td>{props.replacementrequests.Status}</td>
+      <td>{props.replacementrequests.comment}</td> */}
     </tr>
   )
   
@@ -22,14 +23,14 @@ export default class replacementrequest extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {repreq: []};     
+        this.state = {Replacement: []};     
     }
 
     componentDidMount(){
-        axios.get('http://localhost:3000/AM/viewReplacementReq/')
+        axios.get('/AM/viewReplacementReq')
         .then(response=>{
             
-                this.setState({repreq:response.data })      
+                this.setState({Replacement:response.data })      
         })
         .catch(error=>{
             console.log(error);
@@ -38,9 +39,7 @@ export default class replacementrequest extends Component {
     
 
     replacementreq() {
-        return this.state.repreq.map(currentrep => {
-          return <Replacement reprequest={currentrep} />;
-        })
+        return <Replacement/>;
       }
 
     render() {
@@ -49,18 +48,12 @@ export default class replacementrequest extends Component {
           
         <h3>My Replacement Requests </h3>
         <h4>
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-   Choose Status
-  </button>
-  <div class="dropdown">
-  
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <li><a class="dropdown-item" href="#">Accepted</a></li>
-    <li><a class="dropdown-item" href="#">Pending</a></li>
-    <li><a class="dropdown-item" href="#">Rejected</a></li>
-  </ul>
-  <br/>
-</div>
+           
+        <DropdownButton id="dropdown-basic-button" title="Choose request status">
+        <Dropdown.Item href="#/action-1">Accepted</Dropdown.Item>
+        <Dropdown.Item href="#/action-2">Rejected </Dropdown.Item>
+         <Dropdown.Item href="#/action-3">Pending </Dropdown.Item>
+        </DropdownButton>
   </h4>
        
         <table className="table">

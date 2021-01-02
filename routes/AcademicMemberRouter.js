@@ -152,7 +152,7 @@ AcademicMemberRouter.route('/viewReplacementReq') //done and written tested
             const token = req.header('auth-token');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
-            const id = DecodeToken.id;
+            const id =" DecodeToken.id";
             if (!((id).includes("ac")))
             {
                 return res.status(401).send("not authorized");
