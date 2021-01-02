@@ -21,14 +21,14 @@ const HrRouter = express.Router();
 
 HrRouter.use(bodyParser.json());
 HrRouter.use(express.json());
-//HrRouter.use(authenticate);
+HrRouter.use(authenticate);
 
 HrRouter.route('/addLocation')
 .post( async(req,res,next) =>{
     try{
         //authenticate that this is a valid member
         //authorize that this is a Hr member
-        const payload = jwt.verify(req.header('auth-token'),key);
+        const payload = jwt.verify(req.headers.authtoken,key);
         //console.log(payload.id);
         if (!((payload.id).includes("hr"))){ 
             //console.log(payload.id);
@@ -86,7 +86,7 @@ HrRouter.route('/deleteLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -134,8 +134,8 @@ HrRouter.route('/updateLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-
-    const payload = jwt.verify(req.header('authtoken'),key);
+console.log("afsaffafafaffssafsa")
+    const payload = jwt.verify(req.headers.authtoken,key);
 
     //console.log(payload.id);
     
@@ -192,7 +192,7 @@ HrRouter.route('/addFaculty')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -241,7 +241,7 @@ HrRouter.route('/updateFaculty/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -275,7 +275,7 @@ HrRouter.route('/deleteFaculty/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -290,11 +290,11 @@ HrRouter.route('/deleteFaculty/:name')
             //delete the existing faculty and handle academic members
             const m = await academicMember.find({"faculty": req.params.name});
             for (let i = 0 ; i < m.length; i++){
-                await academicMember.findByIdAndUpdate(m[i]._id, {"faculty": null});
+                await academicMember.findByIdAndUpdate(m[i]._id, {"faculty": "N/A"});
             }
             const d = await department.find({"facultyName": req.params.name});
             for (let j = 0 ; j < d.length; j++){
-                await department.findByIdAndUpdate(d[j]._id, {"facultyName": null});
+                await department.findByIdAndUpdate(d[j]._id, {"facultyName": "N/A"});
             }
             await faculty.findOneAndDelete({"name": req.params.name});
             res.send("faculty deleted ,faculty name at corresponding department is removed ,faculty name for corresponding academic members is removed" );
@@ -310,7 +310,7 @@ HrRouter.route('/addDepartment')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -376,7 +376,7 @@ HrRouter.route('/updateDepartment/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -435,7 +435,7 @@ HrRouter.route('/deleteDepartment/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -451,22 +451,20 @@ HrRouter.route('/deleteDepartment/:name')
             //update the academic members table by removing the HOD field of the corresponding head
             const m = await academicMember.find({"department": req.params.name});
             for (let i = 0 ; i < m.length; i++){
-                await academicMember.findByIdAndUpdate(m[i]._id, {"department": null });
+                await academicMember.findByIdAndUpdate(m[i]._id, {"department": "N/A" });
             }
             const head = dep[0].headOfDep;
             await academicMember.findByIdAndUpdate(head, {"type": "CourseInstructor"});
             const f = await faculty.find({"name": dep[0].facultyName});
-            if (f.length != 0){
-                const fd = f[0].departments;
-                for (let j = 0 ; j < fd.length; j++){
-                    if (fd[j] == dep[0]._id +""){
-                        fd.splice(j,1);
-                    }
+            const fd = f[0].departments;
+            for (let j = 0 ; j < fd.length; j++){
+                if (fd[j] == dep[0]._id +""){
+                    fd.splice(j,1);
                 }
-                console.log(f[0]);
-                console.log(fd);
-                await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
             }
+            console.log(f[0]);
+            console.log(fd);
+            await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
             await department.findOneAndDelete({"name": req.params.name});
             res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
         }  
@@ -481,7 +479,7 @@ HrRouter.route('/addCourse')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -546,7 +544,7 @@ HrRouter.route('/updateCourse/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -586,7 +584,7 @@ HrRouter.route('/deleteCourse/:name')
     try{
      //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -611,15 +609,10 @@ HrRouter.route('/deleteCourse/:name')
                     const s = await slot.find({});
                     //console.log(s);
                     for (let i = 0 ; i < s.length ; i++){
-                        //console.log(s[i].course);
-                        //console.log(cour[0]._id + "");
-                        //console.log(s[i].course == cour[0]._id + "");
                         if (s[i].course == cour[0]._id + ""){
                             //console.log(s[i]);
-                            const teacher = s[i].memberID;
-                            //console.log(teacher);
+                            const teacher = s[i].memberid;
                             const corTeacher = await academicMember.findById(teacher);
-                           // console.log(corTeacher);
                             if(corTeacher){
                                 const sched = corTeacher.schedule;
                                 for (let q = 0 ; q < sched.length; q++){
@@ -627,7 +620,7 @@ HrRouter.route('/deleteCourse/:name')
                                         sched.splice(q,1);
                                     }
                                 }
-                                await academicMember.findByIdAndUpdate(corTeacher._id, {"schedule": sched});
+                                await academicMember.findByIdAndUpdate(teacher, {"schedule": sched});
                                 console.log("slot deleted from member schedule");
                             }   
                             await slot.findByIdAndDelete(s[i]._id);
@@ -639,9 +632,8 @@ HrRouter.route('/deleteCourse/:name')
                     const m = await academicMember.find({});
                     for (let j = 0 ; j < m.length ; j++){
                         const mC = m[j].courses;
-                        //console.log(mC);
                         for (let z = 0 ; z < mC.length; z++){
-                            if (mC[z] == cour[0]._id + ""){
+                            if (mC._id == cour[0]._id + ""){
                                 mC.splice(z,1);
                             }
                         }
@@ -653,11 +645,11 @@ HrRouter.route('/deleteCourse/:name')
                     //delete the course from department
                     const dC = dep[0].courses;
                     for (let w = 0 ; w < dC.length ; w++){
-                        if (dC[w]._id == cour[0]._id + ""){
+                        if (dC._id == cour[0]._id + ""){
                             dC.splice(w,1);
                         }
                     }
-                    await department.findByIdAndUpdate(dep[0]._id, {"courses": dC});
+                    await department.findByIdAndUpdate(dep._id, {"courses": dC});
                     console.log("course removed from department");
                     await course.findByIdAndDelete(cour[0]._id);
                     res.send("course deleted");
@@ -675,7 +667,7 @@ HrRouter.route('/addStaffMember')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -844,7 +836,7 @@ HrRouter.route('/updateStaffMember/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -898,7 +890,7 @@ HrRouter.route('/deleteStaffMember/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -932,81 +924,77 @@ HrRouter.route('/deleteStaffMember/:id')
                 //remove this member from the department's array of instructors or teaching assistants
                 //remove this member from the faculty's array of instructors or teaching assistants
                 //remove this member from the course's array of instructors or teaching assistants
-                var aDep = (await department.find({"name": dep}));
-                var aFac = (await faculty.find({"name": fac}));
-                if (aDep.length !=0 && aFac.length !=0){
-                    var actualDep = aDep[0];
-                    var actualFac = aFac[0];
-                    if (acType == "CourseInstructor" || acType == "HeadOfDepartment"){
-                        var depIns = actualDep.instructors;
-                        for (let i = 0 ; i < depIns.length; i++){
-                            if (depIns[i] == acMem._id + ""){
-                                depIns.splice(i,1);
+                var actualDep = (await department.find({"name": dep}))[0];
+                var actualFac = (await faculty.find({"name": fac}))[0];
+                if (acType == "CourseInstructor" || acType == "HeadOfDepartment"){
+                    var depIns = actualDep.instructors;
+                    for (let i = 0 ; i < depIns.length; i++){
+                        if (depIns[i] == acMem._id + ""){
+                            depIns.splice(i,1);
+                            break;
+                        }
+                    }
+                    var facIns = actualFac.instructors;
+                    for (let j = 0 ; j < facIns.length; j++){
+                        if (facIns[j] == acMem._id + ""){
+                            facIns.splice(j,1);
+                            break;
+                        }
+                    }
+                    await department.findByIdAndUpdate(actualDep._id, {"instructors": depIns});
+                    console.log("member removed from department's instructors");
+                    await faculty.findByIdAndUpdate(actualFac._id, {"instructors": facIns});
+                    console.log("member removed from faculty's instructors");
+                    for (let q = 0 ; q < c.length; q++){
+                        var actualC = (await course.findById(c[q]));
+                        var actualCIns = actualC.instructors;
+                        for (let e = 0; e < actualCIns.length; e++){
+                            if (actualCIns[e] == acMem._id + ""){
+                                actualCIns.splice(e,1);
                                 break;
                             }
                         }
-                        var facIns = actualFac.instructors;
-                        for (let j = 0 ; j < facIns.length; j++){
-                            if (facIns[j] == acMem._id + ""){
-                                facIns.splice(j,1);
+                        await course.findByIdAndUpdate(actualC._id, {"instructors": actualIns});
+                        console.log("member removed from course's instructors");
+                    }
+                    if (acType == "HeadOfDepartment"){
+                        await department.findByIdAndUpdate(actualDep._id, {"headOfDep": "N/A"});
+                        console.log("member removed from being head of his department");
+                    }
+                }else if(acType == "CourseCoordinator" || acType == "academic member"){
+                    var depTas = actualDep.teachingAssistants;
+                    for (let x = 0 ; x < depTas.length; x++){
+                        if (depTas[x] == acMem._id + ""){
+                            depTas.splice(x,1);
+                            break;
+                        }
+                    }
+                    var facTas = actualFac.teachingAssistants;
+                    for (let y = 0 ; y < facTas.length; y++){
+                        if (facTas[y] == acMem._id + ""){
+                            facTas.splice(y,1);
+                            break;
+                        }
+                    }
+                    await department.findByIdAndUpdate(actualDep._id, {"teachingAssistants": depTas});
+                    console.log("member removed from department's teaching assistants");
+                    await faculty.findByIdAndUpdate(actualFac._id, {"teachingAssistants": facTas});
+                    console.log("member removed from faculty's teaching assistants");
+                    for (let w = 0 ; w < c.length; w++){
+                        var actualC2 = (await course.findById(c[w]));
+                        var actualCTas = actualC2.teachingAssistants;
+                        for (let t = 0; t < actualCTas.length; t++){
+                            if (actualCTas[t] == acMem._id + ""){
+                                actualCTas.splice(t,1);
                                 break;
                             }
                         }
-                        await department.findByIdAndUpdate(actualDep._id, {"instructors": depIns});
-                        console.log("member removed from department's instructors");
-                        await faculty.findByIdAndUpdate(actualFac._id, {"instructors": facIns});
-                        console.log("member removed from faculty's instructors");
-                        for (let q = 0 ; q < c.length; q++){
-                            var actualC = (await course.findById(c[q]));
-                            var actualCIns = actualC.instructors;
-                            for (let e = 0; e < actualCIns.length; e++){
-                                if (actualCIns[e] == acMem._id + ""){
-                                    actualCIns.splice(e,1);
-                                    break;
-                                }
-                            }
-                            await course.findByIdAndUpdate(actualC._id, {"instructors": actualIns});
-                            console.log("member removed from course's instructors");
-                        }
-                        if (acType == "HeadOfDepartment"){
-                            await department.findByIdAndUpdate(actualDep._id, {"headOfDep": null});
-                            console.log("member removed from being head of his department");
-                        }
-                    }else if(acType == "CourseCoordinator" || acType == "academic member"){
-                        var depTas = actualDep.teachingAssistants;
-                        for (let x = 0 ; x < depTas.length; x++){
-                            if (depTas[x] == acMem._id + ""){
-                                depTas.splice(x,1);
-                                break;
-                            }
-                        }
-                        var facTas = actualFac.teachingAssistants;
-                        for (let y = 0 ; y < facTas.length; y++){
-                            if (facTas[y] == acMem._id + ""){
-                                facTas.splice(y,1);
-                                break;
-                            }
-                        }
-                        await department.findByIdAndUpdate(actualDep._id, {"teachingAssistants": depTas});
-                        console.log("member removed from department's teaching assistants");
-                        await faculty.findByIdAndUpdate(actualFac._id, {"teachingAssistants": facTas});
-                        console.log("member removed from faculty's teaching assistants");
-                        for (let w = 0 ; w < c.length; w++){
-                            var actualC2 = (await course.findById(c[w]));
-                            var actualCTas = actualC2.teachingAssistants;
-                            for (let t = 0; t < actualCTas.length; t++){
-                                if (actualCTas[t] == acMem._id + ""){
-                                    actualCTas.splice(t,1);
-                                    break;
-                                }
-                            }
-                            await course.findByIdAndUpdate(actualC._id, {"teachingAssistants": actualCTas});
-                            console.log("member removed from course's teaching assistants");
-                        }
-                        if (acType == "CourseCoordinator"){
-                            await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": null});
-                            console.log("member removed from being course coordinator of the corresponding course");
-                        }
+                        await course.findByIdAndUpdate(actualC._id, {"teachingAssistants": actualCTas});
+                        console.log("member removed from course's teaching assistants");
+                    }
+                    if (acType == "CourseCoordinator"){
+                        await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": "N/A"});
+                        console.log("member removed from being course coordinator of the corresponding course");
                     }
                 }
                 //remove this member from slots and increment the number of unAssigned slots and recalculate the coverage
@@ -1027,9 +1015,6 @@ HrRouter.route('/deleteStaffMember/:id')
                 console.log("member removed from members table");
                 await academicMember.findByIdAndDelete(acMem._id);
                 console.log("member removed from academic members table");
-            }else{
-                await members.findByIdAndDelete(mem[0]._id);
-                console.log("member removed from members table");
             }
             res.send("member deleted");
         }
@@ -1044,7 +1029,7 @@ HrRouter.route('/assignHod/:depName')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1090,7 +1075,7 @@ HrRouter.route('/addSignIn/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    let payload = jwt.verify(req.header('auth-token'),key);
+    let payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1194,7 +1179,7 @@ HrRouter.route('/addSignOut/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    let payload = jwt.verify(req.header('auth-token'),key);
+    let payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1300,7 +1285,7 @@ HrRouter.route('/viewAttendance/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1327,7 +1312,7 @@ HrRouter.route('/viewMissing')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1348,7 +1333,7 @@ HrRouter.route('/updateSalary/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);

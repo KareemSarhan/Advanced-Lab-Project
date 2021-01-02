@@ -33,6 +33,7 @@ import ReplacementRequest from "./components/replacementrequest.component";
 class App extends Component {
   render(){
   return (
+    <div>
       <div className="app">
         <Header /><br/>
         <br/>
@@ -70,7 +71,11 @@ class App extends Component {
     </div>
     </Router>
       </div>
+    </div>
+      
+    
   );
 }
 }
+
 export default App;
