@@ -24,6 +24,7 @@ MemberRouter.use(bodyParser.json());
 MemberRouter.route('/login')
 .post(async(req,res,next) =>{
     try {
+        console.log("hellooooooo")
         //validation
         const {email,password}=req.body;
         if(!email|| !password){
@@ -70,7 +71,7 @@ MemberRouter.route('/login')
 MemberRouter.route('/logout')
 .get(async(req,res,next) =>{
  try{ 
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const t = new DeletedToken({token : token})
     await t.save()
    res.send("Logged out.")
@@ -85,7 +86,7 @@ MemberRouter.route('/logout')
 MemberRouter.route('/viewProfile')
 .get(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -129,7 +130,12 @@ MemberRouter.route('/viewProfile')
             Office : OfficeName.name,
             course : course,
             salarySoFar: mSalary,
-            salary: originalSalary
+            salary: originalSalary,
+            phoneNumber :existingUser.phoneNumber,
+            SecondaryEmail : existingUser.SecondaryEmail,
+            Officehours: academicMember.Officehours,
+
+
         }
     })
 }
@@ -140,7 +146,9 @@ res.json({
         email:existingUser.email,
         Office : OfficeName.name,
         salarySoFar: mSalary,
-        salary: originalSalary
+        salary: originalSalary,
+        phoneNumber :existingUser.phoneNumber,
+        SecondaryEmail : existingUser.SecondaryEmail
     }
 });
 }
@@ -158,7 +166,7 @@ MemberRouter.route('/updateProfile')
     const NewPhonenumber = req.body.NewPhonenumber;
     const NewOfficehours = req.body.NewOfficehours;
 
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -218,7 +226,7 @@ else{
 MemberRouter.route('/resetPassword')
 .post(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -263,7 +271,7 @@ MemberRouter.route('/signIn')
 .post(async(req,res,next) =>{
     
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -308,7 +316,7 @@ MemberRouter.route('/signIn')
 MemberRouter.route('/signOut')
 .post(async(req,res,next) =>{
    try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -398,7 +406,7 @@ var finalDuration;
 MemberRouter.route('/viewAllAttendance')
 .get(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});
@@ -433,7 +441,7 @@ MemberRouter.route('/viewAttendanceByMonth')
     try{
         const Month = req.body.Month;
        // console.log(Month)
-        const token  = req.header('auth-token');
+        const token  = req.header('authtoken');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});
@@ -475,105 +483,13 @@ MemberRouter.route('/viewAttendanceByMonth')
     }
 });
 
-// MemberRouter.route('/viewMissingDays')
-// .get(async(req,res,next) =>{
-//     //authenticate
-//     try{
-//      const token  = req.header('auth-token');
-//      const DecodeToken = jwt_decode(token);
-//      const id = DecodeToken.id;
-//      const existingUser = await members.findOne({id:id});
-//      const AllDays =['Sunday','Monday','Tuesday', 'Wednesday','Thursday','Friday', 'Saturday'];
-//      const deletedtoken = await DeletedToken.findOne({token:token});
-
-//       const StartDay = 11;
-      
-//     if(deletedtoken){
-//         res.send('you are logged out.')
-//     }
-//     //get all the records with the id from token
-//     var GetAttendeddays = await  attendance.find({"Memberid": existingUser._id});
-
-//      // suppose all months are 30 day and they all have 4 fridays and 4 days Off
-//      //Leaves handle the missing days when requests are accepted 
-//      //so the missing days in the missing table should be updated by then
-
-//      var theDayMustAttend = 22;
-//      var uniqueDays = 0;
-    
-//      if(!existingUser){
-//         res.send("Not authenticated ")
-//         return
-//     }
-//     if(deletedtoken){
-//         res.send('you are logged out.')
-//     }
-//     else{
-//         const currentMonth = new Date().getMonth();
-//         const currentYear = new Date().getFullYear();
-//         const startDate = newDate(currentYear, currentMonth, 11);
-//         const finishDate = newDate(currentYear, currentMonth+1, 10);
-//         //filter again the attendane to start from the desired month
-//         var monthAttendance = [];
-//         for (let j = 0 ; j < GetAttendeddays.length ; j++){
-//             if ((GetAttendeddays[j].getTime() >= startDate.getTime())&&(GetAttendeddays[j].getTime() <= finishDate.getTime())){
-//                 monthAttendance.push(GetAttendeddays[j]);
-//             }else if(GetAttendeddays[j].getTime() <= finishDate.getTime()){
-//                 break;
-//                 //to avoid getting not needed data
-//             }
-//         }/////////
-//         //compute the number of days attended
-//         var current;
-//         for(i=0 ;i < monthAttendance.length ; i ++){
-//             if(monthAttendance[i].signIn != undefined && monthAttendance[i].signOut != undefined){
-//                 if(i == 0){
-//                     current = monthAttendance[i].signIn;
-//                     uniqueDays++;
-//                 }else if(current.getTime() != (monthAttendance[i].signIn).getTime){
-//                     current = monthAttendance[i].signIn;
-//                     uniqueDays++;
-//                 }
-//                 //else this is the same day but different sign in time
-//             }    
-//         }
-//         //subtract the number of days that should be attended by the number of actually attended
-//         var diff = theDayMustAttend - uniqueDays
-//         //if the difference is positive then the missing days should increase
-//         //if the difference is negative then he attended more days than should so give him balance gad3na
-//         //update the missing table
-//         const miss = await missing.findOne({"Memberid": existingUser._id});
-//         if (!miss){
-//             //this is his first time
-//             const nMiss = new missing({
-//                 Memberid: existingUser._id,
-//                 missingDays: diff,
-//                 remainingDays: 264 - uniqueDays
-//             });
-//             await missing.save();
-//             console.log("new missing added");
-//         }else{
-//             var preM = miss.missingDays + diff;
-//             const rem = miss.remainingDays - uniqueDays;
-//             await missing.findOneAndUpdate({"Memberid": existingUser._id}, {"missingDays": preM , "remainingDays": rem});
-//             console.log("missing updated");
-//         }
-//         res.send("missing days: " + preM);  
-//     }
-// }
-// catch(error){
-//     res.status(500).json({error:error.message})
-// }
-
-    
-// });
 
 
 MemberRouter.route('/viewMissingDays')
 .get(async(req,res,next) =>{
     //authenticate
     try{
-     const token  = req.header('auth-token');
+     const token  = req.header('authtoken');
      const DecodeToken = jwt_decode(token);
      const id = DecodeToken.id;
      const existingUser = await members.findOne({id:id});
@@ -782,7 +698,7 @@ catch(error){
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{
     try{
-        const token  = req.header('auth-token');
+        const token  = req.header('authtoken');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});

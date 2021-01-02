@@ -9,18 +9,19 @@ const DeletedToken = require("./models/DeletedTokens")
 
 async function authenticate(req, res, next)
 {
-
-    const verified = req.header('auth-token');
+    //console.log(req)
+    const verified = req.headers.authtoken;
+    console.log("authtoken mn gowa auth "+ verified)
     //console.log("here");
     if (!verified)
     {
         //there is no token
-        return res.status(401).send("Authentication is required and has failed or has not yet been provided.");
+        return res.status(403).send("kda 8alat");
     }
     //authentication method can throw exception so use try and catch
     try
     {
-        const token = req.header('auth-token');
+        const token = req.headers.authtoken;
         //console.log(token);
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
@@ -43,7 +44,7 @@ async function authenticate(req, res, next)
     }
     catch (err)
     {
-        return res.status(401).send("Authentication is required and has failed or has not yet been provided.");
+        res.status(403).send("erra8lt");
     }
 };
 

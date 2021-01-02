@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container, Form,FormControl, Card } from 'react-bootstrap'
 import Carousel from 'react-bootstrap/Carousel';
+import viewProfile from '../pages/viewProfile'
 
 import axios from 'axios'
 const handleViewProfile = () => {
@@ -30,7 +31,7 @@ class Header extends Component{
                     <Navbar.Toggle  onClick= {this.toggle} aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse isOpen = {this.state.isOpen} id="responsive-navbar-nav">
                         <Nav className="ml-auto">
-                        <Nav.Link href="#home" onClick={handleViewProfile}>Profile </Nav.Link>
+                        <Nav.Link href="/viewProfile" onClick={handleViewProfile}>Profile </Nav.Link>
                         <Nav.Link href="#link">Notifications</Nav.Link>
                         <Nav.Link href="#link">Sign-In</Nav.Link>
                         <Nav.Link href="#link">Sign-Out</Nav.Link>
@@ -38,6 +39,16 @@ class Header extends Component{
                         <NavDropdown title="Attendance" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">View Missing Hours</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">View Missing Days</NavDropdown.Item>
+                            <NavDropdown.Item href="viewAllAttendance">View Attendance</NavDropdown.Item>
+
+
+                            <NavDropdown.Divider />
+                        </NavDropdown>
+                        <NavDropdown title="Settings" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#action/4.1">Update Profile</NavDropdown.Item>
+                            <NavDropdown.Item href="#action/4.2">Reset Password</NavDropdown.Item>
+
+
                             <NavDropdown.Divider />
                         </NavDropdown>
                         </Nav>

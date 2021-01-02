@@ -1,29 +1,3 @@
-// import React from 'react';
-// import './App.css';
-// import "bootstrap/dist/css/bootstrap.min.css"
-// import {BrowserRouter as Router,Route} from "react-router-dom" 
-
-// import Navbar from "./components/navbar.component";
-// import Notification from "./components/notification.component";
-// import Schedule from "./components/schedule.component";
-// import Home from "./components/homepage.component";
-// import ReplacementRequest from "./components/replacementrequest.component";
-// function App() {
-//   return ( 
-//     <Router>
-//       <div className="container">
-//       <Navbar />
-// <br/>
-//       <Route path="/notification" component={Notification} />
-//       <Route path="/schedule" component={Schedule} />
-//       <Route path="/homepage" component={Home} />
-//       <Route path="/replacementrequest" component={ReplacementRequest} />
-//     </div>
-//     </Router>
-//   );
-// }
-
-
 
 import './App.css';
  import React ,{Component} from 'react';
@@ -60,6 +34,7 @@ import ReplacementRequest from "./components/replacementrequest.component";
 class App extends Component {
   render(){
   return (
+    <div>
       <div className="app">
         <Header /><br/>
         <br/>
@@ -97,7 +72,11 @@ class App extends Component {
     </div>
     </Router>
       </div>
+    </div>
+      
+    
   );
 }
 }
+
 export default App;
