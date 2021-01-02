@@ -133,7 +133,6 @@ HrRouter.route('/updateLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-console.log("afsaffafafaffssafsa")
     const payload = jwt.verify(req.headers.authtoken,key);
 
     //console.log(payload.id);
