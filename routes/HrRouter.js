@@ -130,6 +130,7 @@ HrRouter.route('/deleteLocation/:name')
 
 HrRouter.route('/updateLocation/:name')
 .put( async(req,res,next) =>{
+    
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member

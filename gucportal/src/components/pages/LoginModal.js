@@ -12,20 +12,30 @@ function LoginModal() {
     const handleShow = () => setShow(true);
     const handleEmail = (e) => setEmail(e.target.value);
     const handlePassword = (e) => setPassword(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const mem = {
             email: email,
             password: password
         };
         console.log(mem);
-        axios.post('/Member/login', mem).then((res)=>{
-            console.log("success");
-            //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
-        handleClose();
+        axios.post('/Member/login', mem)
+        .then(
+          res =>
+          {
+            console.log(res)
+            console.log(res.headers.authtoken)
+            localStorage.setItem("authtoken",res.data.authtoken)
+            handleClose();
+
+        },
+        err =>
+        {
+          console.log(err)
+        }).catch()
+        {
+        
+        }
     }
   
     return (

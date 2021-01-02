@@ -5,6 +5,8 @@ const mongoConnectionString = process.env.mongoConnectionString;
 
 const app = require('./server.js')
 
+
+
 mongoose.connect(mongoConnectionString, {
     useCreateIndex: true,
     useNewUrlParser: true,

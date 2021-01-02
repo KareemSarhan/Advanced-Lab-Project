@@ -28,10 +28,11 @@
         ]
     },
     "scripts": {
+        "start": "concurrently \"nodemon index1.js\" \"npm start --prefix gucportal\"",
         "gucportal-install": "npm install --prefix gucportal",
-        "start": "nodemon index1.js",
-        "gucportal": "npm start --prefix gucportal",
-        "dev": "concurrently \"npm run start\" \"npm run gucportal\""
+        "node-install": "npm install",
+        "startB": "nodemon index1.js",
+        "startF": "npm start --prefix gucportal"
     },
     "repository": {
         "type": "git",
