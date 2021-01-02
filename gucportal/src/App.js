@@ -1,7 +1,6 @@
 
-
-import React, { Component } from 'react'
 import './App.css';
+ import React ,{Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/layout/Header';
 import Login from './components/pages/LoginModal';
@@ -25,8 +24,12 @@ import AssignHod from './components/pages/HR_Components/AssignHodModal';
 import AddSignIn from './components/pages/HR_Components/AddSignInModal';
 import AddSignOut from './components/pages/HR_Components/AddSignOutModal';
 import UpdateSalary from './components/pages/HR_Components/UpdateSalaryModal';
-import ViewMissing from './components/pages/HR_Components/ViewMissing';
-import AddSlot from './components/pages/AddSlotModal';
+import {BrowserRouter as Router,Route} from "react-router-dom" 
+import Navbar from "./components/navbar.component";
+import Notification from "./components/notification.component";
+import Schedule from "./components/schedule.component";
+import Home from "./components/homepage.component";
+import ReplacementRequest from "./components/replacementrequest.component";
 
 class App extends Component {
   render(){
@@ -58,7 +61,16 @@ class App extends Component {
         <AddSignOut /><br/>
         <UpdateSalary /><br/>
         
-      
+        <Router>
+      <div className="container">
+      <Navbar />
+<br/>
+      <Route path="/notification" component={Notification} />
+      <Route path="/schedule" component={Schedule} />
+      <Route path="/homepage" component={Home} />
+      <Route path="/replacementrequest" component={ReplacementRequest} />
+    </div>
+    </Router>
       </div>
     </div>
       

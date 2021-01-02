@@ -24,7 +24,7 @@ CourseInstRouter.route('/viewCoverage')
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 //console.log(payload.id);
@@ -76,7 +76,7 @@ CourseInstRouter.route('/viewSlotAssignment')
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 //console.log(payload.id);
@@ -151,7 +151,7 @@ CourseInstRouter.route('/viewStaff')
 
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 //console.log(payload.id);
@@ -250,7 +250,7 @@ CourseInstRouter.route('/viewCourseStaff')
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 //console.log(payload.id);
@@ -363,7 +363,7 @@ CourseInstRouter.route('/assignMemToSlot')
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 //console.log(payload.id);
@@ -458,7 +458,7 @@ CourseInstRouter.route('/unassignMemFromSlot')
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 //console.log(payload.id);
@@ -544,7 +544,7 @@ CourseInstRouter.route('/RemoveMemberFromCourse')
     {
         // try
         // {
-        const payload = jwt.verify(req.header('auth-token'), key);
+        const payload = jwt.verify(req.header('authtoken'), key);
         if (!((payload.id).includes("ac")))
         {
             return res.status(401).send("not authorized");
@@ -723,7 +723,7 @@ CourseInstRouter.route('/AssignMemberToCourse')
     {
         // try
         // {
-        const payload = jwt.verify(req.header('auth-token'), key);
+        const payload = jwt.verify(req.header('authtoken'), key);
         if (!((payload.id).includes("ac")))
         {
             return res.status(401).send("not authorized");
@@ -841,7 +841,7 @@ CourseInstRouter.route('/assignCoordinator')
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 return res.status(401).send("not authorized");

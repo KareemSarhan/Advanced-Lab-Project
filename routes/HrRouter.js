@@ -28,7 +28,7 @@ HrRouter.route('/addLocation')
     try{
         //authenticate that this is a valid member
         //authorize that this is a Hr member
-        const payload = jwt.verify(req.header('auth-token'),key);
+        const payload = jwt.verify(req.header('authtoken'),key);
         //console.log(payload.id);
         if (!((payload.id).includes("hr"))){ 
             //console.log(payload.id);
@@ -86,7 +86,7 @@ HrRouter.route('/deleteLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -134,7 +134,7 @@ HrRouter.route('/updateLocation/:name')
     //authenticate that this is a valid member
     //authorize that this is a Hr member
 
-    //const payload = jwt.verify(req.header('auth-token'),key);
+    //const payload = jwt.verify(req.header('authtoken'),key);
 
     //console.log(payload.id);
     
@@ -191,7 +191,7 @@ HrRouter.route('/addFaculty')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -240,7 +240,7 @@ HrRouter.route('/updateFaculty/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -274,7 +274,7 @@ HrRouter.route('/deleteFaculty/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -309,7 +309,7 @@ HrRouter.route('/addDepartment')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -375,7 +375,7 @@ HrRouter.route('/updateDepartment/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -434,7 +434,7 @@ HrRouter.route('/deleteDepartment/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -478,7 +478,7 @@ HrRouter.route('/addCourse')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -543,7 +543,7 @@ HrRouter.route('/updateCourse/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -583,7 +583,7 @@ HrRouter.route('/deleteCourse/:name')
     try{
      //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -666,7 +666,7 @@ HrRouter.route('/addStaffMember')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -835,7 +835,7 @@ HrRouter.route('/updateStaffMember/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -889,7 +889,7 @@ HrRouter.route('/deleteStaffMember/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1028,7 +1028,7 @@ HrRouter.route('/assignHod/:depName')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1074,7 +1074,7 @@ HrRouter.route('/addSignIn/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    let payload = jwt.verify(req.header('auth-token'),key);
+    let payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1178,7 +1178,7 @@ HrRouter.route('/addSignOut/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    let payload = jwt.verify(req.header('auth-token'),key);
+    let payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1284,7 +1284,7 @@ HrRouter.route('/viewAttendance/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1311,7 +1311,7 @@ HrRouter.route('/viewMissing')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1332,7 +1332,7 @@ HrRouter.route('/updateSalary/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('auth-token'),key);
+    const payload = jwt.verify(req.header('authtoken'),key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);

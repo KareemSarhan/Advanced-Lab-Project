@@ -71,7 +71,7 @@ MemberRouter.route('/login')
 MemberRouter.route('/logout')
 .get(async(req,res,next) =>{
  try{ 
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const t = new DeletedToken({token : token})
     await t.save()
    res.send("Logged out.")
@@ -86,7 +86,7 @@ MemberRouter.route('/logout')
 MemberRouter.route('/viewProfile')
 .get(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -166,7 +166,7 @@ MemberRouter.route('/updateProfile')
     const NewPhonenumber = req.body.NewPhonenumber;
     const NewOfficehours = req.body.NewOfficehours;
 
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -226,7 +226,7 @@ else{
 MemberRouter.route('/resetPassword')
 .post(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -271,7 +271,7 @@ MemberRouter.route('/signIn')
 .post(async(req,res,next) =>{
     
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -316,7 +316,7 @@ MemberRouter.route('/signIn')
 MemberRouter.route('/signOut')
 .post(async(req,res,next) =>{
    try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -406,7 +406,7 @@ var finalDuration;
 MemberRouter.route('/viewAllAttendance')
 .get(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});
@@ -441,7 +441,7 @@ MemberRouter.route('/viewAttendanceByMonth')
     try{
         const Month = req.body.Month;
        // console.log(Month)
-        const token  = req.header('auth-token');
+        const token  = req.header('authtoken');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});
@@ -489,7 +489,7 @@ MemberRouter.route('/viewMissingDays')
 .get(async(req,res,next) =>{
     //authenticate
     try{
-     const token  = req.header('auth-token');
+     const token  = req.header('authtoken');
      const DecodeToken = jwt_decode(token);
      const id = DecodeToken.id;
      const existingUser = await members.findOne({id:id});
@@ -698,7 +698,7 @@ catch(error){
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{
     try{
-        const token  = req.header('auth-token');
+        const token  = req.header('authtoken');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});

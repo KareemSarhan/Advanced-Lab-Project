@@ -32,7 +32,7 @@ HodRouter.route('/assignInstructor')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -121,7 +121,7 @@ HodRouter.route('/DeleteInstructor')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -221,7 +221,7 @@ HodRouter.route('/UpdateInstructor')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -360,7 +360,7 @@ HodRouter.route('/viewMembersDep')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -457,7 +457,7 @@ HodRouter.route('/viewMembers/:cID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -570,7 +570,7 @@ HodRouter.route('/viewDaysOffAll')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -648,7 +648,7 @@ HodRouter.route('/viewDaysOff/:memID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -709,7 +709,7 @@ HodRouter.route('/viewDayOffReq')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -764,7 +764,7 @@ HodRouter.route('/viewLeaveReq')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -857,7 +857,7 @@ HodRouter.route('/acceptDayOffReq/:reqID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -926,7 +926,7 @@ HodRouter.route('/acceptLeaveReq/:reqID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -1044,7 +1044,7 @@ HodRouter.route('/rejectDayOffReq/:reqID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -1113,7 +1113,7 @@ HodRouter.route('/rejectLeaveReq/:reqID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -1186,7 +1186,7 @@ HodRouter.route('/viewCoverage')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
@@ -1242,7 +1242,7 @@ HodRouter.route('/viewSlotAssignments/:cID')
         //authenticate that this is a valid member
         //authorize that this is a Hod member
         try {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });

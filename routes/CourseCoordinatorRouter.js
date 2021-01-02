@@ -28,7 +28,7 @@ CourseCoordinatorRouter.use(authenticate);
 CourseCoordinatorRouter.route('/viewSlotLinkReq')
 .get(async(req,res,next) =>{
     try{
-        const token  = req.header('auth-token');
+        const token  = req.header('authtoken');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
         const existingUser = await members.findOne({id:id});
@@ -78,7 +78,7 @@ CourseCoordinatorRouter.route('/acceptlotLinkReq')
     {
         try
         {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const id = DecodeToken.id;
             const loggedMember = await members.findOne(
@@ -181,7 +181,7 @@ CourseCoordinatorRouter.route('/acceptlotLinkReq')
 CourseCoordinatorRouter.route('/rejectslotLinkReq')
 .put(async(req,res,next) =>{
     try{
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
@@ -244,7 +244,7 @@ CourseCoordinatorRouter.route('/addSlot')
     .post(async(req,res,next) =>{
         //authenticate that this is a valid member
         //authorize that this is a CC member
-        const payload = jwt.verify(req.header('auth-token'),key);
+        const payload = jwt.verify(req.header('authtoken'),key);
         //console.log((payload.id).includes("ac"));
         if (!((payload.id).includes("ac"))){ 
             console.log(payload.id);
@@ -325,7 +325,7 @@ CourseCoordinatorRouter.route('/updateSlot')
    // console.log(FindAM  + "helloo")
 
 
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});
@@ -409,7 +409,7 @@ CourseCoordinatorRouter.route('/deleteSlot')
     const FindAM = await AM.findOne({Memberid:FindMem._id})
     console.log(FindAM)
 
-    const token  = req.header('auth-token');
+    const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});

@@ -30,7 +30,7 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -119,7 +119,7 @@ AcademicMemberRouter.route('/viewReplacementReq') //done and written tested
     {
         try
         {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -172,7 +172,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
            // console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -269,7 +269,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             const id = DecodeToken.id;
             if (!((id).includes("ac")))
@@ -410,7 +410,7 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
         //authorize that this is a AM member
         try
         {
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -533,7 +533,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
         {
             //     //authenticate that this is a valid member
             //    // authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -873,7 +873,7 @@ AcademicMemberRouter.route('/notification') //done /written in doc tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -963,7 +963,7 @@ AcademicMemberRouter.route('/viewAllReq') //done  / written tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -1034,7 +1034,7 @@ AcademicMemberRouter.route('/viewAcceptedReq') //done  / written tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -1128,7 +1128,7 @@ AcademicMemberRouter.route('/viewPendingReq') //done  /written tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -1223,7 +1223,7 @@ AcademicMemberRouter.route('/viewRejectedReq') //done /written tested
         {
             //authenticate that this is a valid member
             //authorize that this is a AM member
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -1318,7 +1318,7 @@ AcademicMemberRouter.route('/cancelReq') // tested
             //authenticate that this is a valid member
             //authorize that this is a AM member
             //get the memberID from the token
-            const token = req.header('auth-token');
+            const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             //console.log(DecodeToken);
             const id = DecodeToken.id;
@@ -1599,7 +1599,7 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested
     {
         try
         {
-            const payload = jwt.verify(req.header('auth-token'), key);
+            const payload = jwt.verify(req.header('authtoken'), key);
             if (!((payload.id).includes("ac")))
             {
                 return res.status(401).send("not authorized");
@@ -1607,7 +1607,7 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested
             else
             {
                 //get the memberID from the token
-                const token = req.header('auth-token');
+                const token = req.header('authtoken');
                 const DecodeToken = jwt_decode(token);
                 const CurrentID = DecodeToken.id;
                 const found = await member.findOne(
