@@ -1,21 +1,15 @@
 import React, { Component } from 'react'
 import axios from "axios";
-import UpdateProfile from "./UpdateProfile"
-import ResetPassword from "./ResetPass"
-import ViewAllAttendanceByMonth from './AttendanceByMonth'
-
-
 
 const Members = props => (
   <tr>
-    
-    <td>{props.member.Date}</td>
-    <td>{props.member.SignIn}</td>
-    <td>{props.member.SignOut}</td>
-    
-
-
-
+    <td>{props.member.Memberid}</td>
+    <td>{props.member.missingDays}</td>
+    <td>{props.member.remainingDays}</td>
+    <td>{props.member.ExtraHours}</td>
+    <td>{props.member.missingHours}</td>
+    <td>{props.member.remainingHours}</td>
+ 
     {/* <td>
       <Link to={"/edit/"+props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
     </td> */}
@@ -24,7 +18,7 @@ const Members = props => (
 
 
 
- class ViewAllAttendance extends Component {
+ class ViewMissing extends Component {
   constructor(props) {
     super(props);
 
@@ -33,7 +27,7 @@ const Members = props => (
     this.state = {Members: []};
   }
   componentDidMount() {
-    axios.get('http://localhost:5000/Member/viewAllAttendance')
+    axios.get('Hr/viewMissing')
       .then(response => {
         this.setState({ Members: response.data })
       })
@@ -45,23 +39,24 @@ const Members = props => (
 
     render() {
         return (
-            <div> 
-                <h3>My Attendence log</h3>
-                <ViewAllAttendanceByMonth/> <br>6</br>
+            <div>
+           
+                <h3>Missings</h3>
         <table className="table">
           <thead className="thead-light">
             <tr>
-              <th>Date</th>
-              <th>SignIn</th>
-              <th>SignOut</th>
-
+              <th>Memberid</th>
+              <th>missingDays</th>
+              <th>remainingDays</th>
+              <th>ExtraHours</th>
+              <th>missingHours</th>
+              <th>remainingHours</th>
             </tr>
           </thead>
         </table>
-     
-            </div>
+        </div>
         )
     }
 }
 
-export default ViewAllAttendance;
+export default ViewMissing;

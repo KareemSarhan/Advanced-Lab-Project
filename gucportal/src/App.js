@@ -1,6 +1,8 @@
-import React,{Component} from 'react';
-import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Route,Switch} from "react-router-dom";
+
+
+import React, { Component } from 'react'
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/layout/Header';
 import Login from './components/pages/LoginModal';
 import AddLocation from './components/pages/HR_Components/AddLocationModal';
@@ -15,10 +17,16 @@ import DeleteDepartment from './components/pages/HR_Components/DeleteDepartmentM
 import AddCourse from './components/pages/HR_Components/AddCourseModal';
 import UpdateCourse from './components/pages/HR_Components/UpdateCourseModal';
 import DeleteCourse from './components/pages/HR_Components/DeleteCourseModal';
-import ViewProfile from './components/pages/viewProfile'
-import updateProfile from './components/pages/UpdateProfile'
-import ViewAllAttendance from './components/pages/Attendance'
-
+import AddHrMember from './components/pages/HR_Components/AddHrMemberModal';
+import AddAcademicMember from './components/pages/HR_Components/AddAcademicMemberModal';
+import UpdateStaffMember from './components/pages/HR_Components/UpdateStaffMemberModal';
+import DeleteStaffMember from './components/pages/HR_Components/DeleteStaffMemberModal';
+import AssignHod from './components/pages/HR_Components/AssignHodModal';
+import AddSignIn from './components/pages/HR_Components/AddSignInModal';
+import AddSignOut from './components/pages/HR_Components/AddSignOutModal';
+import UpdateSalary from './components/pages/HR_Components/UpdateSalaryModal';
+import ViewMissing from './components/pages/HR_Components/ViewMissing';
+import AddSlot from './components/pages/AddSlotModal';
 
 class App extends Component {
   render(){
@@ -28,20 +36,30 @@ class App extends Component {
         <Header /><br/>
         <br/>
         <br/>
+        <Login /><br/>
+        <AddLocation /><br/>
+        <UpdateLocation /> <br/>
+        <DeleteLocation /><br/>
+        <AddFaculty /><br/>
+        <UpdateFaculty /><br/>
+        <DeleteFaculty /><br/>
+        <AddDepartment /><br/>
+        <UpdateDepartment /><br/>
+        <DeleteDepartment /><br/>
+        <AddCourse /><br/>
+        <UpdateCourse /><br/>
+        <DeleteCourse /><br/>
+        <AddHrMember /><br/>
+        <AddAcademicMember /><br/>
+        <UpdateStaffMember /><br/>
+        <DeleteStaffMember /><br/>
+        <AssignHod /><br/>
+        <AddSignIn /><br/>
+        <AddSignOut /><br/>
+        <UpdateSalary /><br/>
         
+      
       </div>
-
-       <Router>
-      <div >
-      <Switch>
-      <Route path="/viewProfile" exact component={ViewProfile} />
-      <Route path="/" exact component={Login} />
-      <Route path="/viewAllAttendance" exact component={ViewAllAttendance} />
-
-      </Switch>
-
-      </div>
-    </Router>
     </div>
       
     

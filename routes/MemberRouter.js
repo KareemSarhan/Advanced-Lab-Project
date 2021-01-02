@@ -27,12 +27,11 @@ MemberRouter.route('/login')
         console.log("hellooooooo")
         //validation
         const {email,password}=req.body;
-       
         if(!email|| !password){
             return res.status(400).json({msg:"please enter email or password"})
         }
         if(!validator.isEmail(email)){
-            res.send("Please enter a correct email format .")
+            return res.status(400).send("Please enter a correct email format .")
         }
         const existingUser = await members.findOne({email:email});
         console.log(existingUser);
@@ -51,8 +50,11 @@ MemberRouter.route('/login')
         }
         const token = jwt.sign({id:existingUser.id},key);
        
-        res.header("auth-token",token);
-        res.send("Logged in sucssefully ")
+        res.header("authtoken",token);
+        //res.header("Access-Control-Expose-Headers", "authtoken")
+
+
+        return res.send("Logged in sucssefully ")
 
     }
     catch(error){

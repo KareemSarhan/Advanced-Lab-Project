@@ -148,37 +148,24 @@ CourseCoordinatorRouter.route('/acceptlotLinkReq')
                 }
                 else
                 {
-                    //update req
-                    request.status = "accepted";
-                    await request.save();
-
-                    //update el acadimic memeber schedule\
-                    reqmaker.schedule.push(reqSlot._id);
-                    await reqmaker.save();
-
-                    //update el slots 
-                    reqSlot.memberID = reqmaker._id;
-                    await reqSlot.save();
-
-                    //update el course 
-                    //hageb 3add el slots ely lnfs el course we lehom 7ad bydehom
-                    var slotcount = await slots.find(
-                    {
-                        course: request.courseID,
-                        memberID:
-                        {
-                            $ne: null
-                        }
-                    })
-                    slotcount = slotcount.length;
-                    reqcourse.numberOfSlotsAssigned = slotcount;
-                    reqcourse.coverage = reqcourse.numberOfSlotsAssigned / reqcourse.numberOfSlotsNeeded;
-                    await reqcourse.save();
-                    res.send("Accepted");
-                    return;
+                    return res.status(403).send("This Slot Has Already Been Assigned To An Academic Member.")
                 }
 
+                Acm.schedule.push(AcmSlot._id);
 
+                AcmCourse.numberOfSlotsAssigned = AcmCourse.numberOfSlotsAssigned + 1;
+                AcmCourse.coverage = AcmCourse.numberOfSlotsAssigned / AcmCourse.numberOfSlotsNeeded;
+
+                AcmSlot.memberID = Acm._id;
+
+                Request.status = "Accepted"
+
+                await Request.save();
+                await AcmCourse.save();
+                await AcmSlot.save();
+                await Acm.save();
+
+                res.send("Request Accepted, Acadmic member have been Assigned to this Slot.");
             }
         }
         catch (error)

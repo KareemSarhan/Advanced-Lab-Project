@@ -2,7 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+<<<<<<< HEAD
 import reportWebVitals from './reportWebVitals';
+=======
+import Header from './components/layout/Header.js';
+import axios from "axios";
+//import 'bootstrap/dist/css/bootstrap.min.css';
+//import reportWebVitals from './reportWebVitals';
+axios.defaults.baseURL='http://localhost:3000/'
+>>>>>>> 5826c7a4255fae3ebd2ed18d11655fba57fb3ded
 
 ReactDOM.render(
   <React.StrictMode>
