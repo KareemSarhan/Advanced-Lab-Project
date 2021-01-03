@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react'
 import axios from "axios";
-import { Button,Modal,Form , DropdownButton,Dropdown} from 'react-bootstrap'
+import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container, Form,FormControl, Card ,DropdownButton,Dropdown} from 'react-bootstrap'
+
 
 
 function ViewAllAttendanceByMonth() {
@@ -10,24 +11,38 @@ function ViewAllAttendanceByMonth() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleMonth = (e) => setMonth(e.target.value);
-    const handleSubmit =()=>{
-        const Month = Month;
-        console.log(Month);
-        axios.get('/Member/viewAttendanceByMonth', Month).then((res)=>{
-            console.log("success");
-            //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
-        handleClose();
+    const handleJan =(e)=>{
+        e.preventDefault();
+
+        console.log("yalaa")
+        const mem = {
+            Month: Month
+        };
+       console.log(mem);
+       setMonth(e.target.value)
+        axios.post('/Member/viewAttendanceByMonth', mem)
+        .then(
+          res =>
+          {
+            console.log(res)
+            console.log(res.headers.authtoken)
+            localStorage.setItem("authtoken",res.headers.authtoken)
+            setMonth(e.target.value)
+
+        },
+        err =>
+        {
+          console.log("Feeeeeeee errorrrrrrrr"+err)
+        })
     }
   
     return (
       <div>
        
        <DropdownButton id="dropdown-basic-button" title="Choose a month">
-        <Dropdown.Item href="#/action-1">January</Dropdown.Item>
+       <Dropdown.Item  Month="january" type="SignIn" onSelect={handleJan}>
+                january
+            </Dropdown.Item>
         <Dropdown.Item href="#/action-2">February </Dropdown.Item>
          <Dropdown.Item href="#/action-3">March </Dropdown.Item>
          <Dropdown.Item href="#/action-3">April </Dropdown.Item>

@@ -20,11 +20,11 @@ function UpdateLocationModal() {
             capacity: capacity
         };
         //console.log("7amadaa"+localStorage.getItem("authtoken"));
-        axios.put('/Hr/updateLocation/'+name, loc,
-        {
-          headers:
-          { "authtoken": localStorage.getItem("authtoken")}
-        }
+        axios.put('/Hr/updateLocation/'+name, loc
+        // {
+        //   headers:
+        //   { "authtoken": localStorage.getItem("authtoken")}
+        // }
         ).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)

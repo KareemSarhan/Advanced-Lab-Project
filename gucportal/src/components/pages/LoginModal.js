@@ -18,7 +18,7 @@ function LoginModal() {
             email: email,
             password: password
         };
-        console.log(mem);
+      //  console.log(mem);
         axios.post('/Member/login', mem)
         .then(
           res =>
@@ -31,11 +31,8 @@ function LoginModal() {
         },
         err =>
         {
-          console.log(err)
-        }).catch()
-        {
-        
-        }
+          console.log("Feeeeeeee errorrrrrrrr"+err)
+        })
     }
   
     return (

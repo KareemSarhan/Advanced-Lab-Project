@@ -3,6 +3,8 @@ import './App.css';
  import React ,{Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/layout/Header';
+import SideBar from './components/layout/SideMenu';
+
 import Login from './components/pages/LoginModal';
 import AddLocation from './components/pages/HR_Components/AddLocationModal';
 import DeleteLocation from './components/pages/HR_Components/DeleteLocationModal';
@@ -40,6 +42,7 @@ class App extends Component {
     <div>
       <div className="app">
         <Header /><br/>
+        <SideBar/>
         <br/>
         <br/>
         {/* <Login /><br/> */}

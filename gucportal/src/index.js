@@ -7,7 +7,8 @@ import axios from "axios";
 //import 'bootstrap/dist/css/bootstrap.min.css';
 //import reportWebVitals from './reportWebVitals';
 axios.defaults.baseURL='http://localhost:5000/'
- axios.defaults.headers.common['authtoken'] = localStorage.getItem('authtoken');
+axios.defaults.headers.common['authtoken'] = localStorage.getItem("authtoken");
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
