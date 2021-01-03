@@ -526,7 +526,7 @@ HodRouter.route('/viewMembers/:cID')
                             if (c1 != null)
                                 course.push(c1.code)
                         }
-                        All.push([cTA.name, cTA.id, cTA.email, course, ta.type, ta.faculty, ta.department, loc.name, ta.officeHourse, cTA.dayOff]);
+                        All.push({"name":cTA.name, "id":cTA.id, "email":cTA.email, "courses":course, "type":ta.type,"faculty": ta.faculty,"department": ta.department, "office":loc.name, "officeHours":ta.officeHourse, "dayOff":cTA.dayOff});
                     }
                     //All.push([cTA.name,cTA.id,cTA.email,course,ta.type,ta.faculty,ta.department,ta.officeHourse]);
                 }
@@ -550,7 +550,7 @@ HodRouter.route('/viewMembers/:cID')
                             if (c1 != null)
                                 course.push(c1.code)
                         }
-                        All.push([ins.name, ins.id, ins.email, course, ins1.type, ins1.faculty, ins1.department, loc.name, ins1.officeHourse, ins.dayOff]);
+                        All.push({"name":ins.name, "id":ins.id, "email":ins.email,"courses": course, "type":ins1.type,"faculty": ins1.faculty, "department":ins1.department,"office": loc.name, "officeHours":ins1.officeHourse, "dayOff":ins.dayOff});
                     }
                 }
                 res.json(All);
@@ -616,7 +616,7 @@ HodRouter.route('/viewDaysOffAll')
                             _id: TA.Memberid
                         });
                     //  TAs.push(TA);
-                    allStaff.push([staff.name, staff.id, staff.dayOff]);
+                    allStaff.push({"name":staff.name,"id": staff.id,"dayOff": staff.dayOff});
                 }
                 for (j = 0; j < depmembers.instructors.length; j++) {
                     depCourseInstructor.push(depmembers.instructors[j]);
@@ -629,7 +629,7 @@ HodRouter.route('/viewDaysOffAll')
                             _id: courseInstructor1.Memberid
                         });
                     courseInstructor.push(courseInstructor1);
-                    allStaff.push([staff.name, staff.id, staff.dayOff]);
+                    allStaff.push({"name":staff.name, "id":staff.id, "dayOff":staff.dayOff});
                 }
                 res.json(allStaff);
             }
@@ -692,7 +692,7 @@ HodRouter.route('/viewDaysOff/:memID')
             else {
                 dayoff = mem.dayOff;
             }
-            res.json([mem.name, mem.id, dayoff]);
+            res.json({"name":mem.name,"id": mem.id,"dayOff": dayoff});
         }
 
         catch (error) {
@@ -743,7 +743,7 @@ HodRouter.route('/viewDayOffReq')
                     if (a != null) {
                         m = await members.findOne({ _id: a.Memberid });
                         if (a.department == dep) {
-                            all.push([m.name, m.id, dayoffreq[i].requestID, dayoffreq[i].status, dayoffreq[i].requestedDay, dayoffreq[i].comment]);
+                            all.push({"name":m.name, "id":m.id, "requestID":dayoffreq[i].requestID, "status":dayoffreq[i].status, "requestedDay":dayoffreq[i].requestedDay, "comment":dayoffreq[i].comment});
                         }
                     }
                 }
@@ -800,19 +800,19 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Accidental") {
-                            total.push([m.name, m.id, l[j].numberOfdays, l[j].status, l[j].reason]);
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays":l[j].numberOfdays,"status": l[j].status, "reason":l[j].reason});
                         }
                         if (l[j].Leavetype == "Annual") {
-                            total.push([m.name, m.id, l[j].numberOfdays, l[j].status, l[j].dateOfLeave, m.AnnualBalance]);
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays":l[j].numberOfdays, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "AnnualBalance":m.AnnualBalance});
                         }
                         if (l[j].Leavetype == "Compensation") {
-                            total.push([m.name, m.id, l[j].dateOfabsence, l[j].status, l[j].dateOfcompensation, l.reason]);
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "dateOfabsence":l[j].dateOfabsence, "status":l[j].status, "dateOfcompensation":l[j].dateOfcompensation, "reason":l.reason});
                         }
                         if (l[j].Leavetype == "Maternity") {
-                            total.push([m.name, m.id, l[j].document, l[j].status, l[j].dateOfLeave]);
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave});
                         }
                         if (l[j].Leavetype == "Sick") {
-                            total.push([m.name, m.id, l[j].document, l[j].status, l[j].dateOfLeave, l[j].dateOfdocument]);
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument});
                         }
                     }
                 }
@@ -824,19 +824,19 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Accidental") {
-                            total.push([m.name, m.id, l[j].Leavetype, l[j].numberOfdays, l[j].status, l[j].reason, m.AnnualBalance]);
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays": l[j].numberOfdays, "status":l[j].status, "reason":l[j].reason, "AnnualBalance":m.AnnualBalance});
                         }
                         if (l[j].Leavetype == "Annual") {
-                            total.push([m.name, m.id, l[j].Leavetype, l[j].numberOfdays, l[j].status, l[j].dateOfLeave, m.AnnualBalance]);
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "numberOfdays":l[j].numberOfdays, "status":l[j].status,"dateOfLeave": l[j].dateOfLeave, "AnnualBalance":m.AnnualBalance});
                         }
                         if (l[j].Leavetype == "Compensation") {
-                            total.push([m.name, m.id, l[j].Leavetype, l[j].dateOfabsence, l[j].status, l[j].dateOfcompensation, l[j].reason]);
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID,"Leavetype": l[j].Leavetype, "dateOfabsence":l[j].dateOfabsence, "status":l[j].status,"dateOfcompensation": l[j].dateOfcompensation, "reason":l[j].reason});
                         }
                         if (l[j].Leavetype == "Maternity") {
-                            total.push([m.name, m.id, l[j].Leavetype, l[j].document, l[j].status, l[j].dateOfLeave]);
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave});
                         }
                         if (l[j].Leavetype == "Sick") {
-                            total.push([m.name, m.id, l[j].Leavetype, l[j].document, l[j].status, l[j].dateOfLeave, l[j].dateOfdocument]);
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document,"status": l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument});
                         }
                     }
                 }
@@ -851,6 +851,351 @@ HodRouter.route('/viewLeaveReq')
                 })
         }
     });
+
+    HodRouter.route('/viewAnnualLeaveReq')
+    .get(async (req, res, next) => {
+        //authenticate that this is a valid member
+        //authorize that this is a Hod member
+        try {
+            const token = req.header('authtoken');
+            const DecodeToken = jwt_decode(token);
+            const currentid = DecodeToken.id;
+            const found = await member.findOne({ id: currentid });
+            const deletedtoken = await DeletedToken.findOne({ token: token });
+            if (deletedtoken) {
+                res.send("Sorry you are logged out .")
+            }
+            //  const found = await member.findOne({ id: currentid });
+            if (!found)
+                return res.status(401).send("Not authenticated");
+
+            const ufound = await academicMember.findOne({ Memberid: found._id });
+            if (!currentid.includes("ac")) {
+                return res.status(401).send("not authorized");
+            }
+            if (ufound.type != "HeadOfDepartment") {
+                return res.status(401).send("not authorized");
+            }
+            //get the department
+            //show all leave requests for members in this department
+            const d = await department.findOne(
+                {
+                    name: ufound.department
+                });
+            var l;
+            var a;
+            var m;
+            var total = [];
+            for (i = 0; i < d.teachingAssistants.length; i++) {
+                a = await academicMember.findOne({ _id: d.teachingAssistants[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Annual") {
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays":l[j].numberOfdays, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "AnnualBalance":m.AnnualBalance});
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < d.instructors.length; i++) {
+                a = await academicMember.findOne({ _id: d.instructors[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Annual") {
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "numberOfdays":l[j].numberOfdays, "status":l[j].status,"dateOfLeave": l[j].dateOfLeave, "AnnualBalance":m.AnnualBalance});
+                        }
+                    }
+                }
+               
+            }
+            res.json(total);
+        }
+        catch (error) {
+            res.status(500).json(
+                {
+                    error: error.message
+                })
+        }
+    });
+    HodRouter.route('/viewAccidentalLeaveReq')
+    .get(async (req, res, next) => {
+        //authenticate that this is a valid member
+        //authorize that this is a Hod member
+        try {
+            const token = req.header('authtoken');
+            const DecodeToken = jwt_decode(token);
+            const currentid = DecodeToken.id;
+            const found = await member.findOne({ id: currentid });
+            const deletedtoken = await DeletedToken.findOne({ token: token });
+            if (deletedtoken) {
+                res.send("Sorry you are logged out .")
+            }
+            //  const found = await member.findOne({ id: currentid });
+            if (!found)
+                return res.status(401).send("Not authenticated");
+
+            const ufound = await academicMember.findOne({ Memberid: found._id });
+            if (!currentid.includes("ac")) {
+                return res.status(401).send("not authorized");
+            }
+            if (ufound.type != "HeadOfDepartment") {
+                return res.status(401).send("not authorized");
+            }
+            //get the department
+            //show all leave requests for members in this department
+            const d = await department.findOne(
+                {
+                    name: ufound.department
+                });
+            var l;
+            var a;
+            var m;
+            var total = [];
+            for (i = 0; i < d.teachingAssistants.length; i++) {
+                a = await academicMember.findOne({ _id: d.teachingAssistants[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Accidental") {
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays":l[j].numberOfdays,"status": l[j].status, "reason":l[j].reason});
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < d.instructors.length; i++) {
+                a = await academicMember.findOne({ _id: d.instructors[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Accidental") {
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays": l[j].numberOfdays, "status":l[j].status, "reason":l[j].reason, "AnnualBalance":m.AnnualBalance});
+                        }
+                    }
+                }
+               
+            }
+            res.json(total);
+        }
+        catch (error) {
+            res.status(500).json(
+                {
+                    error: error.message
+                })
+        }
+    });
+   
+
+    HodRouter.route('/viewCompensationLeaveReq')
+    .get(async (req, res, next) => {
+        //authenticate that this is a valid member
+        //authorize that this is a Hod member
+        try {
+            const token = req.header('authtoken');
+            const DecodeToken = jwt_decode(token);
+            const currentid = DecodeToken.id;
+            const found = await member.findOne({ id: currentid });
+            const deletedtoken = await DeletedToken.findOne({ token: token });
+            if (deletedtoken) {
+                res.send("Sorry you are logged out .")
+            }
+            //  const found = await member.findOne({ id: currentid });
+            if (!found)
+                return res.status(401).send("Not authenticated");
+
+            const ufound = await academicMember.findOne({ Memberid: found._id });
+            if (!currentid.includes("ac")) {
+                return res.status(401).send("not authorized");
+            }
+            if (ufound.type != "HeadOfDepartment") {
+                return res.status(401).send("not authorized");
+            }
+            //get the department
+            //show all leave requests for members in this department
+            const d = await department.findOne(
+                {
+                    name: ufound.department
+                });
+            var l;
+            var a;
+            var m;
+            var total = [];
+            for (i = 0; i < d.teachingAssistants.length; i++) {
+                a = await academicMember.findOne({ _id: d.teachingAssistants[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Compensation") {
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "dateOfabsence":l[j].dateOfabsence, "status":l[j].status, "dateOfcompensation":l[j].dateOfcompensation, "reason":l.reason});
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < d.instructors.length; i++) {
+                a = await academicMember.findOne({ _id: d.instructors[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Compensation") {
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID,"Leavetype": l[j].Leavetype, "dateOfabsence":l[j].dateOfabsence, "status":l[j].status,"dateOfcompensation": l[j].dateOfcompensation, "reason":l[j].reason});
+                        }
+                    }
+                }
+               
+            }
+            res.json(total);
+        }
+        catch (error) {
+            res.status(500).json(
+                {
+                    error: error.message
+                })
+        }
+    });
+    HodRouter.route('/viewMaternityLeaveReq')
+    .get(async (req, res, next) => {
+        //authenticate that this is a valid member
+        //authorize that this is a Hod member
+        try {
+            const token = req.header('authtoken');
+            const DecodeToken = jwt_decode(token);
+            const currentid = DecodeToken.id;
+            const found = await member.findOne({ id: currentid });
+            const deletedtoken = await DeletedToken.findOne({ token: token });
+            if (deletedtoken) {
+                res.send("Sorry you are logged out .")
+            }
+            //  const found = await member.findOne({ id: currentid });
+            if (!found)
+                return res.status(401).send("Not authenticated");
+
+            const ufound = await academicMember.findOne({ Memberid: found._id });
+            if (!currentid.includes("ac")) {
+                return res.status(401).send("not authorized");
+            }
+            if (ufound.type != "HeadOfDepartment") {
+                return res.status(401).send("not authorized");
+            }
+            //get the department
+            //show all leave requests for members in this department
+            const d = await department.findOne(
+                {
+                    name: ufound.department
+                });
+            var l;
+            var a;
+            var m;
+            var total = [];
+            for (i = 0; i < d.teachingAssistants.length; i++) {
+                a = await academicMember.findOne({ _id: d.teachingAssistants[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Maternity") {
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave});
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < d.instructors.length; i++) {
+                a = await academicMember.findOne({ _id: d.instructors[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Maternity") {
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave});
+                        }
+                    }
+                }
+               
+            }
+            res.json(total);
+        }
+        catch (error) {
+            res.status(500).json(
+                {
+                    error: error.message
+                })
+        }
+    });
+
+    HodRouter.route('/viewSickLeaveReq')
+    .get(async (req, res, next) => {
+        //authenticate that this is a valid member
+        //authorize that this is a Hod member
+        try {
+            const token = req.header('authtoken');
+            const DecodeToken = jwt_decode(token);
+            const currentid = DecodeToken.id;
+            const found = await member.findOne({ id: currentid });
+            const deletedtoken = await DeletedToken.findOne({ token: token });
+            if (deletedtoken) {
+                res.send("Sorry you are logged out .")
+            }
+            //  const found = await member.findOne({ id: currentid });
+            if (!found)
+                return res.status(401).send("Not authenticated");
+
+            const ufound = await academicMember.findOne({ Memberid: found._id });
+            if (!currentid.includes("ac")) {
+                return res.status(401).send("not authorized");
+            }
+            if (ufound.type != "HeadOfDepartment") {
+                return res.status(401).send("not authorized");
+            }
+            //get the department
+            //show all leave requests for members in this department
+            const d = await department.findOne(
+                {
+                    name: ufound.department
+                });
+            var l;
+            var a;
+            var m;
+            var total = [];
+            for (i = 0; i < d.teachingAssistants.length; i++) {
+                a = await academicMember.findOne({ _id: d.teachingAssistants[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Sick") {
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument});
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < d.instructors.length; i++) {
+                a = await academicMember.findOne({ _id: d.instructors[i] });
+                m = await members.findOne({ _id: a.Memberid });
+                l = await Leaves.find({ StaffID: m._id });
+                for (j = 0; j < l.length; j++) {
+                    if (l[j] != null) {
+                        if (l[j].Leavetype == "Sick") {
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document,"status": l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument});
+                        }
+                    }
+                }
+               
+            }
+            res.json(total);
+        }
+        catch (error) {
+            res.status(500).json(
+                {
+                    error: error.message
+                })
+        }
+    });
+
 
 HodRouter.route('/acceptDayOffReq/:reqID')
     .put(async (req, res, next) => {
@@ -1223,7 +1568,7 @@ HodRouter.route('/viewCoverage')
                             _id: depmembers.courses[i]
                         })
                     if (co != null)
-                        result.push([co.code, co.coverage]);
+                        result.push({"code":co.code, "coverage":co.coverage});
                 }
                 res.json(result);
             }
@@ -1305,14 +1650,14 @@ HodRouter.route('/viewSlotAssignments/:cID')
                                 {
                                     _id: s.location
                                 });
-                            all.push([c2.name, c2.id, s.timing, loc.name, loc.type, s.type]);
+                            all.push({"name":c2.name, "id":c2.id, "timing":s.timing, "room":loc.name, "roomType":loc.type, "slotType":s.type});
                         }
                         else {
                             loc = await location.findOne(
                                 {
                                     _id: s.location
                                 });
-                            all.push([null, null, s.timing, loc.name, loc.type, s.type]);
+                            all.push({"name":null, "id":null, "timing":s.timing,"room": loc.name, "roomType":loc.type, "slotType":s.type});
                         }
                     }
                 }
