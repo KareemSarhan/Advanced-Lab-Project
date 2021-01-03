@@ -30,13 +30,19 @@ import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
 import ReplacementRequest from "./components/replacementrequest.component";
+import Menu from './components/layout/Menu';
+import viewMembers from './components/pages/Hod_Components/viewMembers';
+import viewLeaveRequests from './components/pages/Hod_Components/viewLeaveRequests'
 
 class App extends Component {
   render(){
   return (
     <div>
       <div className="app">
-        <Header /><br/>
+        <Header /><br/><br/>  
+       
+
+        <Menu/>
         <br/>
         <br/>
         <AddLocation /><br/>
@@ -64,11 +70,14 @@ class App extends Component {
       <div className="container">
       <Navbar />
 <br/>
-      <Route path="/" component={Login} /> 
+      <Route path="/" exact component={Login} /> 
       <Route path="/notification" component={Notification} />
       <Route path="/schedule" component={Schedule} />
       <Route path="/homepage" component={Home} />
       <Route path="/replacementrequest" component={ReplacementRequest} />
+      {/* <Route path="/Menu" Component={Menu}/> */}
+      <Route path="/viewMembers" Component={viewMembers}/>
+      <Route path="/viewLeaveReq" Component={viewLeaveRequests}/>
     </div>
     </Router>
       </div>

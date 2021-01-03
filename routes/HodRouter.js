@@ -415,7 +415,7 @@ HodRouter.route('/viewMembersDep')
                         if (c != null)
                             course.push(c.code)
                     }
-                    allStaff.push([TA1.name, TA1.id, TA1.email, course, TA.type, TA.faculty, TA.department, loc.name, TA.officeHourse, TA1.dayOff]);
+                    allStaff.push({"name":TA1.name, "id":TA1.id, "email":TA1.email,"courses": course, "type":TA.type,"faculty": TA.faculty,"department": TA.department,"Office": loc.name, "officeHours":TA.officeHourse, "dayOff":TA1.dayOff});
                 }
                 for (i = 0; i < depmembers.instructors.length; i++) {
                     courseInstructor1 = await academicMember.findOne(
@@ -438,7 +438,7 @@ HodRouter.route('/viewMembersDep')
                             });
                         course.push(c.code)
                     }
-                    allStaff.push([courseInstructor.name, courseInstructor.id, courseInstructor.email, course, courseInstructor1.type, courseInstructor1.faculty, courseInstructor1.department, loc.name, courseInstructor1.officeHourse, courseInstructor.dayOff]);
+                    allStaff.push({"name":courseInstructor.name,"id": courseInstructor.id, "email":courseInstructor.email, "courses":course,"type": courseInstructor1.type,"faculty": courseInstructor1.faculty,"department": courseInstructor1.department, "office":loc.name, "officeHours":courseInstructor1.officeHourse, "dayOff":courseInstructor.dayOff});
                 }
 
                 res.json(allStaff);
