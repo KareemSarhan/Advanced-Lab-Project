@@ -14,7 +14,8 @@ function UpdateDepartmentModal() {
     const handleName = (e) => setName(e.target.value);
     const handleCode = (e) => setCode(e.target.value);
     const handleHod= (e) => setHod(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const dep = {
             name: name,
             code: code,

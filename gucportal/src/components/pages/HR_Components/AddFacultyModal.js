@@ -12,7 +12,8 @@ function AddFacultyModal() {
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
     const handleNumberOfYears = (e) => setNumberOfYears(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             name: name,
             numberOfYears: numberOfYears

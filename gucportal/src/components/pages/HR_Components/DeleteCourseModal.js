@@ -12,7 +12,8 @@ function DeleteCourseModal() {
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
     const handleDepartment = (e) => setDepartment(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const cour = {
             name: name,
             department: department

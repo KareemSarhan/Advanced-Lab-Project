@@ -11,12 +11,12 @@ function AddLocationModal() {
 
     const [type, setType] = useState("");
 
-    const radios = [
-      { name: "Office", value: 'Office' },
-      { name: "Lab", value: "Lab" },
-      { name: "Lecture Hall", value: "Lecture Hall" },
-      { name: "Room", value: "Room" },
-    ];
+    // const radios = [
+    //   { name: "Office", value: 'Office' },
+    //   { name: "Lab", value: "Lab" },
+    //   { name: "Lecture Hall", value: "Lecture Hall" },
+    //   { name: "Room", value: "Room" },
+    // ];
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -63,26 +63,16 @@ function AddLocationModal() {
                 <Form.Label>Location Name</Form.Label>
                 <Form.Control type="text" placeholder="Enter location name" onChange = {handleName}/>
             </Form.Group>
-
-            <Form.Group controlId="formBasicType" required>
-                <Form.Label>Location Type</Form.Label><br/>
-                </Form.Group>
-                <ButtonGroup toggle>
-                  {radios.map((radio, idx) => (
-                    <ToggleButton
-                      key={idx}
-                      type="radio"
-                      variant="secondary"
-                      name="radio"
-                      value={radio.value}
-                      checked={type === radio.value}
-                      onChange={(e) => setType(e.currentTarget.value)}
-                    >
-                      {radio.name}
-                    </ToggleButton>
-                  ))}
-                </ButtonGroup>
               
+                <Form.Group controlId="formBasicType" required>
+                <Form.Label>Location Type</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setType(e.currentTarget.value)}>
+                    <option value="Office">Office</option>
+                    <option value= "Room">Room</option>
+                    <option value="Lecture Hall">Lecture Hall</option>
+                    <option value="Lab">Lab</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicCapacity" required>
                 <Form.Label>Location Capacity</Form.Label>

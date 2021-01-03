@@ -24,12 +24,14 @@ import AddSignIn from './components/pages/HR_Components/AddSignInModal';
 import AddSignOut from './components/pages/HR_Components/AddSignOutModal';
 import UpdateSalary from './components/pages/HR_Components/UpdateSalaryModal';
 import LocationAll from './components/pages/HR_Components/LocationAll';
+import HRPage from './components/pages/HR_Components/HRPage';
 import {BrowserRouter as Router,Route} from "react-router-dom" 
 import Navbar from "./components/navbar.component";
 import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
 import ReplacementRequest from "./components/replacementrequest.component";
+
 
 class App extends Component {
   render(){
@@ -39,32 +41,13 @@ class App extends Component {
         <Header /><br/>
         <br/>
         <br/>
-        <AddLocation /><br/>
-        <LocationAll /><br/>
-        
-        <AddFaculty /><br/>
-        <UpdateFaculty /><br/>
-        <DeleteFaculty /><br/>
-        <AddDepartment /><br/>
-        <UpdateDepartment /><br/>
-        <DeleteDepartment /><br/>
-        <AddCourse /><br/>
-        <UpdateCourse /><br/>
-        <DeleteCourse /><br/>
-        <AddHrMember /><br/>
-        <AddAcademicMember /><br/>
-        <UpdateStaffMember /><br/>
-        <DeleteStaffMember /><br/>
-        <AssignHod /><br/>
-        <AddSignIn /><br/>
-        <AddSignOut /><br/>
-        <UpdateSalary /><br/>
         
         <Router>
       <div className="container">
       <Navbar />
 <br/>
       <Route path="/" component={Login} /> 
+      <Route path="/Hr" component={HRPage} />
       <Route path="/notification" component={Notification} />
       <Route path="/schedule" component={Schedule} />
       <Route path="/homepage" component={Home} />
