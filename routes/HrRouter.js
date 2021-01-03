@@ -29,7 +29,7 @@ HrRouter.route('/addLocation')
         //authenticate that this is a valid member
         //authorize that this is a Hr member
         const payload = jwt.verify(req.headers.authtoken,key);
-        //console.log(payload.id);
+        console.log(payload.id);
         if (!((payload.id).includes("hr"))){ 
             //console.log(payload.id);
             return res.status(401).send("not authorized");
@@ -44,7 +44,7 @@ HrRouter.route('/addLocation')
             }else{
                 //all data required are given
                 //validate the types
-                if ((typeof(req.body.name) == 'string') && (typeof(req.body.type) == 'string') && (typeof(req.body.capacity) == 'number')){
+                //if ((typeof(req.body.name) == 'string') && (typeof(req.body.type) == 'string') && (typeof(req.body.capacity) == 'number')){
                     //verify that the capacity matches the type 
                     //e.g if a lab or room capacity <= 25
                     const cap = req.body.capacity;
@@ -71,9 +71,9 @@ HrRouter.route('/addLocation')
                         res.send("location added");
                         console.log("Location added");
                     }   
-                }else{
-                    return res.status(400).send("wrong data types");
-                }
+                //}else{
+                //    return res.status(400).send("wrong data types");
+                //}
             }
         }
 }catch(err){
@@ -86,7 +86,7 @@ HrRouter.route('/deleteLocation/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -130,6 +130,7 @@ HrRouter.route('/deleteLocation/:name')
 
 HrRouter.route('/updateLocation/:name')
 .put( async(req,res,next) =>{
+    //console.log("here2")
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
@@ -142,7 +143,6 @@ HrRouter.route('/updateLocation/:name')
         return res.status(401).send("not authorized");
     }else{
         //verify that there is a location with the name = id
-        
         const loc = await Location.find({"name": req.body.name});
         if(loc.length == 0){
             
@@ -151,16 +151,13 @@ HrRouter.route('/updateLocation/:name')
         else{
              //verify that the needed credentials are given
              if (req.body.capacity != null){
-                
-                    //if (typeof(req.body.capacity) == 'number'){
-                        if (true){
-                        console.log(req.body.name);
+                        //console.log(req.body.name);
                     //check that the capacity is suitable
                     const cap = req.body.capacity;
                     let maxCap = 0;
-                    if (loc.type == "Lab" || loc.type == "Room"){
+                    if (loc[0].type == 'Lab' || loc[0].type == 'Room'){
                         maxCap = 25;
-                    }else if (loc.type == "Lecture Hall"){
+                    }else if (loc[0].type == 'Lecture Hall'){
                         maxCap = 250;
                     }else{
                         //it is an office
@@ -174,9 +171,7 @@ HrRouter.route('/updateLocation/:name')
                         await Location.findOneAndUpdate({"name": req.params.name}, {"capacity": req.body.capacity});
                         res.send("location capacity is updated")
                     }
-                }else{
-                    return res.status(400).send("wrong data types");
-                }
+                
             } 
         } 
     }
@@ -190,7 +185,7 @@ HrRouter.route('/addFaculty')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -200,7 +195,7 @@ HrRouter.route('/addFaculty')
         if (req.body.name == null){
             return res.status(400).send("name of faculty should be given in body");
         }else{
-            if (typeof(req.body.name) == 'string'){
+           // if (typeof(req.body.name) == 'string'){
                 //all data required are given
                 const n = await faculty.find({"name": req.body.name});
                 if (n != 0){
@@ -208,11 +203,11 @@ HrRouter.route('/addFaculty')
                 }else{
                     var nYears = 0;
                     if (req.body.numberOfYears != null){
-                        if (typeof(req.body.numberOfYears) == 'number'){
+                       // if (typeof(req.body.numberOfYears) == 'number'){
                             nYears = req.body.numberOfYears;
-                        }else{
-                            return res.status(400).send("wrong data type");
-                        }
+                       // }else{
+                        //    return res.status(400).send("wrong data type");
+                       // }
                     }
                     //add a new faculty
                     const f = new faculty({
@@ -226,7 +221,7 @@ HrRouter.route('/addFaculty')
                     await f.save();
                     res.send("faculty added");
                 }
-            }       
+          //  }       
         }
     }
 }catch(err){
@@ -239,7 +234,7 @@ HrRouter.route('/updateFaculty/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -255,11 +250,11 @@ HrRouter.route('/updateFaculty/:name')
         else{
              //verify that the needed credentials are given
              if (req.body.number != null){
-                if (typeof(req.body.number) == 'number'){
+                //if (typeof(req.body.number) == 'number'){
                     //update the existing faculty
                     await faculty.findOneAndUpdate({"name": req.params.name}, {"numberOfYears": req.body.number});
                     res.send("faculty number of years is updated")
-                }
+                //}
             }
         }
     }
@@ -273,7 +268,7 @@ HrRouter.route('/deleteFaculty/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -308,7 +303,7 @@ HrRouter.route('/addDepartment')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -322,7 +317,7 @@ HrRouter.route('/addDepartment')
         //}else if (req.body.headOfDepartment == null){
           //  return res.status(400).send("name of head of department should be given in body");
         }else{
-            if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')){
+           // if ((typeof(req.body.name) == 'string') && (typeof(req.body.faculty) == 'string')){
                 //all data required are given
                 //make sure this department does not exist in other faculties
                 const otherDep = (await department.find({"name": req.body.name}));
@@ -330,7 +325,7 @@ HrRouter.route('/addDepartment')
                     return res.status(400).send("there exists a department with this name");
                 }else{
                     let c = "";
-                    if (req.body.code != null && typeof(req.body.code) == 'string'){
+                    if (req.body.code != null ){
                         c = req.body.code;
                     }
                     let f = null;
@@ -361,7 +356,7 @@ HrRouter.route('/addDepartment')
                         // }
                     }
                 }
-            }
+            //}
         } 
     }
     }catch(err){
@@ -374,7 +369,7 @@ HrRouter.route('/updateDepartment/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -389,12 +384,12 @@ HrRouter.route('/updateDepartment/:name')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.code != null && typeof(req.body.code) == 'string'){
+             if (req.body.code != null && req.body.code!= ""){
                     //update the existing faculty
                      await department.findOneAndUpdate({"name": req.params.name}, {"code": req.body.code});
                      console.log("code updated");
              }
-             if (req.body.headOfDepartment != null && typeof(req.body.headOfDepartment) == 'string'){
+             if (req.body.headOfDepartment != null && req.body.headOfDepartment != "" ){
                 const h1 = (await members.find({"id" : {$regex:[req.body.headOfDepartment]}}))[0];
                 if (h1){
                     //console.log(h1);
@@ -433,7 +428,7 @@ HrRouter.route('/deleteDepartment/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -460,8 +455,8 @@ HrRouter.route('/deleteDepartment/:name')
                     fd.splice(j,1);
                 }
             }
-            console.log(f[0]);
-            console.log(fd);
+            //console.log(f[0]);
+            //console.log(fd);
             await faculty.findByIdAndUpdate(f[0]._id, {"departments": fd});
             await department.findOneAndDelete({"name": req.params.name});
             res.send("department deleted ,faculty of this department no longer includes this department ,department name for corresponding academic members is removed" );
@@ -477,22 +472,22 @@ HrRouter.route('/addCourse')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null || typeof(req.body.name) != 'string'){
+        if (req.body.name == null ){
             return res.status(400).send("name of course should be given in body");
-        }else if (req.body.code == null || typeof(req.body.code) != 'string'){
+        }else if (req.body.code == null){
             return res.status(400).send("course  code should be given in body");
-        }else if (req.body.numberOfSlotsNeeded == null || typeof(req.body.numberOfSlotsNeeded) != 'number'){
+        }else if (req.body.numberOfSlotsNeeded == null ){
             return res.status(400).send("name of head of department should be given in body");
-        }else if (req.body.creditHours == null || typeof(req.body.creditHours) != 'number'){
+        }else if (req.body.creditHours == null ){
             return res.status(400).send("credit hours of course should be given in body");
-        }else if (req.body.department== null || typeof(req.body.department) != 'string'){
+        }else if (req.body.department== null){
             return res.status(400).send("name of department should be given in body");
         }else{
             //all data required are given
@@ -542,7 +537,7 @@ HrRouter.route('/updateCourse/:name')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -556,12 +551,12 @@ HrRouter.route('/updateCourse/:name')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.creditHours != null && typeof(req.body.creditHours) == 'number'){
+             if (req.body.creditHours != null){
                     //update the existing course
                      await course.findOneAndUpdate({"name": req.params.name}, {"creditHours": req.body.creditHours});
                      //res.send("course credit hours is updated")
              }
-             if (req.body.numberOfSlotsNeeded != null && typeof(req.body.numberOfSlotsNeeded) == 'number'){
+             if (req.body.numberOfSlotsNeeded != null){
                 //update the existing course
                 //console.log(cour[0].numberOfSlotsAssigned);
                 const cov = cour[0].numberOfSlotsAssigned/req.body.numberOfSlotsNeeded;
@@ -582,12 +577,13 @@ HrRouter.route('/deleteCourse/:name')
     try{
      //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
         return res.status(401).send("not authorized");
     }else{
+        console.log(req.body)
         //verify that there is a department with the name = :name
         var cour = await course.find({"name": req.params.name});
         if(cour.length == 0){
@@ -595,7 +591,8 @@ HrRouter.route('/deleteCourse/:name')
         }
         else{
             //get the department from the body
-            if (req.body.department == null || typeof(req.body.department) != 'string'){
+            
+            if (req.body.department == null ){
                 return res.status(400).send("name of department should be given in the body");
             }else{
                 //check if there exists a department with this name
@@ -665,7 +662,7 @@ HrRouter.route('/addStaffMember')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -834,7 +831,7 @@ HrRouter.route('/updateStaffMember/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -888,7 +885,7 @@ HrRouter.route('/deleteStaffMember/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1027,7 +1024,7 @@ HrRouter.route('/assignHod/:depName')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1073,7 +1070,7 @@ HrRouter.route('/addSignIn/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    let payload = jwt.verify(req.header('authtoken'),key);
+    let payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1177,7 +1174,7 @@ HrRouter.route('/addSignOut/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    let payload = jwt.verify(req.header('authtoken'),key);
+    let payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1283,7 +1280,7 @@ HrRouter.route('/viewAttendance/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1310,7 +1307,7 @@ HrRouter.route('/viewMissing')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);
@@ -1331,7 +1328,7 @@ HrRouter.route('/updateSalary/:id')
     try{
     //authenticate that this is a valid member
     //authorize that this is a Hr member
-    const payload = jwt.verify(req.header('authtoken'),key);
+    const payload = jwt.verify(req.headers.authtoken,key);
     //console.log(payload.id);
     if (!((payload.id).includes("hr"))){ 
         //console.log(payload.id);

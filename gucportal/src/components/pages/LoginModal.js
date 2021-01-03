@@ -18,13 +18,13 @@ function LoginModal() {
             email: email,
             password: password
         };
-      //  console.log(mem);
+     //   console.log(mem);
         axios.post('/Member/login', mem)
         .then(
           res =>
           {
-            console.log(res)
-            console.log(res.headers.authtoken)
+            //console.log(res)
+            //console.log(res.headers.authtoken)
             localStorage.setItem("authtoken",res.headers.authtoken)
             handleClose();
 

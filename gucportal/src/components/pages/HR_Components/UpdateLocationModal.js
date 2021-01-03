@@ -14,7 +14,6 @@ function UpdateLocationModal() {
     const handleCapacity = (e) => setCapacity(e.target.value);
     const handleSubmit =(e)=>{
       e.preventDefault();
-
         const loc = {
             name: name,
             capacity: capacity
@@ -27,7 +26,10 @@ function UpdateLocationModal() {
         // }
         ).then((res)=>{
             console.log("success");
-            //console.log(res.data.msg)
+    //         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    // res.header("Access-Control-Expose-Headers", "authtoken")
+    // res.header("Access-Control-Allow-Origin", "*");
+            
             
         }).catch((err)=>{
             console.log("error");
