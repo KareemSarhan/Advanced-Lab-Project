@@ -23,6 +23,7 @@ import AssignHod from './components/pages/HR_Components/AssignHodModal';
 import AddSignIn from './components/pages/HR_Components/AddSignInModal';
 import AddSignOut from './components/pages/HR_Components/AddSignOutModal';
 import UpdateSalary from './components/pages/HR_Components/UpdateSalaryModal';
+import LocationAll from './components/pages/HR_Components/LocationAll';
 import {BrowserRouter as Router,Route} from "react-router-dom" 
 import Navbar from "./components/navbar.component";
 import Notification from "./components/notification.component";
@@ -38,10 +39,9 @@ class App extends Component {
         <Header /><br/>
         <br/>
         <br/>
-        <Login /><br/>
         <AddLocation /><br/>
-        <UpdateLocation /> <br/>
-        <DeleteLocation /><br/>
+        <LocationAll /><br/>
+        
         <AddFaculty /><br/>
         <UpdateFaculty /><br/>
         <DeleteFaculty /><br/>
@@ -64,6 +64,7 @@ class App extends Component {
       <div className="container">
       <Navbar />
 <br/>
+      <Route path="/" component={Login} /> 
       <Route path="/notification" component={Notification} />
       <Route path="/schedule" component={Schedule} />
       <Route path="/homepage" component={Home} />

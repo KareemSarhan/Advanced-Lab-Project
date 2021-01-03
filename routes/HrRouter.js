@@ -29,7 +29,7 @@ HrRouter.route('/addLocation')
         //authenticate that this is a valid member
         //authorize that this is a Hr member
         const payload = jwt.verify(req.headers.authtoken,key);
-        //console.log(payload.id);
+        console.log(payload.id);
         if (!((payload.id).includes("hr"))){ 
             //console.log(payload.id);
             return res.status(401).send("not authorized");
@@ -44,7 +44,7 @@ HrRouter.route('/addLocation')
             }else{
                 //all data required are given
                 //validate the types
-                if ((typeof(req.body.name) == 'string') && (typeof(req.body.type) == 'string') && (typeof(req.body.capacity) == 'number')){
+                //if ((typeof(req.body.name) == 'string') && (typeof(req.body.type) == 'string') && (typeof(req.body.capacity) == 'number')){
                     //verify that the capacity matches the type 
                     //e.g if a lab or room capacity <= 25
                     const cap = req.body.capacity;
@@ -71,9 +71,9 @@ HrRouter.route('/addLocation')
                         res.send("location added");
                         console.log("Location added");
                     }   
-                }else{
-                    return res.status(400).send("wrong data types");
-                }
+                //}else{
+                //    return res.status(400).send("wrong data types");
+                //}
             }
         }
 }catch(err){
