@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button ,Card} from 'react-bootstrap';
 import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBSelect,MDBInputGroup } from 'mdbreact';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import './requests.css'
+import '../requests.css'
 import UpdateProfile from './UpdateProfile'
 import ResetPassword from './ResetPass'
 
@@ -41,7 +41,7 @@ export class ViewProfile extends Component {
             height:"100%",
             paddingLeft:"0.5px",
             backgroundColor:'rgba(0,0,0,0.005)',
-            marginLeft:"50px",
+            marginLeft:"150px",
             top:"10px",
             paddingTop:"0.3px"
             }}

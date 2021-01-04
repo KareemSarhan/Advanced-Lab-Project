@@ -657,22 +657,9 @@ MemberRouter.route('/viewMissingDays')
             if (found == false){
                 daysMissed.push(daysOftheMonth[i]);
             }
-            // if (dOnly2.getTime() != daysOftheMonth[i].getTime()){
-                
-            //     console.log(dOnly2 )
-            //     console.log(daysOftheMonth[i] )
-            //     if(dOnly2.getTime() != daysOftheMonth[i].getTime()){
-            //         //console.log(dOnly2 )
-            //         //console.log(daysOftheMonth[i] )
-            //         daysMissed.push(daysOftheMonth[i])
-            //     }
-            // }else{
-            //     daysMissed.push(daysOftheMonth[i])
-            // }
+           
         }
-       // console.log("taleeet console "+UniqueAttendenceDays);
-        //console.log(daysMissed);
-        // getting the day off for the member in term of number 
+      
         const MemberDayOff =existingUser.dayOff;
         var DayOffnumber = 0;
         if(MemberDayOff=="Sunday"){
@@ -707,8 +694,7 @@ MemberRouter.route('/viewMissingDays')
             }
            
         }
-        //console.log(TheAbsentDays.length);
-        //console.log(numberOfmissingDays);
+        
 
         //if a member was not found with a record it will create a new record and add it to missings else it will only update the missing days 
        const FoundMember = await missing.findOne({Memberid : existingUser._id})
@@ -726,7 +712,7 @@ MemberRouter.route('/viewMissingDays')
           });
 
        }
- //res.send("Your Missing Days are " + numberOfmissingDays  + TheAbsentDays )
+       console.log("d5lnaa w 5lsna")
  res.json({TheAbsentDays})
     
 }
@@ -742,6 +728,7 @@ catch(error){
 MemberRouter.route('/viewHours')
 .get(async(req,res,next) =>{
     try{
+        console.log("d5lna")
         const token  = req.header('authtoken');
         const DecodeToken = jwt_decode(token);
         const id = DecodeToken.id;
@@ -789,19 +776,16 @@ MemberRouter.route('/viewHours')
             Memberid : existingUser._id ,
             SpentHours : SpentHour,
             MissingHours:HoursMissing,
-            ExtraHour : Extrahours
+            ExtraHours : Extrahours
         })
         await Missing.save()
         
     }
        }
-       res.json({
-        YourHours :{
-        SpentHours : SpentHour,
-        MissingHours:HoursMissing,
-        ExtraHour : Extrahours
-        }
-    });
+       const info =[]
+       info.push({"SpentHours" :SpentHour,"MissingHours" :HoursMissing,"ExtraHour":Extrahours})
+
+       res.json(info);
     }
     catch(error){
         res.status(500).json({error:error.message})

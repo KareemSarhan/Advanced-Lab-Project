@@ -45,8 +45,11 @@ import viewMaternityLeaves from './components/pages/Hod_Components/viewMaternity
 import viewCoverage from './components/pages/Hod_Components/viewCoverage'
 import viewDaysOffAll from './components/pages/Hod_Components/viewDaysOffAll';
 import viewDayOffReq from './components/pages/Hod_Components/viewDayOffReq';
-import ViewProfile  from './components/pages/viewProfile';
-import ViewAllAttendance  from './components/pages/Attendance';
+import ViewProfile  from './components/pages/Member/viewProfile';
+import ViewAllAttendance  from './components/pages/Member/Attendance';
+import ViewHours  from './components/pages/Member/MissingHours';
+import ViewDays from './components/pages/Member/MissingDays';
+
 
 
 
@@ -57,47 +60,20 @@ class App extends Component {
     <div>
       <div className="app">
         <Header /><br/><br/>  
-        
-       <Router>
-       <Link to="/Menu" className="navbar-brand">Menu</Link>
-        <Route path="/Menu" exact component={Menu}/>
-      <Route path="/viewMembers"  exact component={viewMembers}/>
-      <Route path="/viewLeaveReq"  component={viewLeaveRequests}/>
-      <Route path="/SickLeaves"  component={viewSickLeaves}/>
-      <Route path="/AccidentalLeaves"  component={viewAccidentalLeaves}/>
-      <Route path="/AnnualLeaves"  component={viewAnnualLeaves}/>
-      <Route path="/CompensationLeaves"  component={viewCompensationLeaves}/>
-      <Route path="/MaternityLeaves"  component={viewMaternityLeaves}/>
-      <Route path="/viewCoverage"  component={viewCoverage}/>
-      <Route path="/viewDaysOffAll"  component={viewDaysOffAll}/>
-      <Route path="/viewDayOffReq"  component={viewDayOffReq}/>
-      </Router>
-        <br/>
-        <br/>
-        
+        <SideBar/>
         <Router>
-       
-      <div className="container">
-   <br/>
-   <Route path="/" exact component={Login} />
-      <Route path="/viewProfile" exact component={ViewProfile} />
-      <Route path="/viewAllAttendance" component={ViewAllAttendance} />
-      
-      <Navbar />
-<br/>
-      <Route path="/" component={Login} /> 
-      <Route path="/Hr" component={HRPage} />
-      <Route path="/notification" component={Notification} />
-      <Route path="/schedule" component={Schedule} />
-      <Route path="/homepage" component={Home} />
-      <Route path="/replacementrequest" component={ReplacementRequest} />
-     
-     
-      {/* <Link href= "/Menu" class="nav-link" >Menu</Link> */}
-    </div>
-    </Router>
+     <Route path="/"  exact component={Login}/>
+      <Route path="/viewProfile"  exact component={ViewProfile}/>
+      <Route path="/viewAllAttendance"  exact component={ViewAllAttendance}/>
+      <Route path="/viewMissingHours"  exact component={ViewHours}/>
+      <Route path="/viewMissingDays"  exact component={ViewDays}/>
+
+
+
+      </Router>
       </div>
     </div>
+    
       
     
   );

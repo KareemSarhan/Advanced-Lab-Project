@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import axios from "axios";
-import ViewAllAttendanceByMonth from './AttendanceByMonth'
 
 
 var x ;
-export class viewMembers extends Component {
+export class ViewHours extends Component {
   constructor(props) {
     super(props);
 
@@ -12,10 +11,9 @@ export class viewMembers extends Component {
     this.state = {members: []};
   }
   componentDidMount() {
-    axios.get('Member/viewAllAttendance',{headers:{"authtoken":localStorage.getItem("authtoken")}})
+    axios.get('Member/viewHours',{headers:{"authtoken":localStorage.getItem("authtoken")}})
       .then(res => {
        this.setState( {members: res.data})
-       console.log(this.state.members.name)
      
       })
       .catch((error) => {
@@ -27,14 +25,21 @@ export class viewMembers extends Component {
     render() {
         return (
             <div>
-                <h3>My Attendance</h3>
-                <ViewAllAttendanceByMonth/> <br></br>
-        <table className="table">
+                <h3 style={{
+           marginLeft:"200px",
+           }}>My Missing hours</h3>
+        <table className="table" style={{
+           
+           marginLeft:"200px",
+          
+           }}>
           <thead className="thead-light">
             <tr>
-              <th>SignIn</th>
-              <th>SignOut</th>
-              <th>Duration</th>
+              <th>Spent Hours</th>
+              <th>Missing Hours</th>
+              <th>Extra Hours</th>
+
+              
 
             </tr>
           </thead>
@@ -42,32 +47,25 @@ export class viewMembers extends Component {
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.signIn}</div>
+            <div>{members.SpentHours}</div>
             )
             }
           </td>
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.signOut}</div>
+            <div>{members.MissingHours}</div>
             )
             }
           </td>
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.duration}</div>
+            <div>{members.ExtraHour}</div>
             )
             }
           </td>
-          <td>
-          {
-            this.state.members.map((members)=>
-            <div>{members.courses}</div>
-            )
-            }
-          </td>
-         
+
           </tbody>
         </table>
             </div>
@@ -75,4 +73,4 @@ export class viewMembers extends Component {
     }
 }
 
-export default viewMembers
+export default ViewHours;
