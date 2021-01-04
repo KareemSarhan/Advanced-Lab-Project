@@ -37,10 +37,7 @@ function LoginModal() {
   
     return (
       <div>
-        <Button variant="primary" onClick={handleShow}>
-          Login modal
-        </Button>
-  
+        
         <Modal show={show}
         onHide={handleClose}
         backdrop="static"
