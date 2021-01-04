@@ -623,6 +623,17 @@
     float:left;
     margin-right:5px;
   }
+  .flex-container {
+    display: flex;
+    background-color: rgb(255, 255, 255);
+  }
+  
+  .flex-container > div {
+    background-color: #ffffff;
+    margin: 5px;
+    padding: 5px;
+    font-size: 30px;
+  }
   
   
   

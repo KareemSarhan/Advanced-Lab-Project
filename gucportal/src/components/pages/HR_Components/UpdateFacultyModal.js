@@ -12,7 +12,8 @@ function UpdateFacultyModal() {
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
     const handleNumber = (e) => setNumber(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const fac = {
             name: name,
             number: number
@@ -20,7 +21,6 @@ function UpdateFacultyModal() {
         console.log(fac);
         axios.put('/Hr/updateFaculty/'+name, fac).then((res)=>{
             console.log("success");
-            console.log('/Hr/updateFaculty/'+name)
             
         }).catch((err)=>{
             console.log("error");

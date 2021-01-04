@@ -24,8 +24,8 @@ MemberRouter.use(bodyParser.json());
 MemberRouter.route('/login')
 .post(async(req,res,next) =>{
     try {
-        //console.log("hellooooooo")
         //validation
+        console.log("helloo")
         const {email,password}=req.body;
         if(!email|| !password){
             return res.status(400).json({msg:"please enter email or password"})
@@ -34,7 +34,6 @@ MemberRouter.route('/login')
             return res.status(400).send("Please enter a correct email format .")
         }
         const existingUser = await members.findOne({email:email});
-        //console.log(existingUser);
         if(!(validator.isEmail(email))){
             res.send(a)
             return;
@@ -54,7 +53,10 @@ MemberRouter.route('/login')
         //res.header("Access-Control-Expose-Headers", "authtoken")
 
 
-        return res.send("Logged in sucssefully ")
+        return res.json({
+            msg : "Updated Successfully "
+    
+        });
 
     }
     catch(error){
@@ -86,11 +88,14 @@ MemberRouter.route('/logout')
 MemberRouter.route('/viewProfile')
 .get(async(req,res,next) =>{
     try{
-    const token  = req.header('authtoken');
+
+    const token  = req.headers.authtoken;
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const existingUser = await members.findOne({id:id});
     const deletedtoken = await DeletedToken.findOne({token:token});
+    const info = [];
+   // console.log("Helloo" + existingUser)
    if(deletedtoken){
         res.send("Sorry you are logged out .")
     }
@@ -115,42 +120,38 @@ MemberRouter.route('/viewProfile')
         await members.findByIdAndUpdate(existingUser._id, {"salarySoFar": mSalary});
         console.log("salary deducted");
     }
+    const OfficeID = existingUser.officeLocation;
+    const OfficeName = await location.findOne({_id:OfficeID});
     if(id.includes('ac')){
     const academicMember = await AM.findOne({Memberid :existingUser._id});
-     const OfficeID = existingUser.officeLocation;
-     const OfficeName = await location.findOne({_id:OfficeID});
+     
      const course = academicMember.course;
-    res.json({
-        Member :{
-            name :existingUser.name,
-            email:existingUser.email,
-            faculty :academicMember.faculty,
-            department: academicMember.department,
-            dayOff:existingUser.dayOff,
-            Office : OfficeName.name,
-            course : course,
-            salarySoFar: mSalary,
-            salary: originalSalary,
-            phoneNumber :existingUser.phoneNumber,
-            SecondaryEmail : existingUser.SecondaryEmail,
-            Officehours: academicMember.Officehours,
+// console.log(existingUser.name)  
+// //console.log(OfficeName.name)
+// console.log(academicMember.faculty)
+// console.log(existingUser.dayOff)
+// console.log(OfficeName.name)
+// console.log(OfficeName.name)
+// console.log(OfficeName.name)
 
 
-        }
-    })
+
+     info.push({"name":existingUser.name, "email":existingUser.email, "faculty" :academicMember.faculty,
+     "department": academicMember.department,"dayOff":existingUser.dayOff,"office" : OfficeName.name,
+     "salarySoFar": mSalary,"salary": originalSalary,"phoneNumber" :existingUser.phoneNumber,"SecondaryEmail" : existingUser.SecondayMail,
+     "Officehours": academicMember.Officehours
+    });
+
+    res.send(info)
 }
 else{
-res.json({
-    Member :{
-        name :existingUser.name,
-        email:existingUser.email,
-        Office : OfficeName.name,
-        salarySoFar: mSalary,
-        salary: originalSalary,
-        phoneNumber :existingUser.phoneNumber,
-        SecondaryEmail : existingUser.SecondaryEmail
-    }
-});
+    info.push({"name":existingUser.name, "email":existingUser.email,
+     "Office" : OfficeName.name,
+     "salarySoFar": mSalary,"salary": originalSalary,"phoneNumber" :existingUser.phoneNumber,"SecondaryEmail" : existingUser.SecondayMail,
+    });
+    
+    res.send(info)
+
 }
      }
     }
@@ -161,7 +162,9 @@ res.json({
 
 MemberRouter.route('/updateProfile')
 .post(async(req,res,next) =>{
+
     try{
+        console.log("test test ")
     const NewSecondaryEmail = req.body.NewSecondaryEmail;
     const NewPhonenumber = req.body.NewPhonenumber;
     const NewOfficehours = req.body.NewOfficehours;
@@ -172,17 +175,31 @@ MemberRouter.route('/updateProfile')
     const existingUser = await members.findOne({id:id});
     const deletedtoken = await DeletedToken.findOne({token:token});
     if(deletedtoken){
-    res.send("Sorry you are logged out .")
-}
+        res.json({
+            msg : "Sorry you are logged out ! "
+    
+        });return;
+    }
+    if(!(NewSecondaryEmail) && !(NewPhonenumber) && !NewOfficehours ){
+        res.json({
+            msg : "Please enter data ! "
+    
+        });return;
+    }
 
 else{
     if(!existingUser){
-        res.send("Not authenticated");
+        res.json({
+            msg : "Not authenticated "
+    
+        });return;
     }
 
     if(NewSecondaryEmail){
         if(!(validator.isEmail(NewSecondaryEmail))){
-            res.send("that is not a correct email.")
+            res.json({
+                msg : "That is not an email "
+            }); return
         }
         else{
     members.updateOne({id:id},{SecondayMail:NewSecondaryEmail} , function(err, res) {
@@ -193,7 +210,10 @@ else{
     }
       if(NewPhonenumber){
         if(!(validator.isMobilePhone(NewPhonenumber))){
-            res.send("that is not a mobile number")
+            res.json({
+                msg : "this is not a mobile number  "
+        
+            });return;
         } else {
       members.updateOne({id:id},{phoneNumber:NewPhonenumber} , function(err, res) {
         if (err) throw err;
@@ -210,7 +230,10 @@ else{
   
           }
       }
-      res.send("Updated Successfully .")
+      res.json({
+        msg : "Updated Successfully "
+
+    });return;
     }
     }
     catch(error){
@@ -226,6 +249,7 @@ else{
 MemberRouter.route('/resetPassword')
 .post(async(req,res,next) =>{
     try{
+        console.log("3'yrnahaaaa y a5y")
     const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
@@ -236,18 +260,27 @@ MemberRouter.route('/resetPassword')
         return;
     }
 if(deletedtoken){
-    res.send("Sorry you are logged out .")
+    res.json({
+        msg : "Sorry you are logged out ."
+    });
+    return;
 }
 else{
     //console.log("hello")
     const NewPassword = req.body.NewPassword;
     if(NewPassword.length < 7 ){
-       res.send("Password must be atleast 8 characters ")
+        res.json({
+            msg : "Password must be atleast 8 characters."
+        });
+        return
     }
     const salt = await bcrypt.genSalt();
     const hasedPassword = await bcrypt.hash(NewPassword,salt);
     if(!existingUser){
-    res.send("not authenticated ");
+        res.json({
+            msg : "Not authenticated"
+        });
+        return;
     }
     members.updateOne({id:id},{password:hasedPassword} , function(err, res) {
         if (err) throw err;
@@ -257,7 +290,10 @@ else{
         if (err) throw err;
         console.log("document updated");
       });
-      res.send("Password Updated sucssefully.")
+      res.json({
+        msg : "Password updated successfully"
+    });
+    return
     }
     }
     catch(error){
@@ -271,6 +307,7 @@ MemberRouter.route('/signIn')
 .post(async(req,res,next) =>{
     
     try{
+       // console.log("yarab nd5ol");
     const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
@@ -292,8 +329,10 @@ MemberRouter.route('/signIn')
             if (err) throw err;
             //console.log("document updated");
           });
-          res.send('You have signed in from moments ago .')
-          return
+          res.json({
+            msg : "You have signed in a moment ago !"
+    
+        });return;
       }
       else {
      const attended = new attendance({
@@ -301,7 +340,10 @@ MemberRouter.route('/signIn')
         signIn : today
     })
     await attended.save()
-    res.send("Welcome to the guc.")
+    res.json({
+        msg : "Welcome to the GUC !"
+
+    });return;
 }
     
 }
@@ -316,6 +358,7 @@ MemberRouter.route('/signIn')
 MemberRouter.route('/signOut')
 .post(async(req,res,next) =>{
    try{
+       console.log("hnd5ol wla ehh");
     const token  = req.header('authtoken');
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
@@ -395,8 +438,10 @@ var finalDuration;
 }
 
    
-   res.send("Good Bye!") 
-            
+res.json({
+    msg : "GoodBye :) "
+
+});return;
      }
       catch(error){
           res.status(500).json({error:error.message})
@@ -410,6 +455,8 @@ MemberRouter.route('/viewAllAttendance')
     const DecodeToken = jwt_decode(token);
     const id = DecodeToken.id;
     const deletedtoken = await DeletedToken.findOne({token:token});
+    const existingUser = await members.findOne({id:id});
+
     if(!existingUser){
         res.send("Not autheticated ")
         return
@@ -419,13 +466,9 @@ if(deletedtoken){
     return
 }
     else{
-    const existingUser = await members.findOne({id:id});
     const AttendanceRecord = await attendance.find({Memberid:existingUser._id})
     console.log(AttendanceRecord)
-    res.json({
-           
-        AttendanceRecord  
-    })
+    res.send(AttendanceRecord)
     }
     }
     catch(error){
@@ -439,6 +482,7 @@ if(deletedtoken){
 MemberRouter.route('/viewAttendanceByMonth')
 .get(async(req,res,next) =>{
     try{
+        console.log("d5l wla eh ")
         const Month = req.body.Month;
        // console.log(Month)
         const token  = req.header('authtoken');

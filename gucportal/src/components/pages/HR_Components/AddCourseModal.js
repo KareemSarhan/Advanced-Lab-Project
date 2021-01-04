@@ -18,7 +18,8 @@ function AddCourseModal() {
     const handleCode = (e) => setCode(e.target.value);
     const handleCreditHours = (e) => setCreditHours(e.target.value);
     const handleDepartment = (e) => setDepartment(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const cour = {
             name: name,
             code: code,

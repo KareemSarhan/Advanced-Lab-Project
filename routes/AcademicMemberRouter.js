@@ -23,7 +23,7 @@ const missing = require('../models/missing');
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
 
-AcademicMemberRouter.route('/viewSchedule') //done  //written tested 
+AcademicMemberRouter.route('/viewSchedule') //done  //written tested ..
     .get(async(req, res, next) =>
     {
         try

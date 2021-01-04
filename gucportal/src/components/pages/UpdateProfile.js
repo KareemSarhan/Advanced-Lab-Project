@@ -1,66 +1,70 @@
 import React, { Component, useState } from 'react'
-import { Button,Modal,Form} from 'react-bootstrap'
+import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container, Form,FormControl, Card ,Modal} from 'react-bootstrap'
+import swal from 'sweetalert';
+
 import axios from 'axios'
 
 function UpdatePro() {
-    const [show, setShow] = useState(false);
-    const [NewSecondaryEmail, setName]= useState("");
-    const [NewPhonenumber, setFacultyName] = useState("");
-    const [NewOfficehours, setCode] = useState("");
-  
+  const [show, setShow] = useState(false);
+  const [NewSecondaryEmail, setNewSecondaryEmail]= useState("");
+    const [NewPhonenumber, setPhonenumber] = useState("");
+    const [NewOfficehours, setNewOffice] = useState("");
+
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleNewSecondaryEmail = (e) => setName(e.target.value);
-    const handleNewPhonenumber = (e) => setFacultyName(e.target.value);
-    const handleNewOfficehours = (e) => setCode(e.target.value);
-    const handleSubmit =()=>{
-        const updates  = {
-            NewSecondaryEmail : NewSecondaryEmail,
-            NewPhonenumber: NewPhonenumber,
-            NewOfficehours: NewOfficehours
+    const handleNewSecondaryEmail = (e) => setNewSecondaryEmail(e.target.value);
+    const handleNewPhonenumber = (e) => setPhonenumber(e.target.value);
+    const handleNewOfficehours = (e) => setNewOffice(e.target.value);
+
+    const handleSubmit =(e)=>{
+      e.preventDefault();
+        const mem = {
+          NewSecondaryEmail :NewSecondaryEmail,
+          NewPhonenumber : NewPhonenumber,
+          NewOfficehours : NewOfficehours
         };
-        console.log(updates);
-        axios.post('/Member/updateProfile', updates).then((res)=>{
-            console.log("success");
-            //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
-        handleClose();
-    }
+      //  console.log(mem);
+        axios.post('/Member/updateProfile', mem)
+        .then(res => {
+          swal(res.data.msg)
+    })
+    .catch((err) => swal(err.response.data.errmsg || err.response.data));
+    handleClose();
+}
   
     return (
       <div>
-        <Button variant="primary" onClick={handleShow} class= "mt-10">
-          Update profile
-        </Button>
+        <NavDropdown.Item  variant="primary" onClick={handleShow}>
+        Update Profile
+        </NavDropdown.Item>
   
         <Modal show={show}
         onHide={handleClose}
+        backdrop="static"
         keyboard={false}
         size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered>
           <Modal.Header>
-            <Modal.Title>Update your profile</Modal.Title>
+            <Modal.Title>Update Your Profile</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Form>
-            <Form.Group controlId="formBasicName" required>
-                <Form.Label>NewSecondaryEmail</Form.Label>
-                <Form.Control type="text" placeholder="Enter New Secondary email " onChange = {handleNewSecondaryEmail}/>
+            <Form.Group controlId="formBasicEmail" required>
+                <Form.Label>New Secondary Email</Form.Label>
+                <Form.Control type="NewSecondaryEmail" placeholder="Enter a Secondary email" onChange = {handleNewSecondaryEmail}/>
             </Form.Group>
 
-            <Form.Group controlId="formBasicFacName" required>
-                <Form.Label>NewPhonenumber</Form.Label>
-                <Form.Control type="text" placeholder="Enter New phone number " onChange = {handleNewPhonenumber}/>
+            <Form.Group controlId="formBasicPassword" required>
+                <Form.Label>New Phonenumber</Form.Label>
+                <Form.Control type="NewPhonenumber" placeholder="Enter a Phone number " onChange = {handleNewPhonenumber} />
             </Form.Group>
-
-            <Form.Group controlId="formBasicCode">
-                <Form.Label>NewOfficehours</Form.Label>
-                <Form.Control type="text" placeholder="Enter New office hours " onChange = {handleNewOfficehours} />
+            <Form.Group controlId="formBasicPassword" required>
+                <Form.Label> New Officehours</Form.Label>
+                <Form.Control type="NewPhonenumber" placeholder="Enter an  Office hours timing " onChange = {handleNewOfficehours} />
             </Form.Group>
+            
             <Button variant="primary" type="submit" onClick={handleSubmit}>
                 Submit
             </Button>
@@ -77,10 +81,10 @@ function UpdatePro() {
   render(){
   return(
       <div>
-          <h1>HDFHF</h1>
-          <UpdatePro/>
+          <UpdatePro />
       </div>
   );
   };
 };
 export default UpdateProfile;
+

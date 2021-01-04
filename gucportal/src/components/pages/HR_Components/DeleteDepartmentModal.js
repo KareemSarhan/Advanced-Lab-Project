@@ -10,7 +10,8 @@ function DeleteDepartmentModal() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const dep = {
             name: name
         };

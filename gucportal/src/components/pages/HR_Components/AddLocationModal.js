@@ -1,20 +1,31 @@
 import React, { Component, useState } from 'react'
-import { Button,Modal,Form} from 'react-bootstrap'
+import { Button,Modal,Form, InputGroup, FormControl, DropdownButton, ToggleButton,ButtonGroup} from 'react-bootstrap'
 
 import axios from 'axios'
 
 function AddLocationModal() {
     const [show, setShow] = useState(false);
     const [name, setName]= useState("");
-    const [type, setType] = useState("");
+    //const [type, setType] = useState("");
     const [capacity, setCapacity] = useState(0);
+
+    const [type, setType] = useState("");
+
+    // const radios = [
+    //   { name: "Office", value: 'Office' },
+    //   { name: "Lab", value: "Lab" },
+    //   { name: "Lecture Hall", value: "Lecture Hall" },
+    //   { name: "Room", value: "Room" },
+    // ];
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
-    const handleType = (e) => setType(e.target.value);
+    //const handleType = (e) => setType(e.target.value);
+    //setTypeR("hkj");
     const handleCapacity = (e) => setCapacity(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             name: name,
             type: type,
@@ -52,11 +63,16 @@ function AddLocationModal() {
                 <Form.Label>Location Name</Form.Label>
                 <Form.Control type="text" placeholder="Enter location name" onChange = {handleName}/>
             </Form.Group>
-
-            <Form.Group controlId="formBasicType" required>
-                <Form.Label>Location Type</Form.Label>
-                <Form.Control type="text" placeholder="Enter location type" onChange = {handleType} />
-            </Form.Group>
+              
+                <Form.Group controlId="formBasicType" required>
+                <Form.Label>Location Type</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setType(e.currentTarget.value)}>
+                    <option value="Office">Office</option>
+                    <option value= "Room">Room</option>
+                    <option value="Lecture Hall">Lecture Hall</option>
+                    <option value="Lab">Lab</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicCapacity" required>
                 <Form.Label>Location Capacity</Form.Label>

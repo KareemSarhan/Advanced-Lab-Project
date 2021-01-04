@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 //import{DropdownButton,Dropdown} from 'react-bootstrap'
 
@@ -23,6 +23,8 @@ export default class replacementrequest extends Component {
     constructor(props) {
         super(props);
 
+        this.acceptReq = this.acceptReq.bind(this)
+
         this.state = {replacementrequests: []};     
     }
 
@@ -37,7 +39,11 @@ export default class replacementrequest extends Component {
         } )
     }
 
-    
+    acceptReq(requestID) {
+      axios.post('/AM/AcceptReq'+requestID)
+        .then(res => { console.log(res.data)})
+        }
+
       render() {
         return (
             <div>
@@ -50,6 +56,7 @@ export default class replacementrequest extends Component {
          <Dropdown.Item href="#/action-3">Pending </Dropdown.Item>
         </DropdownButton>
   </h4> */}
+  
        
         <table className="table">
           <thead className="thead-light">
@@ -60,6 +67,8 @@ export default class replacementrequest extends Component {
               <th>Slot</th>
               <th>Status</th>
               <th>Comment</th>
+              <th>Action</th>
+
             </tr>
           </thead>
           <tbody>
@@ -103,6 +112,12 @@ export default class replacementrequest extends Component {
             this.state.replacementrequests.map((replacementrequests)=>
             <div>{replacementrequests.comment}</div>
             )
+            }
+          </td>
+          <td>
+          {
+            
+            <Link to={"/replacementrequest"} onClick={() => { this.state.acceptReq(this.replacementrequests.RequestedID) }}>Accept</Link> 
             }
           </td>
           </tbody>
