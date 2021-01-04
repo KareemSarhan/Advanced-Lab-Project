@@ -76,10 +76,10 @@ class Header extends Component{
                     </Container>
                 </Navbar>
             
-            </div>
+//             </div>
           );
     }
  
 }
 
-export default Header;
+ export default Header;

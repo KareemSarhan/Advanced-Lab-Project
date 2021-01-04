@@ -23,7 +23,7 @@ const missing = require('../models/missing');
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
 
-AcademicMemberRouter.route('/viewSchedule') //done  //written tested 
+AcademicMemberRouter.route('/viewSchedule') //done  //written tested ..
     .get(async(req, res, next) =>
     {
         try
@@ -89,22 +89,31 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written tested
                 path: 'schedule',
                 select: '-_id course timing type location',
                 populate:
-                {
+                 {
                     path: 'course',
                     select: '-_id name  '
                 }
             })
-
-
-
-
+            var y=[];
+  for (i=0;i<acfound.CompensationSlots.length;i++){
+    const x=acfound.CompensationSlots[i];
+      const compSlot= await CompensationSlots.find({x:CompensationSlots._id});
+      const Z=compSlot[i].slot;
+   const slotComp=await  slots.find({Z:slots._id}); //gbtaha mn slot 
+    y.push({"CompensationSlot":slotComp[i].timing,"CompensationSlotDate":compSlot[i].Date});
+      //console.log(slotComp);
+  }
+      
+            
+ 
+ 
+ for(i=0;i<acfound.schedule.length;i++){
+         y.push({"type":acfound.schedule[i].type,"courseName":acfound.schedule[i].course.name,"locationName": acfound.schedule[i].location.name, "locationType": acfound.schedule[i].location.type, "timing": acfound.schedule[i].timing})
+ }
             res.json(
-            {
-                "Schedule": acfound.schedule,
-                "CompensationSlots": acfound.CompensationSlots
-            })
-        }
-
+               y
+           )
+       }
         catch (error)
         {
             res.status(500).json(
@@ -114,7 +123,7 @@ AcademicMemberRouter.route('/viewSchedule') //done  //written tested
         }
     });
 
-AcademicMemberRouter.route('/viewReplacementReq') //done and written tested
+AcademicMemberRouter.route('/viewReplacementReq') //done and written tested..
     .get(async(req, res, next) =>
     {
         try
@@ -122,7 +131,7 @@ AcademicMemberRouter.route('/viewReplacementReq') //done and written tested
             const token = req.header('authtoken');
             const DecodeToken = jwt_decode(token);
             console.log(DecodeToken);
-            const id =" DecodeToken.id";
+            const id =DecodeToken.id;
             if (!((id).includes("ac")))
             {
                 return res.status(401).send("not authorized");
@@ -149,12 +158,11 @@ AcademicMemberRouter.route('/viewReplacementReq') //done and written tested
             var ALLREQ = [];
             for (i = 0; i < REQ.length; i++)
             {
-                ALLREQ.push(["RequestID :" + REQ[i].requestID, "RequestedID :" + REQ[i].requestedID, "Requested Day :" + REQ[i].requestedDay, "Requested Slot :" + REQ[i].requestedSlot, "Status :" + REQ[i].status, "comment :" + REQ[i].comment]);
+     ALLREQ.push({"RequestID" : REQ[i].requestID, "RequestedID": REQ[i].requestedID, "RequestedDay": REQ[i].requestedDay, "RequestedSlot":REQ[i].requestedSlot, "Status":  REQ[i].status, "comment": REQ[i].comment});
             }
-
+              //console.log(ALLREQ);
             res.send(ALLREQ);
         }
-        //hal kol l replacements wala l yekhoso l member da bs ??
 
         catch (error)
         {
