@@ -1,39 +1,45 @@
 import React, { Component, useState } from 'react'
-import { Button,Modal,Form} from 'react-bootstrap'
+import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container, Form,FormControl, Card ,Modal} from 'react-bootstrap'
+import swal from 'sweetalert';
+
+
 import axios from 'axios'
 
 function ResetPassword() {
-    const [show, setShow] = useState(false);
-    const [NewPassword, setName]= useState("");
-  
-  
+  const [show, setShow] = useState(false);
+  const [NewPassword, setNewPassword]= useState("");
+    
+
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleNewPassword = (e) => setName(e.target.value);
+    const handleNewPassword = (e) => setNewPassword(e.target.value);
    
-    const handleSubmit =()=>{
-        const Password  = {
-            NewPassword : NewPassword
+    const handleSubmit =(e)=>{
+      e.preventDefault();
+        const mem = {
+          NewPassword :NewPassword,
+          
         };
-        console.log(Password);
-        axios.post('/Member/resetPassword', Password).then((res)=>{
-            console.log("success");
-            //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
-        handleClose();
-    }
+      //  console.log(mem);
+        axios.post('/Member/resetPassword', mem)
+        .then(res => {
+          swal(res.data.msg)
+    })
+    .catch((err) => swal(err.response.data.errmsg || err.response.data));
+    handleClose();
+}
+
   
     return (
       <div>
-        <Button variant="primary" class="floated" onClick={handleShow} class= "mt-10">
-        Reset Password
-        </Button>
+        <NavDropdown.Item  variant="primary" onClick={handleShow}>
+          Reset Password
+        </NavDropdown.Item>
   
         <Modal show={show}
         onHide={handleClose}
+        backdrop="static"
         keyboard={false}
         size="md"
         aria-labelledby="contained-modal-title-vcenter"
@@ -43,10 +49,11 @@ function ResetPassword() {
           </Modal.Header>
           <Modal.Body>
           <Form>
-            <Form.Group controlId="formBasicName" required>
+            <Form.Group controlId="formBasicEmail" required>
                 <Form.Label>New Password</Form.Label>
-                <Form.Control type="text" placeholder="Enter your new password " onChange = {handleNewPassword}/>
+                <Form.Control type="NewPassword" placeholder="Enter a new password" onChange = {handleNewPassword}/>
             </Form.Group>
+            
             <Button variant="primary" type="submit" onClick={handleSubmit}>
                 Submit
             </Button>
@@ -63,9 +70,10 @@ function ResetPassword() {
   render(){
   return(
       <div>
-          <ResetPassword/>
+          <ResetPassword />
       </div>
   );
   };
 };
 export default ResetPass;
+

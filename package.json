@@ -1,47 +1,50 @@
 {
-    "dependencies": {
-        "bcryptjs": "^2.4.3",
-        "body-parser": "^1.19.0",
-        "bootstrap": "^4.5.3",
-        "concurrently": "^5.3.0",
-        "cors": "^2.8.5",
-        "dotenv": "^8.2.0",
-        "express": "^4.17.1",
-        "jsonwebtoken": "^8.5.1",
-        "jwt-decode": "^3.1.2",
-        "mongodb": "^3.6.3",
-        "mongoose": "^5.10.15",
-        "nodemon": "^2.0.6",
-        "react": "^17.0.1",
-        "react-bootstrap": "^1.4.0",
-        "react-dom": "^17.0.1",
-        "validator": "^13.5.2"
-    },
-    "name": "advanced-lab-project",
-    "description": "Advanced-Lab-Project",
-    "version": "0.0.0",
-    "main": "index1.js",
-    "nodemonConfig": {
-        "verbose": true,
-        "ignore": [
-            "*.json"
-        ]
-    },
-    "scripts": {
-        "start": "concurrently \"nodemon index1.js\" \"npm start --prefix gucportal\"",
-        "gucportal-install": "npm install --prefix gucportal",
-        "node-install": "npm install",
-        "startB": "nodemon index1.js",
-        "startF": "npm start --prefix gucportal"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/KareemSarhan/Advanced-Lab-Project.git"
-    },
-    "author": "KareemSarhan",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/KareemSarhan/Advanced-Lab-Project/issues"
-    },
-    "homepage": "https://github.com/KareemSarhan/Advanced-Lab-Project#readme"
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"body-parser": "^1.19.0",
+		"bootstrap": "^4.5.3",
+		"concurrently": "^5.3.0",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"jsonwebtoken": "^8.5.1",
+		"jwt-decode": "^3.1.2",
+		"mdbreact": "^5.0.1",
+		"mongodb": "^3.6.3",
+		"mongoose": "^5.11.9",
+		"nodemon": "^2.0.6",
+		"react": "^17.0.1",
+		"react-bootstrap": "^1.4.0",
+		"react-dom": "^17.0.1",
+		"validator": "^13.5.2"
+	},
+	"name": "advanced-lab-project",
+	"description": "Advanced-Lab-Project",
+	"version": "0.0.0",
+	"main": "index1.js",
+	"nodemonConfig": {
+		"verbose": true,
+		"ignore": [
+			"*.json"
+		]
+	},
+	"scripts": {
+		"start": "concurrently \"nodemon index1.js\" \"npm start --prefix gucportal\"",
+		"node-install": "npm install",
+		"startB": "nodemon index1.js",
+		"startF": "npm start --prefix gucportal"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/KareemSarhan/Advanced-Lab-Project.git"
+	},
+	"author": "KareemSarhan",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/KareemSarhan/Advanced-Lab-Project/issues"
+	},
+	"homepage": "https://github.com/KareemSarhan/Advanced-Lab-Project#readme",
+	"devDependencies": {
+		"prettier": "2.2.1"
+	}
 }

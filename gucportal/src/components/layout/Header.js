@@ -1,16 +1,33 @@
-import React, { Component } from 'react'
+import React, { Component,useState } from 'react'
 import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container, Form,FormControl, Card } from 'react-bootstrap'
 import Carousel from 'react-bootstrap/Carousel';
-import viewProfile from '../pages/viewProfile'
+import UpdateProfile from '../pages/UpdateProfile'
+import ResetPassword from '../pages/ResetPass'
+import swal from 'sweetalert';
+
 
 import axios from 'axios'
-const handleViewProfile = () => {
-    axios.get('http://localhost:3001/Member/viewProfile').then(response => {
-    //   setUserSession(response.data.token, response.data.user);
-      console.log("ay 7agaaaaa")
-    }).catch(error => {
-  
-    });
+
+
+
+
+const handleSignIn =(e)=>{
+    e.preventDefault();
+      axios.post('/Member/signIn')
+      .then(res => {
+        swal(res.data.msg)
+  })
+  .catch((err) => swal(err.response.data.errmsg || err.response.data));
+
+  }
+  const handleSignOut =(e)=>{
+    e.preventDefault();
+      axios.post('/Member/signOut')
+      .then(res => {
+        swal(res.data.msg)
+  })
+  .catch((err) => swal(err.response.data.errmsg || err.response.data));
+
   }
 class Header extends Component{
     state = {
@@ -31,23 +48,26 @@ class Header extends Component{
                     <Navbar.Toggle  onClick= {this.toggle} aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse isOpen = {this.state.isOpen} id="responsive-navbar-nav">
                         <Nav className="ml-auto">
-                        <Nav.Link href="/viewProfile" onClick={handleViewProfile}>Profile </Nav.Link>
+                        <Nav.Link href="/viewProfile">Profile</Nav.Link>
                         <Nav.Link href="#link">Notifications</Nav.Link>
-                        <Nav.Link href="#link">Sign-In</Nav.Link>
-                        <Nav.Link href="#link">Sign-Out</Nav.Link>
+                        <Nav.Link variant="primary" type="SignIn" onClick={handleSignIn}>
+                signIn
+            </Nav.Link>
+            <Nav.Link variant="primary" type="SignOut" onClick={handleSignOut}>
+                SignOut
+            </Nav.Link>
                         <Nav.Link href="#link">LogOut</Nav.Link>
                         <NavDropdown title="Attendance" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">View Missing Hours</NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">View Missing Days</NavDropdown.Item>
-                            <NavDropdown.Item href="viewAllAttendance">View Attendance</NavDropdown.Item>
+                            <NavDropdown.Item href="/viewAllAttendance">View Attendance</NavDropdown.Item>
 
 
                             <NavDropdown.Divider />
                         </NavDropdown>
                         <NavDropdown title="Settings" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/4.1">Update Profile</NavDropdown.Item>
-                            <NavDropdown.Item href="#action/4.2">Reset Password</NavDropdown.Item>
-
+                            <UpdateProfile/>
+                           <ResetPassword/>
 
                             <NavDropdown.Divider />
                         </NavDropdown>
@@ -56,10 +76,10 @@ class Header extends Component{
                     </Container>
                 </Navbar>
             
-            </div>
+//             </div>
           );
     }
  
 }
 
-export default Header;
+ export default Header;
