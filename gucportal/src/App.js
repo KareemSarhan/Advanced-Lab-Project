@@ -28,6 +28,7 @@ import UpdateSalary from './components/pages/HR_Components/UpdateSalaryModal';
 import LocationAll from './components/pages/HR_Components/LocationAll';
 import HRPage from './components/pages/HR_Components/HRPage';
 import {BrowserRouter as Router,Route} from "react-router-dom" 
+import CourseInstructorPage from "./components/pages/CI_Components/CourseInstructor";
 import Navbar from "./components/navbar.component";
 import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
@@ -91,6 +92,10 @@ class App extends Component {
       <Route path="/schedule" component={Schedule} />
       <Route path="/homepage" component={Home} />
       <Route path="/replacementrequest" component={ReplacementRequest} />
+							<Route
+								path="/CourseInstructor"
+								component={CourseInstructorPage}
+							/>
      
      
       {/* <Link href= "/Menu" class="nav-link" >Menu</Link> */}
@@ -101,7 +106,6 @@ class App extends Component {
       
     
   );
-}
 }
 
 export default App;
