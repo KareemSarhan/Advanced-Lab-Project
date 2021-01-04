@@ -20,7 +20,8 @@ function AddSignInModal() {
     const handleDay= (e) => setDay(e.target.value);
     const handleHour= (e) => setHour(e.target.value);
     const handleMinute= (e) => setMinute(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             id: id,
             year: year,

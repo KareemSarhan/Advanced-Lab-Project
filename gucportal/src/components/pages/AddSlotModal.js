@@ -5,17 +5,17 @@ import axios from 'axios'
 
 function AddSlotModal() {
     const [show, setShow] = useState(false);
-    const [type, setType]= useState("");
+    const [type, setType]= useState("Tutorial");
     const [location, setLocation] = useState("");
     const [timing, setTiming] = useState("");
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleType = (e) => setType(e.target.value);
     const handleLocation= (e) => setLocation(e.target.value);
     const handleTiming = (e) => setTiming(e.target.value);
 
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             type: type,
             location: location,
@@ -49,10 +49,15 @@ function AddSlotModal() {
           </Modal.Header>
           <Modal.Body>
           <Form>
+            
             <Form.Group controlId="formBasicType" required>
-                <Form.Label>Slot Type</Form.Label>
-                <Form.Control type="text" placeholder="Enter slot type" onChange = {handleType}/>
-            </Form.Group>
+                <Form.Label>slot Type</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setType(e.currentTarget.value)}>
+                    <option value="Tutorial">Tutorial</option>
+                    <option value= "Lab">Lab</option>
+                    <option value="Lecture">Lecture</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicLocation" required>
                 <Form.Label>Location</Form.Label>

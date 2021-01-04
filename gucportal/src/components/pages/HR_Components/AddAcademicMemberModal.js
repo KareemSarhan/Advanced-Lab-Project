@@ -6,40 +6,36 @@ import axios from 'axios'
 function AddAcademicMemberModal() {
     const [show, setShow] = useState(false);
     const [name, setName]= useState("");
-    const [type, setType] = useState("");
     const [email, setEmail] = useState("");
     const [salary, setSalary] = useState(0);
     const [officeLocation, setOfficeLocation]= useState("");
     const [phoneNumber, setPhoneNumber]= useState(0);
     const [SecondayMail, setSecondayMail]= useState("");
-    const [gender, setGender]= useState("");
+    const [gender, setGender]= useState("Male");
     const [faculty, setFaculty]= useState("");
     const [department, setDepartment]= useState("");
-    const [dayOff, setDayOff]= useState("");
-    const [academicType, setAcademicType]= useState("");
+    const [dayOff, setDayOff]= useState("Saturday");
+    const [academicType, setAcademicType]= useState("academic member");
 
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
-    const handleType = (e) => setType(e.target.value);
     const handleEmail = (e) => setEmail(e.target.value);
     const handleSalary = (e) => setSalary(e.target.value);
     const handleOfficeLocation = (e) => setOfficeLocation(e.target.value);
     const handlePhoneNumber = (e) => setPhoneNumber(e.target.value);
     const handleSecondayMail = (e) => setSecondayMail(e.target.value);
-    const handleGender = (e) => setGender(e.target.value);
     const handleFaculty = (e) => setFaculty(e.target.value);
     const handleDepartment = (e) => setDepartment(e.target.value);
-    const handleDayOff = (e) => setDayOff(e.target.value);
-    const handleAcademicType = (e) => setAcademicType(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+        e.preventDefault();
         const mem = {
             name: name,
             email: email,
             salary: salary,
             officeLocation: officeLocation,
-            type: type,
+            type: "academic member",
             phoneNumber: phoneNumber,
             SecondayMail: SecondayMail,
             gender: gender,
@@ -81,11 +77,6 @@ function AddAcademicMemberModal() {
                 <Form.Control type="text" placeholder="Enter member name" onChange = {handleName}/>
             </Form.Group>
 
-            <Form.Group controlId="formBasicType" required>
-                <Form.Label>Member Type (HR / Academic)</Form.Label>
-                <Form.Control type="text" placeholder="Enter member type" onChange = {handleType}/>
-            </Form.Group>
-
             <Form.Group controlId="formBasicEmail" required>
                 <Form.Label>Email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter member email" onChange = {handleEmail}/>
@@ -112,19 +103,32 @@ function AddAcademicMemberModal() {
             </Form.Group>
 
             <Form.Group controlId="formBasicDayOff" required>
-                <Form.Label>DayOff</Form.Label>
-                <Form.Control type="text" placeholder="Enter member dayOff" onChange = {handleDayOff} />
-            </Form.Group>
+                <Form.Label>DayOff</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setDayOff(e.currentTarget.value)}>
+                    <option value="Saturday">Saturday</option>
+                    <option value= "Sunday">Sunday</option>
+                    <option value= "Monday">Monday</option>
+                    <option value= "Tuesday">Tuesday</option>
+                    <option value= "Wednesday">Wednesday</option>
+                    <option value= "Thursday">Thursday</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicAcademicType" required>
-                <Form.Label>Academic Type (academic member/CourseInstructor)</Form.Label>
-                <Form.Control type="text" placeholder="Enter member academic type" onChange = {handleAcademicType} />
-            </Form.Group>
+                <Form.Label>Academic Type</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setAcademicType(e.currentTarget.value)}>
+                    <option value="academic member">academic member</option>
+                    <option value= "CourseInstructor">CourseInstructor</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicGender" required>
-                <Form.Label>Member Gender</Form.Label>
-                <Form.Control type="text" placeholder="Enter member gender" onChange = {handleGender}/>
-            </Form.Group>
+                <Form.Label>Gender</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setGender(e.currentTarget.value)}>
+                    <option value="Male">Male</option>
+                    <option value= "Female">Female</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicPhoneNumber" >
                 <Form.Label>Member Phone Number</Form.Label>
@@ -133,7 +137,7 @@ function AddAcademicMemberModal() {
 
             <Form.Group controlId="formBasicSecMail" >
                 <Form.Label>Member Secondary Mail</Form.Label>
-                <Form.Control type="text" placeholder="Enter member secondary mail" onChange = {handleSecondayMail}/>
+                <Form.Control type="email" placeholder="Enter member secondary mail" onChange = {handleSecondayMail}/>
             </Form.Group>
 
             <Button variant="primary" type="submit" onClick={handleSubmit}>

@@ -572,7 +572,7 @@ HrRouter.route('/updateCourse/:name')
 } 
 });
 
-HrRouter.route('/deleteCourse/:name')
+HrRouter.route('/deleteCourse/:name/:dep')
 .delete(async(req,res,next) =>{
     try{
      //authenticate that this is a valid member
@@ -583,7 +583,7 @@ HrRouter.route('/deleteCourse/:name')
         //console.log(payload.id);
         return res.status(401).send("not authorized");
     }else{
-        console.log(req.body)
+        
         //verify that there is a department with the name = :name
         var cour = await course.find({"name": req.params.name});
         if(cour.length == 0){
@@ -592,18 +592,21 @@ HrRouter.route('/deleteCourse/:name')
         else{
             //get the department from the body
             
-            if (req.body.department == null ){
+            if (req.params.dep == null ){
                 return res.status(400).send("name of department should be given in the body");
             }else{
                 //check if there exists a department with this name
-                const dep = await department.find({"name": req.body.department});
-                if (dep.length == 0){
+                const dep = await department.find({"name": req.params.dep});
+                if (dep[0] == null){
+                    
                     return res.status(400).send("name of department is not found");
                 }else{
                     //delete the slots with this course
                     const s = await slot.find({});
+                    //console.log(dep[0])
                     //console.log(s);
                     for (let i = 0 ; i < s.length ; i++){
+                        console.log(s[i]);
                         if (s[i].course == cour[0]._id + ""){
                             //console.log(s[i]);
                             const teacher = s[i].memberid;
@@ -627,13 +630,16 @@ HrRouter.route('/deleteCourse/:name')
                     const m = await academicMember.find({});
                     for (let j = 0 ; j < m.length ; j++){
                         const mC = m[j].courses;
-                        for (let z = 0 ; z < mC.length; z++){
-                            if (mC._id == cour[0]._id + ""){
-                                mC.splice(z,1);
+                        if (mC){
+                            for (let z = 0 ; z < mC.length; z++){
+                                if (mC._id == cour[0]._id + ""){
+                                    mC.splice(z,1);
+                                }
                             }
+                            await academicMember.findByIdAndUpdate(m[j]._id, {"courses": mC});
+                            console.log("course removed from academic member");
                         }
-                        await academicMember.findByIdAndUpdate(m[j]._id, {"courses": mC});
-                        console.log("course removed from academic member");
+                        
                     }
                     await academicMember.findByIdAndUpdate(coordinator, {"type": "academic member"});
                     console.log("course coordinator back to academic member");
@@ -669,15 +675,15 @@ HrRouter.route('/addStaffMember')
         return res.status(401).send("not authorized");
     }else{
         //verify that the needed credentials are given
-        if (req.body.name == null || typeof(req.body.name) != 'string'){
+        if (req.body.name == null){
             return res.status(400).send("name of member should be given in body");
-        }else if (req.body.type == null || typeof(req.body.type) != 'string'){
+        }else if (req.body.type == null){
             return res.status(400).send("type of member (whether academic or HR) should be given in body");
-        }else if (req.body.email== null || !(validator.isEmail(req.body.email))){
+        }else if (req.body.email== null){
             return res.status(400).send("email of member should be given in body");
-        }else if (req.body.salary == null || typeof(req.body.salary) != 'number'){
+        }else if (req.body.salary == null ){
             return res.status(400).send("salary of member should be given in body");
-        }else if (req.body.officeLocation== null || typeof(req.body.officeLocation) != 'string'){
+        }else if (req.body.officeLocation== null){
             return res.status(400).send("office location should be given in body");
         }else{
             //check if the office is full
@@ -693,13 +699,13 @@ HrRouter.route('/addStaffMember')
                 let phoneNumber = 0;
                 let SecondayMail = "";
                 let gender = "";
-                if (req.body.phoneNumber != null && typeof(req.body.phoneNumber) == 'number'){
+                if (req.body.phoneNumber != null){
                     phoneNumber = req.body.phoneNumber;
                 }
-                if (req.body.SecondayMail != null && typeof(req.body.SecondayMail) == 'string'){
+                if (req.body.SecondayMail != null){
                     SecondayMail = req.body.SecondayMail;
                 }
-                if (req.body.gender != null && typeof(req.body.gender) == 'string'){
+                if (req.body.gender != null){
                     gender = req.body.gender;
                 }
                 //check the type academic or HR
@@ -718,13 +724,13 @@ HrRouter.route('/addStaffMember')
                     dOff = "Saturday"
                 }else{
                     // this is an academic member
-                    if (req.body.faculty == null || typeof(req.body.faculty) != 'string'){
+                    if (req.body.faculty == null ){
                         return res.status(400).send("faculty should be given in body");
-                    }else if(req.body.department == null || typeof(req.body.department) != 'string'){
+                    }else if(req.body.department == null ){
                         return res.status(400).send("department should be given in body");
-                    }else if (req.body.dayOff == null || typeof(req.body.dayOff) != 'string'){
+                    }else if (req.body.dayOff == null ){
                         return res.status(400).send("dayOff of academic member should be given in body");
-                    } else if (req.body.academicType== null || typeof(req.body.academicType) != 'string'){
+                    } else if (req.body.academicType== null ){
                         return res.status(400).send("type of academic member should be given in body");
                     }else{
                         const fac = await faculty.find({"name": req.body.faculty});
@@ -844,7 +850,7 @@ HrRouter.route('/updateStaffMember/:id')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.officeLocation != null && typeof(req.body.officeLocation) == 'string'){
+             if (req.body.officeLocation != null){
                     //update the existing office location for the member
                     //decrement the previous location capacity so far
                     //increment the new location capacity so far
@@ -903,7 +909,7 @@ HrRouter.route('/deleteStaffMember/:id')
                  //decrement the officelocation by 1
                 var oldO = (await Location.findById(office))
                 var oldC = oldO.capacitySoFar;
-                var nC = oldC + 1;
+                var nC = oldC - 1;
                 await Location.findByIdAndUpdate(office, {"capacitySoFar": nC});
                 console.log("office capacity so far is decremented by 1");
             }
@@ -953,7 +959,7 @@ HrRouter.route('/deleteStaffMember/:id')
                         console.log("member removed from course's instructors");
                     }
                     if (acType == "HeadOfDepartment"){
-                        await department.findByIdAndUpdate(actualDep._id, {"headOfDep": "N/A"});
+                        await department.findByIdAndUpdate(actualDep._id, {"headOfDep": null});
                         console.log("member removed from being head of his department");
                     }
                 }else if(acType == "CourseCoordinator" || acType == "academic member"){
@@ -988,7 +994,7 @@ HrRouter.route('/deleteStaffMember/:id')
                         console.log("member removed from course's teaching assistants");
                     }
                     if (acType == "CourseCoordinator"){
-                        await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": "N/A"});
+                        await course.findOneAndUpdate({"courseCoordinator": acMem._id}, {"courseCoordinator": null});
                         console.log("member removed from being course coordinator of the corresponding course");
                     }
                 }
@@ -1037,7 +1043,7 @@ HrRouter.route('/assignHod/:depName')
         }
         else{
              //verify that the needed credentials are given
-             if (req.body.id != null && typeof(req.body.id) == 'string'){
+             if (req.body.id != null){
                  var hodM = await members.findOne({"id": req.body.id});
                  if (hodM){
                      var hod = await academicMember.findOne({"Memberid": hodM});
@@ -1047,11 +1053,8 @@ HrRouter.route('/assignHod/:depName')
                         }else{
                             await academicMember.findByIdAndUpdate(hod._id, {"type": "HeadOfDepartment"});
                             console.log("type of member changed to hod");
-                            const inst = dep[0].instructors;
-                            inst.push(hod._id);
                             //console.log(hod._id);
-                            await department.findByIdAndUpdate(dep[0]._id, {"instructors": inst, "headOfDep": hod._id});
-                            console.log("member added to instructors array in department");
+                            await department.findByIdAndUpdate(dep[0]._id, { "headOfDep": hod._id});
                             console.log("department hod is assigned to department");
                             res.send("hod assigned");
                         }
@@ -1086,18 +1089,18 @@ HrRouter.route('/addSignIn/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.body.year == null || typeof(req.body.year) != 'number'){
+        else if (req.body.year == null ){
             return res.status(400).send("year should be given in body");
-        }else if (req.body.month == null || typeof(req.body.month) != 'number'){
+        }else if (req.body.month == null ){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.body.day == null || typeof(req.body.day) != 'number'){
+        else if (req.body.day == null ){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.body.hour == null || typeof(req.body.hour) != 'number'){
+        else if (req.body.hour == null ){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.body.minute == null || typeof(req.body.minute) != 'number'){
+        else if (req.body.minute == null ){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
@@ -1190,18 +1193,18 @@ HrRouter.route('/addSignOut/:id')
             return res.status(401).send("not authorized to do this route to yourself");
         }
         //get the date from the body
-        else if (req.body.year == null || typeof(req.body.year) != 'number'){
+        else if (req.body.year == null){
             return res.status(400).send("year should be given in body");
-        }else if (req.body.month == null || typeof(req.body.month) != 'number'){
+        }else if (req.body.month == null){
             return res.status(400).send("month should be given in body");
         }
-        else if (req.body.day == null || typeof(req.body.day) != 'number'){
+        else if (req.body.day == null ){
             return res.status(400).send("day should be given in body");
         }
-        else if (req.body.hour == null || typeof(req.body.hour) != 'number'){
+        else if (req.body.hour == null ){
             return res.status(400).send("Hour should be given in body");
         }
-        else if (req.body.minute == null || typeof(req.body.minute) != 'number'){
+        else if (req.body.minute == null ){
             return res.status(400).send("minute should be given in body");
         }else{
             var SpentHours;
@@ -1340,7 +1343,7 @@ HrRouter.route('/updateSalary/:id')
             return res.status(400).send("there is no member with this id");
         }else{
             //check if there is a promotion
-            if (req.body.newSalary != null && typeof(req.body.newSalary) == 'number'){
+            if (req.body.newSalary != null){
                 //update the salary
                 //validate that it is a number
                await members.findByIdAndUpdate(m[0]._id, {"salary": req.body.newSalary});

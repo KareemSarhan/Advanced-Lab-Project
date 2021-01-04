@@ -12,7 +12,8 @@ function UpdateSalaryModal() {
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
     const handleNewSalary = (e) => setNewSalary(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const cour = {
             id: id,
             newSalary: newSalary

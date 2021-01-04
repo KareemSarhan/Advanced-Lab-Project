@@ -12,7 +12,8 @@ function UpdateStaffMemberModal() {
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
     const handleOfficeLocation = (e) => setOfficeLocation(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             id: id,
             officeLocation: officeLocation

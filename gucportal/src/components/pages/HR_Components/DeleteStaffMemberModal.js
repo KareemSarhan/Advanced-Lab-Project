@@ -10,7 +10,8 @@ function DeleteStaffMemberModal() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const mem = {
             id: id
         };

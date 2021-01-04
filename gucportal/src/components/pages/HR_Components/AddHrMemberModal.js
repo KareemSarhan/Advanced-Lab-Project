@@ -6,7 +6,6 @@ import axios from 'axios'
 function AddHrMemberModal() {
     const [show, setShow] = useState(false);
     const [name, setName]= useState("");
-    const [type, setType] = useState("");
     const [email, setEmail] = useState("");
     const [salary, setSalary] = useState(0);
     const [officeLocation, setOfficeLocation]= useState("");
@@ -18,20 +17,19 @@ function AddHrMemberModal() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
-    const handleType = (e) => setType(e.target.value);
     const handleEmail = (e) => setEmail(e.target.value);
     const handleSalary = (e) => setSalary(e.target.value);
     const handleOfficeLocation = (e) => setOfficeLocation(e.target.value);
     const handlePhoneNumber = (e) => setPhoneNumber(e.target.value);
     const handleSecondayMail = (e) => setSecondayMail(e.target.value);
-    const handleGender = (e) => setGender(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+        e.preventDefault();
         const mem = {
             name: name,
             email: email,
             salary: salary,
             officeLocation: officeLocation,
-            type: type,
+            type: "HR",
             phoneNumber: phoneNumber,
             SecondayMail: SecondayMail,
             gender: gender
@@ -69,11 +67,6 @@ function AddHrMemberModal() {
                 <Form.Control type="text" placeholder="Enter member name" onChange = {handleName}/>
             </Form.Group>
 
-            <Form.Group controlId="formBasicType" required>
-                <Form.Label>Member Type (HR / Academic)</Form.Label>
-                <Form.Control type="text" placeholder="Enter member type" onChange = {handleType}/>
-            </Form.Group>
-
             <Form.Group controlId="formBasicEmail" required>
                 <Form.Label>Email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter member email" onChange = {handleEmail}/>
@@ -90,9 +83,12 @@ function AddHrMemberModal() {
             </Form.Group>
 
             <Form.Group controlId="formBasicGender" required>
-                <Form.Label>Member Gender</Form.Label>
-                <Form.Control type="text" placeholder="Enter member gender" onChange = {handleGender}/>
-            </Form.Group>
+                <Form.Label>Gender</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setGender(e.currentTarget.value)}>
+                    <option value="Male">Male</option>
+                    <option value= "Female">Female</option>
+                  </Form.Control>
+                </Form.Group>
 
             <Form.Group controlId="formBasicPhoneNumber" >
                 <Form.Label>Member Phone Number</Form.Label>
@@ -101,7 +97,7 @@ function AddHrMemberModal() {
 
             <Form.Group controlId="formBasicSecMail" >
                 <Form.Label>Member Secondary Mail</Form.Label>
-                <Form.Control type="text" placeholder="Enter member secondary mail" onChange = {handleSecondayMail}/>
+                <Form.Control type="email" placeholder="Enter member secondary mail" onChange = {handleSecondayMail}/>
             </Form.Group>
 
             <Button variant="primary" type="submit" onClick={handleSubmit}>

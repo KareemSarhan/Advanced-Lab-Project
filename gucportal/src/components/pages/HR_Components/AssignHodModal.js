@@ -12,7 +12,8 @@ function AssignHodModal() {
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
     const handleDepartment= (e) => setDepartment(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             id: id,
             department: department

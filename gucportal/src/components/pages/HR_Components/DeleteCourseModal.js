@@ -19,7 +19,7 @@ function DeleteCourseModal() {
             department: department
         };
         console.log(cour);
-        axios.delete('/Hr/deleteCourse/' + name, cour).then((res)=>{
+        axios.delete('/Hr/deleteCourse/' + name + '/'+department).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
             
