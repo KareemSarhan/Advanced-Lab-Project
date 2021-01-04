@@ -70,22 +70,22 @@ function AddSignOutModal() {
 
             <Form.Group controlId="formBasicMonth" required>
                 <Form.Label>Month</Form.Label>
-                <Form.Control type="number" min="0" placeholder="Enter month" onChange = {handleMonth} />
+                <Form.Control type="number" min="1" max="12" placeholder="Enter month" onChange = {handleMonth} />
             </Form.Group>
 
             <Form.Group controlId="formBasicDay" required>
                 <Form.Label>Day</Form.Label>
-                <Form.Control type="number" min="0" placeholder="Enter day" onChange = {handleDay} />
+                <Form.Control type="number" min="1" max="31" placeholder="Enter day" onChange = {handleDay} />
             </Form.Group>
 
             <Form.Group controlId="formBasicHour" required>
                 <Form.Label>Hour</Form.Label>
-                <Form.Control type="number" min="0" placeholder="Enter hour" onChange = {handleHour} />
+                <Form.Control type="number" min="0" max="23" placeholder="Enter hour" onChange = {handleHour} />
             </Form.Group>
 
             <Form.Group controlId="formBasicMinute" required>
                 <Form.Label>Minute</Form.Label>
-                <Form.Control type="number" min="0" placeholder="Enter minute" onChange = {handleMinute} />
+                <Form.Control type="number" min="0" max="59" placeholder="Enter minute" onChange = {handleMinute} />
             </Form.Group>
             <Button variant="primary" type="submit" onClick={handleSubmit}>
                 Submit
