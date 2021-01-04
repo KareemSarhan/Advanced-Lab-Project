@@ -24,7 +24,7 @@ MemberRouter.use(bodyParser.json());
 MemberRouter.route('/login')
 .post(async(req,res,next) =>{
     try {
-        console.log("hellooooooo")
+        //console.log("hellooooooo")
         //validation
         const {email,password}=req.body;
         if(!email|| !password){
@@ -34,7 +34,7 @@ MemberRouter.route('/login')
             return res.status(400).send("Please enter a correct email format .")
         }
         const existingUser = await members.findOne({email:email});
-        console.log(existingUser);
+        //console.log(existingUser);
         if(!(validator.isEmail(email))){
             res.send(a)
             return;

@@ -11,6 +11,9 @@ export default class Home extends Component {
 <Link to="/schedule" className="navbar-brand"><button type="button" class="btn btn-dark">View Schedule</button></Link> 
 <br/>
 <br/>
+<Link to="/viewallReq" className="navbar-brand"><button type="button" class="btn btn-dark"> View All Requests</button></Link> 
+<br/>
+<br/>
 <Link to="/replacementrequest" className="navbar-brand"><button type="button" class="btn btn-dark">View Replacement Request</button></Link> 
 <br/>
 <br/>

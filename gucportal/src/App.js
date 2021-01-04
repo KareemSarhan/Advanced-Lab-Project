@@ -39,7 +39,7 @@ class App extends Component {
         <Header /><br/>
         <br/>
         <br/>
-        <Login /><br/>
+       
         <AddLocation /><br/>
         <UpdateLocation /> <br/>
         <DeleteLocation /><br/>
@@ -63,12 +63,14 @@ class App extends Component {
         
         <Router>
       <div className="container">
+      <Route path="/" component={Login} />
       <Navbar />
 <br/>
       <Route path="/notification" component={Notification} />
       <Route path="/schedule" component={Schedule} />
       <Route path="/homepage" component={Home} />
       <Route path="/replacementrequest" component={ReplacementRequest} />
+     
     </div>
     </Router>
       </div>
