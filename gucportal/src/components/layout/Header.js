@@ -77,9 +77,9 @@ class Header extends Component{
                 </Navbar>
             
 //             </div>
-//           );
-//     }
+          );
+    }
  
-// }
+}
 
-// export default Header;
+ export default Header;
