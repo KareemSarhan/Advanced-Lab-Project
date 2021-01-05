@@ -2,13 +2,15 @@ import React, { Component, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
 import axios from "axios";
+import CourseCard from "./CourseCard.jsx";
+import CourseGrid from "./CourseGrid.jsx";
 class CourseInstructorPage extends Component {
 	componentDidMount() {
 		axios
 			.get("CourseInstructor/ViewCoverage")
 			.then((response) => {
 				this.setState(response.data);
-				console.log(this.state.Courses[0]);
+				console.log(this.state.Courses);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -24,11 +26,7 @@ class CourseInstructorPage extends Component {
 		} else
 			return (
 				<div>
-					<h1>{this.state.Courses[0].name}</h1>
-					<h1>{this.state.Courses[0].code}</h1>
-					<h1>{this.state.Courses[0].numberOfSlotsNeeded}</h1>
-					<h1>{this.state.Courses[0].numberOfSlotsNeeded}</h1>
-					<h1>{this.state.Courses[0].coverage}</h1>
+					<CourseGrid Courses={this.state.Courses} />
 				</div>
 			);
 	}
