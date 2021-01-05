@@ -17,7 +17,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import { CircularProgressbar } from "react-circular-progressbar";
-import ProgressProvider from "./ProgressProvider";
 import "react-circular-progressbar/dist/styles.css";
 import VisibilitySensor from "react-visibility-sensor";
 import TutImg from "../../../Images/Tut.jpg";
