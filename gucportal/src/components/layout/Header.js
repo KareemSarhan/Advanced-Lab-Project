@@ -58,7 +58,7 @@ class Header extends Component{
             </Nav.Link>
                         <Nav.Link href="#link">LogOut</Nav.Link>
                         <NavDropdown title="Attendance" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="viewMissingHours">View Missing Hours</NavDropdown.Item>
+                            <NavDropdown.Item href="/viewMissingHours">View Missing Hours</NavDropdown.Item>
                             <NavDropdown.Item href="/viewMissingDays">View Missing Days</NavDropdown.Item>
                             <NavDropdown.Item href="/viewAllAttendance">View Attendance</NavDropdown.Item>
 

@@ -5,9 +5,6 @@ import { Button ,Card} from 'react-bootstrap';
 import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBSelect,MDBInputGroup } from 'mdbreact';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import '../requests.css'
-import UpdateProfile from './UpdateProfile'
-import ResetPassword from './ResetPass'
-
 var x ;
 
 

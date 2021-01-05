@@ -26,16 +26,17 @@ export class ViewHours extends Component {
         return (
             <div>
                 <h3 style={{
-           marginLeft:"200px",
+           marginLeft:"15px",
            }}>My Missing hours</h3>
         <table className="table" style={{
            
-           marginLeft:"200px",
+           marginLeft:"15px",
           
            }}>
           <thead className="thead-light">
             <tr>
               <th>Spent Hours</th>
+
               <th>Missing Hours</th>
               <th>Extra Hours</th>
 
@@ -46,6 +47,7 @@ export class ViewHours extends Component {
           <tbody>
           <td>
           {
+            
             this.state.members.map((members)=>
             <div>{members.SpentHours}</div>
             )

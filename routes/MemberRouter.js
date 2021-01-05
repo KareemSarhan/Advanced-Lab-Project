@@ -51,10 +51,23 @@ MemberRouter.route('/login')
        
         res.header("authtoken",token);
         //res.header("Access-Control-Expose-Headers", "authtoken")
-
+        // const userID = existingUser.id;
+        // var type ;
+        // console.log(userID);
+        // if(userID.includes('hr')){
+        //     type = hr ;
+        // }
+        // else if(userID.includes('ac')){
+        //     const existingAM = AM.findOne({Memberid:existingUser._id});
+        //     console.log(existingAM)
+        //     if(existingAM){
+        //         type = existingAM.type;
+        //     }
+        // }
+      //  console.log(type)
 
         return res.json({
-            msg : "Updated Successfully "
+            "msg" : "logged in Successfuly"
     
         });
 
@@ -204,7 +217,7 @@ else{
         else{
     members.updateOne({id:id},{SecondayMail:NewSecondaryEmail} , function(err, res) {
         if (err) throw err;
-        console.log("document updated 1");
+        // console.log("document updated 1");
       });
     }
     }
@@ -217,7 +230,7 @@ else{
         } else {
       members.updateOne({id:id},{phoneNumber:NewPhonenumber} , function(err, res) {
         if (err) throw err;
-        console.log("document updated 2");
+        // console.log("document updated 2");
       });
     }
 }
@@ -225,7 +238,7 @@ else{
           if(NewOfficehours){
             AM.updateOne({Memberid:existingUser._id},{officeHourse:NewOfficehours} , function(err, res) {
                 if (err) throw err;
-                console.log("document updated 2");
+                // console.log("document updated 2");
               });
   
           }
@@ -540,7 +553,7 @@ MemberRouter.route('/viewMissingDays')
      const deletedtoken = await DeletedToken.findOne({token:token});
      var TheAbsentDays =[];
 
-      
+      console.log("faraaaah")
     if(deletedtoken){
         res.send('you are logged out.')
         return;
@@ -633,7 +646,7 @@ MemberRouter.route('/viewMissingDays')
         for(i=0 ; i <UniqueAttendenceDays.length;i++){
             if(UniqueAttendenceDays[i].signOut==null || UniqueAttendenceDays[i].signOut== undefined){
              //   console.log(UniqueAttendenceDays[i])
-                TheAbsentDays.push(UniqueAttendenceDays[i]);
+                TheAbsentDays.push({"i":UniqueAttendenceDays[i]});
                 numberOfmissingDays++;
             }
         }
@@ -689,7 +702,7 @@ MemberRouter.route('/viewMissingDays')
                 //console.log(daysMissed[i].getDay() );
                 //console.log(daysMissed[i]);
                 numberOfmissingDays++;
-                TheAbsentDays.push(daysMissed[i]);
+                TheAbsentDays.push({"i":daysMissed[i]});
                 
             }
            
