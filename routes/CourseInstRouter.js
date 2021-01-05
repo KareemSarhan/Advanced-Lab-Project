@@ -38,15 +38,9 @@ CourseInstRouter.route("/viewCoverage").get(async (req, res, next) => {
 			const query = {
 				_id: acCourses,
 			};
-			const options = {
-				_id: 0,
-				name: 1,
-				code: 1,
-				numberOfSlotsNeeded: 1,
-				numberOfSlotsAssigned: 1,
-				coverage: 1,
-			};
-			var Courses = await course.find(query, options);
+			var Courses = await course.find(query).populate({
+				path: "slots",
+			});
 			res.json({
 				Courses,
 			});
