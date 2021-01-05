@@ -9,114 +9,109 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import axios from "axios";
 
-
 const useStyles = makeStyles({
-  table: {
-    minWidth: 330
-  }
+	table: {
+		minWidth: 330,
+	},
 });
 
 export default class ViewPofile2 extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {members: []};
-  }
-  componentDidMount() {
-    axios.get('/Member/viewAllAttendance')
-      .then(res => {
-       this.setState( {members: res.data})
-       console.log(this.state.members)
-     
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-  render(){
-  
+	constructor(props) {
+		super(props);
+		this.state = { members: [] };
+	}
+	componentDidMount() {
+		axios
+			.get("/Member/viewAllAttendance")
+			.then((res) => {
+				this.setState({ members: res.data });
+				console.log(this.state.members);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
+	render() {
+		return (
+			<TableContainer component={Paper}>
+				<Table aria-label="simple table">
+					<TableHead>
+						<TableRow>
+							<TableCell align="center">Signin </TableCell>
+							<TableCell align="center">Signout</TableCell>
+							<TableCell align="center">Duration</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						<TableRow>
+							<TableCell component="th" scope="row">
+								<TableContainer component={Paper}>
+									<Table aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="center">Date </TableCell>
+												<TableCell align="center">Time</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{/* shofy kda da hay3ml eh  */}
+											{this.state.members.map((members) => (
+												<TableRow>
+													<TableCell component="th" scope="row">
+														{members.signIn}
+													</TableCell>
+												</TableRow>
+											))}
 
-  return (
-    <TableContainer component={Paper}>
-      <Table  aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="center">Signin </TableCell>
-            <TableCell align="center">Signout</TableCell>
-            <TableCell align="center">Duration</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell component="th" scope="row">
-              <TableContainer component={Paper}>
-                <Table  aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">Date </TableCell>
-                      <TableCell align="center">Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                    {
-            this.state.members.map((members)=>            
-                      <TableCell component="th" scope="row">
-                    {members.signIn}
-                      </TableCell>
-                      )
-            }
-
-                      <TableCell align="right">asdasd</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </TableCell>
-            <TableCell align="right">
-              {" "}
-              <TableContainer component={Paper}>
-                <Table  aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">Date </TableCell>
-                      <TableCell align="center">Time</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        heeeh
-                      </TableCell>
-                      <TableCell align="right">asdasd</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </TableCell>
-            <TableCell align="right">
-              {" "}
-              <TableContainer component={Paper}>
-                <Table  aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">Hours</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell component="th" scope="row">
-                        heeeh
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
-}
-
+											<TableCell align="right">nolaaaaa</TableCell>
+										</TableBody>
+									</Table>
+								</TableContainer>
+							</TableCell>
+							<TableCell align="right">
+								{" "}
+								<TableContainer component={Paper}>
+									<Table aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="center">Date </TableCell>
+												<TableCell align="center">Time</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											<TableRow>
+												<TableCell component="th" scope="row">
+													heeeh
+												</TableCell>
+												<TableCell align="right">asdasd</TableCell>
+											</TableRow>
+										</TableBody>
+									</Table>
+								</TableContainer>
+							</TableCell>
+							<TableCell align="right">
+								{" "}
+								<TableContainer component={Paper}>
+									<Table aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="center">Hours</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											<TableRow>
+												<TableCell component="th" scope="row">
+													heeeh
+												</TableCell>
+											</TableRow>
+										</TableBody>
+									</Table>
+								</TableContainer>
+							</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</TableContainer>
+		);
+	}
 }
