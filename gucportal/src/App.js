@@ -28,6 +28,8 @@ import viewDaysOffAll from "./components/pages/Hod_Components/viewDaysOffAll";
 import viewDayOffReq from "./components/pages/Hod_Components/viewDayOffReq";
 import ViewProfile from "./components/pages/viewProfile";
 import ViewAllAttendance from "./components/pages/Attendance";
+import ViewMissing from './components/pages/HR_Components/ViewMissing';
+import ViewMemberAttendance from './components/pages/HR_Components/ViewMemberAttendance';
 
 
 
@@ -74,6 +76,9 @@ class App extends Component {
 							<br />
 							<Route path="/" component={Login} />
 							<Route path="/Hr" component={HRPage} />
+							<Route path="/ViewMissing" component={ViewMissing} />
+							<Route path="/ViewMemberAttendance" component={ViewMemberAttendance} />
+							
 							<Route path="/notification" component={Notification} />
 							<Route path="/schedule" component={Schedule} />
 							<Route path="/homepage" component={Home} />
