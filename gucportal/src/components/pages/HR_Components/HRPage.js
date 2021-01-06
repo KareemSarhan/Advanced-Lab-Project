@@ -20,7 +20,7 @@ import AssignHod from './AssignHodModal';
 import AddSignIn from './AddSignInModal';
 import AddSignOut from './AddSignOutModal';
 import UpdateSalary from './UpdateSalaryModal';
-import ViewMemAttButton from './ViewMemAttButton';
+import ViewMemAttButtonModal from './ViewMemAttButton';
 
 
   class HRPage extends Component{
@@ -102,7 +102,7 @@ import ViewMemAttButton from './ViewMemAttButton';
                     <AddSignIn /><br/>
                     <AddSignOut /><br/>
                     <UpdateSalary /><br/>
-                    <ViewMemAttButton /><br/>
+                    <ViewMemAttButtonModal /><br/>
                     <Button variant="primary" href="/ViewMissing"  class= "mt-10">
                         ViewMissings
                     </Button>

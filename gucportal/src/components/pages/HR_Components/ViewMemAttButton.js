@@ -1,44 +1,37 @@
-import React, { Component, useState } from 'react';
-//import { Link } from 'react-router-dom';
-import{DropdownButton,Dropdown} from 'react-bootstrap'
+import React, { Component, useState, history, useHistory } from 'react'
 import { Button,Modal,Form} from 'react-bootstrap'
-import ViewMemberAttendance from './ViewMemberAttendance';
-import { Redirect , Route, Link, Router} from "react-router-dom";
-
+import {Link, Router, Route, Redirect} from 'react-router-dom'
 import axios from 'axios'
+import ViewMemberAttendance from './ViewMemberAttendance';
+import { withRouter } from 'react-router-dom';
 
-var memID = "";
-function TakeMemberIDModal() {
+function ViewMemAttButtonModal(props) {
     const [show, setShow] = useState(false);
-    const [id, setID]= useState("");
-   // const [redir, setRedirect] = useState("/ViewMemberAttendance");
-  
+    const [id, setID] = useState("");
+ 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleID= (e) => setID(e.target.value);     
+    const handleID = (e) => setID(e.target.value);
     const handleSubmit =(e)=>{
       e.preventDefault();
-      memID = id;
-      handleClose();
-      console.log(id);
-   return(
-   <div>
-       <Router>
-           <Route
-           path="/ViewMemberAttendance" component={ViewMemberAttendance}/>
-       </Router>
-       </div>)
-      //return(<ViewMemberAttendance props = {id} />);
-}
+        const mem = {
+            id: id
+        };
+       // console.log(props)
+        props.history.push('/ViewMemberAttendance/'+mem.id);
+        handleClose();
+
+    }
   
     return (
       <div>
-        <Button variant="primary" onClick={handleShow} class= "mt-10">
+       <Button variant="primary" onClick={handleShow}>
           View Member Attendance
-        </Button>
+        </Button> 
   
         <Modal show={show}
         onHide={handleClose}
+        
         keyboard={false}
         size="md"
         aria-labelledby="contained-modal-title-vcenter"
@@ -48,17 +41,13 @@ function TakeMemberIDModal() {
           </Modal.Header>
           <Modal.Body>
           <Form>
-            
             <Form.Group controlId="formBasicID" required>
-                <Form.Label>Member ID</Form.Label><br/>
-                <Form.Control type="text" placeholder="Enter member id" onChange = {handleID} />
-                </Form.Group>
+                <Form.Label>Member ID</Form.Label>
+                <Form.Control type="text" placeholder="Enter member ID" onChange = {handleID}/>
+            </Form.Group>
+
             <Button variant="primary" type="submit" onClick={handleSubmit}>
-            <Link to={{
-        pathname: "/ViewMemberAttendance",
-        state: { id: id }
-      }}/>
-      Submit
+                Submit
             </Button>
             </Form>
           </Modal.Body>
@@ -66,18 +55,8 @@ function TakeMemberIDModal() {
           </Modal.Footer>
         </Modal>
       </div>
+     
     );
   }
   
-  class ViewMemAttButton extends Component{
-    
-    render() {
-  return(
-      <div>
-          <TakeMemberIDModal />
-      </div>
-  );
-  };
-};
-
-export default ViewMemAttButton;
+ export default  withRouter(ViewMemAttButtonModal)
