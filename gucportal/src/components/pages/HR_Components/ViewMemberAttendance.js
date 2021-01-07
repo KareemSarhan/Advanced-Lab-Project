@@ -19,11 +19,9 @@ class ViewMemberAttendance extends Component{
            this.setState( {attendances: res.data})
            console.log("success");
            console.log(res.data);
-         
+           swal(res.data.msg)
           })
-          .catch((error) => {
-            console.log(error);
-          })
+          .catch((err) => {swal( err)});
     }
   render(){
   return(

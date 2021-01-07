@@ -16,10 +16,9 @@ import{DropdownButton,Dropdown} from 'react-bootstrap'
         .then(res=>{
           console.log("here");
                 this.setState({missings:res.data })      
-        })
-        .catch(error=>{
-            console.log(error);
-        } )
+                swal(res.data.msg)
+              })
+              .catch((err) => {swal(err)});
     }
 
     
@@ -43,7 +42,7 @@ import{DropdownButton,Dropdown} from 'react-bootstrap'
             <td>
             {
             this.state.missings.map((missing)=>
-            <div>{missing.memberID}</div>
+            <div>{missing.Memberid}</div>
             )
             }
             </td>

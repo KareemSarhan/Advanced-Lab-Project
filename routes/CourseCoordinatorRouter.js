@@ -242,38 +242,39 @@ catch(error){
 
 CourseCoordinatorRouter.route('/addSlot')
     .post(async(req,res,next) =>{
+        try{
         //authenticate that this is a valid member
         //authorize that this is a CC member
         const payload = jwt.verify(req.header('authtoken'),key);
         //console.log((payload.id).includes("ac"));
         if (!((payload.id).includes("ac"))){ 
             console.log(payload.id);
-            return res.status(401).send("not authorized");
+            return res.json({msg:"not authorized"});
         }else{
             const m = await members.find({"id": payload.id});
             if (m.length == 0){
-                return res.status(401).send("there is no member with this id");
+                return res.json({msg:"there is no member with this id"});
             }else{
                 var acMem = await AM.find({"Memberid": m[0]._id});
                 if (acMem.length !=0){
                     //console.log("here");
                     if (acMem[0].type != "CourseCoordinator"){
-                        return res.status(401).send("not authorized");
+                        return res.json({msg:"not authorized"});
                     }
                     else{
                         //authorized
                         //get slot details and verify that it is correct
-                        if (req.body.type == null){
-                            return res.status(400).send("type of slot should be given in body");
-                        }else if (req.body.location == null){
-                            return res.status(400).send("location should be given in body");
-                        }else if (req.body.timing == null){
-                            return res.status(400).send("timing of should be given in body");
+                        if (req.body.type == null || req.body.type == ""){
+                            return res.json({msg:"type of slot should be given in body"});
+                        }else if (req.body.location == null || req.body.location == ""){
+                            return res.json({msg:"location should be given in body"});
+                        }else if (req.body.timing == null || req.body.timing == ""){
+                            return res.json({msg:"timing of should be given in body"});
                         }else{
                             //check that the location exists 
                             var l = await location.find({"name": req.body.location});
                             if (l.length == 0){
-                                return res.status(400).send("there does not exist a location with this name");
+                                return res.json({msg:"there does not exist a location with this name"});
                             }else{
                                 //get the course id 
                                 var c = await courses.find({"courseCoordinator": acMem[0]._id});
@@ -296,7 +297,7 @@ CourseCoordinatorRouter.route('/addSlot')
                                     var cov = (c[0].numberOfSlotsAssigned)/cAssignedSlots ;
                                     await courses.findByIdAndUpdate(c[0]._id, {"slots": courseSlots , "numberOfSlotsNeeded": cAssignedSlots, "coverage": cov });
                                     console.log("slot added to course and coverage updated");
-                                    res.send("slot added");
+                                    res.json({msg:"slot added"});
                                 }
                             }
                         }
@@ -304,6 +305,10 @@ CourseCoordinatorRouter.route('/addSlot')
                 }
             }
         }    
+    }
+catch(error){
+    res.status(500).json({error:error.message})
+}
     });
     
 

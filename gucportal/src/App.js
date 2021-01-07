@@ -36,6 +36,7 @@ import ViewMemAttButtonModal from './components/pages/HR_Components/ViewMemAttBu
 
 
 
+
 class App extends Component {
 	render() {
 		return (
@@ -45,6 +46,7 @@ class App extends Component {
 					<br />
 					<br />
 					<Menu2/><br/>
+					
 
 					<Router>
 						<Link to="/Menu" className="navbar-brand">

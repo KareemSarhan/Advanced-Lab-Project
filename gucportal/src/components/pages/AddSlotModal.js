@@ -22,13 +22,12 @@ function AddSlotModal() {
             timing: timing
         };
         console.log(loc);
-        axios.put('/CC/AddSlot', loc).then((res)=>{
+        axios.post('/CC/AddSlot', loc).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   
@@ -66,7 +65,7 @@ function AddSlotModal() {
 
             <Form.Group controlId="formBasicTiming" required>
                 <Form.Label>Timing</Form.Label>
-                <Form.Control type="text" placeholder="Enter timing" onChange = {handleTiming} />
+                <Form.Control type="text" placeholder="Enter timing for example Tuesday 2nd" onChange = {handleTiming} />
             </Form.Group>
 
             <Button variant="primary" type="submit" onClick={handleSubmit}>
@@ -85,7 +84,7 @@ function AddSlotModal() {
   render(){
   return(
       <div>
-          <AddSlot />
+          <AddSlotModal />
       </div>
   );
   };

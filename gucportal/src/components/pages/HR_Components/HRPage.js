@@ -21,6 +21,7 @@ import AddSignIn from './AddSignInModal';
 import AddSignOut from './AddSignOutModal';
 import UpdateSalary from './UpdateSalaryModal';
 import ViewMemAttButtonModal from './ViewMemAttButton';
+import AddSlot from '../AddSlotModal';
 
 
   class HRPage extends Component{
@@ -41,6 +42,7 @@ import ViewMemAttButtonModal from './ViewMemAttButton';
                     <AddLocation/><br/>
                     <UpdateLocation/><br/>
                     <DeleteLocation/><br/>
+                    <AddSlot/><br/>
                 </Card.Body>
                 </Accordion.Collapse>
             </Card>

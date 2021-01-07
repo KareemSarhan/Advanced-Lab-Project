@@ -21,10 +21,9 @@ function UpdateFacultyModal() {
         console.log(fac);
         axios.put('/Hr/updateFaculty/'+name, fac).then((res)=>{
             console.log("success");
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   
