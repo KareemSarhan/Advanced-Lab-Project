@@ -18,10 +18,12 @@ export class viewDaysOffAll extends Component {
             console.log(error);
           })
       }
+      
 
     render() {
         return (
             <div>
+             
             <h3>Staff Days Off</h3>
                 <table id="dayOff"  className="table">
           <thead className="thead-light">
@@ -32,7 +34,7 @@ export class viewDaysOffAll extends Component {
               
             </tr>
           </thead>
-          <tbody>
+          <tbody  id="myTable">
           
           <tr>
           <td>

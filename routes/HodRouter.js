@@ -87,13 +87,16 @@ HodRouter.route('/assignInstructor')
                     if (co == null) {
                         return res.status(401).send("Course does not exist");
                     }
+                    if(a.courses != null){
                     for(j=0;j<a.courses.length;j++){
                         if(a.courses[j].equals(co._id))
                         return res.status(401).send("The instructor is already assigned to this course");
                     }
+                }
                     const courseId = await course.findOne({ code: c });
                     const dep = await department.findOne({ name: ufound.department });
                     var flag = false;
+                    if(dep.courses != null){
                     for (i = 0; i < dep.courses.length; i++) {
                         if (dep.courses[i].equals(co._id)) {
 
@@ -105,6 +108,7 @@ HodRouter.route('/assignInstructor')
                             break;
                         }
                     }
+                }
                     if (flag == false)
                         return res.status(401).send("This course is not in your department");
                 }
@@ -116,7 +120,7 @@ HodRouter.route('/assignInstructor')
         }
     });
 
-HodRouter.route('/DeleteInstructor')
+HodRouter.route('/DeleteInstructor/:id/:code')
     .delete(async (req, res, next) => {
         //authenticate that this is a valid member
         //authorize that this is a Hod member
@@ -147,13 +151,15 @@ HodRouter.route('/DeleteInstructor')
             //verify that this instructor is assigned to this course
             //delete this assignment
             else {
-                if (typeof (req.body.id) == "string" && typeof (req.body.code) == "string") {
-                    const courseIns = req.body.id;
-                    const courseCode = req.body.code;
+               // if (typeof (req.params.id) == "string" && typeof (req.params.code) == "string") {
+                    const courseIns = req.params.id;
+                    const courseCode = req.params.code;
+                    
                     const m = await members.findOne({ id: courseIns });
                     if (m == null)
                         return res.status(401).send("This instructor does not exist");
                     const c = await courses.findOne({ code: courseCode });
+                   
                     if (c == null)
                         return res.status(401).send("This course does not exist");
                     const a = await academicMember.findOne({ Memberid: m._id });
@@ -181,6 +187,7 @@ HodRouter.route('/DeleteInstructor')
                         }
                     
                         const s = await slot.find({ _id: a.schedule })
+                        if(s!=null){
                         for (k = 0; k < s.length; k++) {
                             if (s != null) {
                                 if (s[k].memberID.equals(a._id) && s[k].course.equals(c._id)) {
@@ -203,8 +210,9 @@ HodRouter.route('/DeleteInstructor')
                     }
                     }
                 }
-                    res.json("instructor deleted successfully")
                 }
+                    res.json("instructor deleted successfully")
+               // }
             }
         }
         catch (error) {
@@ -250,6 +258,7 @@ HodRouter.route('/UpdateInstructor')
                     const courseIns = req.body.id;
                     const courseCodeOld = req.body.codeOld;
                     const courseCodeNew = req.body.codeNew;
+                   
                     const m = await members.findOne({ id: courseIns });
                     if (m == null)
                         return res.status(401).send("This instructor does not exist");
@@ -290,10 +299,12 @@ HodRouter.route('/UpdateInstructor')
                         //      return res.status(401).send("The instructor is already assigned to the new course");
                         // }
                         for (i = 0; i < a.courses.length; i++) {
+                           
                             if (a.courses[i].equals(c1._id)) {
                                 return res.status(401).send("The instructor is already assigned to the new course")
                             }
                             if (!(a.courses[i].equals(c._id))) {
+                               
                                 return res.status(401).send("The instructor is not assigned to the old course")
                             }
 
@@ -318,6 +329,7 @@ HodRouter.route('/UpdateInstructor')
                         }
                     
                         const s = await slot.find({ _id: a.schedule })
+                        if(s != null){
                         for (k = 0; k < s.length; k++) {
                             if (s != null) {
                                 if (s[k].memberID.equals(a._id) && s[k].course.equals(c._id)) {
@@ -328,17 +340,19 @@ HodRouter.route('/UpdateInstructor')
                                     c.coverage = c.numberOfSlotsAssigned / c.numberOfSlotsNeeded;
                                     await c.save();
                                     }
-                                    
+                                 if(schedule.length !=0)   {
                                 for(j=0;j<a.schedule.length;j++){
                                     if(a.schedule[j].equals(s[k]._id) ){
                                     a.schedule.splice(j,1);
                                     await a.save()
                                 }
                             }
+                        }
                             a.courses.push(c1._id);
                                  await a.save();
                         }
                     }
+                }
                     }
                 }
 
@@ -364,6 +378,7 @@ HodRouter.route('/viewMembersDep')
             const DecodeToken = jwt_decode(token);
             const currentid = DecodeToken.id;
             const found = await member.findOne({ id: currentid });
+            console.log(found)
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
                 res.send("Sorry you are logged out .")
@@ -396,6 +411,7 @@ HodRouter.route('/viewMembersDep')
                 var courseInstructor1;
                 var allStaff = [];
                 var loc;
+               
                 for (i = 0; i < depmembers.teachingAssistants.length; i++) {
                     TA = await academicMember.findOne(
                         {
@@ -852,6 +868,8 @@ HodRouter.route('/viewLeaveReq')
         }
     });
 
+   
+
     HodRouter.route('/viewAnnualLeaveReq')
     .get(async (req, res, next) => {
         //authenticate that this is a valid member
@@ -961,7 +979,7 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Accidental") {
-                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays":l[j].numberOfdays,"status": l[j].status, "reason":l[j].reason});
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays":l[j].numberOfdays,"status": l[j].status, "reason":l[j].reason, "AnnualBalance":m.AnnualBalance,"HodComment":l[j].HodComment});
                         }
                     }
                 }
@@ -973,7 +991,7 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Accidental") {
-                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays": l[j].numberOfdays, "status":l[j].status, "reason":l[j].reason, "AnnualBalance":m.AnnualBalance});
+                            total.push({"name":m.name, "id":m.id, "requestID":l[j].requestID,"Leavetype":l[j].Leavetype,"numberOfdays": l[j].numberOfdays, "status":l[j].status, "reason":l[j].reason, "AnnualBalance":m.AnnualBalance, "HodComment":l[j].HodComment});
                         }
                     }
                 }
@@ -1099,7 +1117,7 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Maternity") {
-                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave});
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "HodComment":l[j].HodComment});
                         }
                     }
                 }
@@ -1111,7 +1129,7 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Maternity") {
-                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave});
+                            total.push({"name":m.name,"id": m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "HodComment":l[j].HodComment});
                         }
                     }
                 }
@@ -1168,7 +1186,7 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Sick") {
-                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument});
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID,"Leavetype":l[j].Leavetype, "document":l[j].document, "status":l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument, "HodComment":l[j].HodComment});
                         }
                     }
                 }
@@ -1180,7 +1198,7 @@ HodRouter.route('/viewLeaveReq')
                 for (j = 0; j < l.length; j++) {
                     if (l[j] != null) {
                         if (l[j].Leavetype == "Sick") {
-                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document,"status": l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument});
+                            total.push({"name":m.name, "id":m.id,"requestID":l[j].requestID, "Leavetype":l[j].Leavetype, "document":l[j].document,"status": l[j].status, "dateOfLeave":l[j].dateOfLeave, "dateOfdocument":l[j].dateOfdocument, "HodComment":l[j].HodComment});
                         }
                     }
                 }
@@ -1384,6 +1402,128 @@ HodRouter.route('/acceptLeaveReq/:reqID')
         }
     });
 
+   
+
+// HodRouter.route('/acceptLeaveReq/:reqID')
+//     .put(async (req, res, next) => {
+//         //authenticate that this is a valid member
+//         //authorize that this is a Hod member
+//         try {
+//             const token = req.header('authtoken');
+//             const DecodeToken = jwt_decode(token);
+//             const currentid = DecodeToken.id;
+//             const found = await member.findOne({ id: currentid });
+//             const deletedtoken = await DeletedToken.findOne({ token: token });
+//             if (deletedtoken) {
+//                 res.send("Sorry you are logged out .")
+//             }
+//             //   const found = await member.findOne({ id: currentid });
+//             if (!found)
+//                 return res.status(401).send("Not authenticated");
+
+//             const ufound = await academicMember.findOne({ Memberid: found._id });
+//             if (!currentid.includes("ac")) {
+//                 return res.status(401).send("not authorized");
+//             }
+//             if (ufound.type != "HeadOfDepartment") {
+//                 return res.status(401).send("not authorized");
+//             }
+//             //get the department
+//             //verify that there is a request with this id
+//             //change the status to accepted
+//             //update the missing days accordingly
+//             const l1 = await Leaves.findOne(
+//                 {
+//                     requestID: req.params.reqID
+//                 });
+//             if (l1 == null)
+//                 return res.status(401).send("This request does not exist");
+//             const d = await department.findOne(
+//                 {
+//                     name: ufound.department
+//                 });
+//             const m = await members.findOne(
+//                 {
+//                     _id: l1.StaffID
+//                 });
+//             const miss = await missing.findOne(
+//                 {
+//                     Memberid: m._id
+//                 });
+//             if (!(m.id.includes("ac")))
+//                 return res.status(401).send("This request does not belong to an academic member");
+//             const a = await academicMember.findOne(
+//                 {
+//                     Memberid: m._id
+//                 });
+//             if (a.department != ufound.department)
+//                 return res.status(401).send("This request does not belong to your department");
+//             var total = [];
+//             if (l1 != null) {
+//                 l1.status = "Accepted";
+//                 await l1.save();
+//                 if (l1.Leavetype == "Compensation") {
+//                     if (miss.missingDays)
+//                         miss.missingDays = miss.missingDays - 1;
+//                     if (miss.remainingDays)
+//                         miss.remainingDays = miss.remainingDays - 1;
+//                     await miss.save();
+//                 }
+//                 else {
+//                     if (l1.Leavetype == "Annual" || l1.Leavetype == "Accidental") {
+//                         m.AnnualBalance = m.AnnualBalance - m.numberOfdays;
+//                         await l1.save();
+//                         if (l1.Leavetype == "Accidental") {
+//                             if (miss.missingDays && l1.numberOfdays)
+//                                 miss.missingDays = miss.missingDays - l1.numberOfdays;
+//                             if (miss.remainingDays && l1.numberOfdays)
+//                                 miss.remainingDays = miss.remainingDays - l1.numberOfdays;
+//                             await miss.save()
+//                         }
+
+//                     }
+//                     else {
+//                         if (miss.missingDays && l1.numberOfdays)
+//                             miss.missingDays = miss.missingDays - l1.numberOfdays;
+//                         if (miss.remainingDays && l1.numberOfdays)
+//                             miss.remainingDays = miss.remainingDays - l1.numberOfdays;
+//                         await miss.save();
+//                     }
+//                     if (l1.Leavetype == "Annual") {
+//                         if (l1.replacementID != null) {
+//                             //get the replacement request
+//                             const rep = (await replacementrequest.find({ $and: [{ "memberID": ufound._id }, { "requestedID": replacementID }] }))[0];
+//                             const repSlot = rep.requestedSlot;
+//                             const repDate = rep.requestedDay;
+//                             const nComp = new compensationslot({
+//                                 slot: repSlot,
+//                                 Date: repDate
+//                             });
+//                             await nComp.save();
+//                             console.log("compensation added");
+//                             const comp = await compensationslot.findOne({ $and: [{ "slot": repSlot }, { "Date": repDate }] });
+//                             const exSlot = (await academicMember.findById(replacementID)).CompensationSlots;
+//                             exSlot.push(comp._id);
+//                             await academicMember.findByIdAndUpdate(replacementID, { "CompensationSlots": exSlot });
+//                             console.log("compensation added to requested member");
+//                         }
+//                     }
+//                 }
+
+//             }
+
+//             res.json("Request updated successfully");
+//         }
+//         catch (error) {
+//             res.status(500).json(
+//                 {
+//                     error: error.message
+//                 })
+//         }
+//     }); 
+
+   
+
 HodRouter.route('/rejectDayOffReq/:reqID')
     .put(async (req, res, next) => {
         //authenticate that this is a valid member
@@ -1431,9 +1571,10 @@ HodRouter.route('/rejectDayOffReq/:reqID')
                 if (a.department != dep) {
                     return res.status(401).send("This user is not in your department");
                 }
+                console.log(req.body.comment)
                 if (typeof (req.body.comment) == "string") {
                     const comment = req.body.comment
-                    //var u= await dayOffReq.findOneAndUpdate({requestID: req.params.reqID}, {status:"rejected"})
+                    var u= await dayOffReq.findOneAndUpdate({requestID: req.params.reqID}, {status:"rejected"})
                     dayoffreq.status = "rejected";
                     dayoffreq.comment = comment;
                     await dayoffreq.save();
@@ -1511,6 +1652,7 @@ HodRouter.route('/rejectLeaveReq/:reqID')
                     return res.status(401).send("Please enter a comment");
                 }
                 if (typeof (req.body.comment) == "string") {
+                    console.log(l1)
                     l1.status = "rejected";
                     l1.HodComment = req.body.comment;
                     await l1.save();

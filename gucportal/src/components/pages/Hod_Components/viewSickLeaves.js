@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component} from 'react'
 import axios from 'axios'
+import {Link} from 'react-router-dom'
+import acceptSickLeave from './acceptLeave';
 
 export class viewSickLeaves extends Component {
     constructor(props) {
@@ -33,7 +35,8 @@ export class viewSickLeaves extends Component {
               <th>Document</th>
               <th>Status</th> 
               <th>Date of Leave</th>
-              <th>Dtae of Document</th> 
+              <th>Date of Document</th> 
+              <th>HOD Comment</th> 
               <th>Action</th>
             </tr>
           </thead>
@@ -90,9 +93,24 @@ export class viewSickLeaves extends Component {
             }
           
           </td>
-          {/* <td>
-          <Link to={"/acceptLeaveReq/"}>Accept</Link> | <Link to={"/rejectLeaveReq/"}>Reject</Link>
-          </td> */}
+          <td>
+          {
+            this.state.leaves.map((leave)=>
+            <div>{leave.HodComment}</div>
+            )
+            }
+          
+          </td>
+          <td>
+          {       
+          this.state.leaves.map((leave)=>
+          <div>
+          <Link to={"/acceptLeaveReq/"+leave.requestID  }>Accept</Link> | <Link to={"/rejectLeaveReq/"+leave.requestID}>Reject</Link>
+         
+          </div>
+          )
+          }
+          </td>
           </tr>
           </tbody>
         </table>

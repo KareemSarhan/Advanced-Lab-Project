@@ -14,7 +14,7 @@ export class Menu extends Component {
                         <Link to ="/viewLeaveReq" class="nav-link" >View Leave Requests</Link>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/viewMembers">View Members </a>
+                        <a class="nav-link" href="/AssignInstructor">Assign instructor </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/viewDayOffReq">View Day Off Requests </a>
@@ -23,14 +23,24 @@ export class Menu extends Component {
                         <a class="nav-link" href="/viewDaysOffAll">View Staff Day Off </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/ViewCourseMembers">View Course Members </a>
+                        <a class="nav-link" href="/ViewCourseMember">View Course Members </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/ViewCoverage">View Courses Coverage </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/viewCourseAssignment">View Course Slot Assignment</a>
+                        <a class="nav-link" href="/viewSlotAssignment/">View Course Slot Assignment</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/deleteInstructor">Delete Instructor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/updateInstructor">Update Instructor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/viewDayOff/">Member Day Off</a>
+                    </li>
+                   
                     </ul>
 
 </nav>

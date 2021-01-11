@@ -42,7 +42,19 @@ import viewMaternityLeaves from './components/pages/Hod_Components/viewMaternity
 import viewCoverage from './components/pages/Hod_Components/viewCoverage'
 import viewDaysOffAll from './components/pages/Hod_Components/viewDaysOffAll';
 import viewDayOffReq from './components/pages/Hod_Components/viewDayOffReq'
-
+import viewCourseMembers from './components/pages/Hod_Components/ViewCourseMembersModal'
+import acceptDayOffReq from './components/pages/Hod_Components/acceptDayOffReq';
+import AssignInstructor from './components/pages/Hod_Components/AssignInstructorModal'
+import DeleteInstructor from './components/pages/Hod_Components/DeleteInstructorModal'
+import updateInstructor from './components/pages/Hod_Components/UpdateInstructorModal'
+import acceptSickLeave from './components/pages/Hod_Components/acceptLeave';
+import rejectLeave from './components/pages/Hod_Components/RejectLeave'
+import rejectDayOffReq from './components/pages/Hod_Components/RejectDayOffReq'
+import viewMember from './components/pages/Hod_Components/viewMember'
+import ViewCourseSlotsModal from './components/pages/Hod_Components/ViewCourseSlotsModal'
+import viewSlots from './components/pages/Hod_Components/viewSlotAssignments'
+import ViewMemberDayOffModal from './components/pages/Hod_Components/ViewMemberDayOffModal';
+import viewMemberDayOff from './components/pages/Hod_Components/viewMemberDayOff';
 
 class App extends Component {
   render(){
@@ -64,6 +76,21 @@ class App extends Component {
       <Route path="/viewCoverage"  component={viewCoverage}/>
       <Route path="/viewDaysOffAll"  component={viewDaysOffAll}/>
       <Route path="/viewDayOffReq"  component={viewDayOffReq}/>
+      <Route path="/viewCourseMember"  component={viewCourseMembers}/>
+      <Route path="/acceptDayOffReq/"  component={acceptDayOffReq}/>
+      <Route path="/acceptLeaveReq/"  component={acceptSickLeave}/>
+      <Route path="/AssignInstructor/"  component={AssignInstructor}/>
+      <Route path="/deleteInstructor/"  component={DeleteInstructor}/>
+      <Route path="/updateInstructor/"  component={updateInstructor}/>
+      {/* <Route path="/acceptSickLeave/:id?" component={acceptSickLeave}/>  */}
+      <Route path="/rejectLeaveReq/" component={rejectLeave}/> 
+      <Route path="/rejectDayOffReq/" component={rejectDayOffReq}/>
+      <Route path="/viewCourseMembers/" component={viewMember}/> 
+      <Route path="/viewSlotAssignments/" component={viewSlots}/> 
+      <Route path="/viewSlotAssignment/" component={ViewCourseSlotsModal}/> 
+      <Route path="/viewDayOff/" component={ViewMemberDayOffModal}/>
+      <Route path="/viewDaysOff/" component={viewMemberDayOff}/>  
+      	
       </Router>
         <br/>
         <br/>
@@ -100,8 +127,6 @@ class App extends Component {
       <Route path="/homepage" component={Home} />
       <Route path="/replacementrequest" component={ReplacementRequest} />
      
-     
-      {/* <Link href= "/Menu" class="nav-link" >Menu</Link> */}
     </div>
     </Router>
       </div>
