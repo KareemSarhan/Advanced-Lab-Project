@@ -5,13 +5,26 @@ import SlotLinkreq from "./sendslotlinkreq.component";
 import DayOffreq from "./changedayoffreq.component";
 import Leavereq from "./sendleavereq.component";
 import axios from "axios";
+import Menu from './layout/Menu'
+import { useHistory } from "react-router-dom";
 export default class Home extends Component {
 
+    constructor(props) {
+        super(props);
+    
+       // history = useHistory();
+        this.state = {members: ""};
+       
+      }
     componentDidMount(){
         axios.get('/AM/GetType')
         .then(response=>{
-            
+            console.log(this.props.history);
+            this.setState( {members: response.data});
                 console.log(response.data);  
+                // if (response.data == "HeadOfDepartment") {
+				// 	this.props.history.push("/Menu");
+				// }
         })
         .catch(error=>{
             console.log(error);
@@ -49,6 +62,7 @@ export default class Home extends Component {
 <Leavereq/>
 
 <br/>
+{this.state.members == "HeadOfDepartment" ? <Menu /> : null}
 
 </div>  
 

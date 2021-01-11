@@ -74,9 +74,9 @@ class App extends Component {
 					<br />
 
 					<Router>
-						<Link to="/Menu" className="navbar-brand">
+						{/* <Link to="/Menu" className="navbar-brand">
 							Menu
-						</Link>
+						</Link> */}
 						<Route path="/hr" exact component={HRPage} />
             <Route path="/homepage" component={Home} />
 						<Route path="/" exact component={Login} />

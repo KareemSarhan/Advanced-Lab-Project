@@ -34,7 +34,7 @@ function LoginModal(props) {
 				console.log(res);
 				console.log(res.data.membertype);
 				setmemtype(res.data.membertype);
-				console.log(history);
+				//console.log(history);
 				if (res.data.membertype == "hr") {
 					history.push("/" + res.data.membertype + "");
 				} else {
