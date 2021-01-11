@@ -49,28 +49,15 @@ import viewDayOffReq from "./components/pages/Hod_Components/viewDayOffReq";
 import ViewProfile from "./components/pages/Member/viewProfile";
 import ViewAllAttendance from "./components/pages/Member/Attendance2";
 import ViewHours from "./components/pages/Member/MissingHours";
-<<<<<<< HEAD
 import ViewDays from "./components/pages/Member/MissingDays2";
 import ViewAllAttendanceByMonth from "./components/pages/Member/AttendanceByMonth";
-import UpdateSlot from  "./components/pages/CC/UpdateSlot";
+import UpdateSlot from "./components/pages/CC/UpdateSlot";
 import ViewSlotLinkingReq from "./components/pages/CC/ViewSlotLinkinReq";
 import DeleteSlot from "./components/pages/CC/DeleteSlot";
 import RejectSlotLReq from "./components/pages/CC/RejectSlotLinkingReq";
 
-
-
-
-
-
-
-
-
-
-=======
-import ViewDays from "./components/pages/Member/MissingDays";
 import ViewMyCourses from "./components/pages/CI_Components/ViewMyCourses.jsx";
 import ViewMyDepartmentStaff from "./components/pages/CI_Components/ViewMyDepartmentStaff.jsx";
->>>>>>> 320456c17634f84d25a606b5bbb47e5d7d430689
 class App extends Component {
 	render() {
 		return (
@@ -85,25 +72,21 @@ class App extends Component {
 							<Route path="/viewProfile" exact component={ViewProfile} />
 							<Route path="/viewMissingHours" exact component={ViewHours} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
-<<<<<<< HEAD
-              <Route path="/viewMissingDays" component={ViewDays} />
-              <Route path="/viewAllAttendanceByMonth" component={ViewAllAttendanceByMonth} />
-              <Route path="/UpdateSlot" component={UpdateSlot} />
-              <Route path="/viewSlotLinkingReq/" component={ViewSlotLinkingReq} />
-              <Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
-              <Route path="/DeleteSlots" component={DeleteSlot} />
-              <Route path="/logout" component={Login} />
-
-
-
-
-
-
-
-
-=======
 							<Route path="/viewMissingDays" component={ViewDays} />
->>>>>>> 320456c17634f84d25a606b5bbb47e5d7d430689
+							<Route
+								path="/viewAllAttendanceByMonth"
+								component={ViewAllAttendanceByMonth}
+							/>
+							<Route path="/UpdateSlot" component={UpdateSlot} />
+							<Route
+								path="/viewSlotLinkingReq/"
+								component={ViewSlotLinkingReq}
+							/>
+							<Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
+							<Route path="/DeleteSlots" component={DeleteSlot} />
+							<Route path="/logout" component={Login} />
+
+							<Route path="/viewMissingDays" component={ViewDays} />
 
 							<Route
 								path="/CourseInstructor"
