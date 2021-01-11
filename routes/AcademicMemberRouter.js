@@ -173,7 +173,7 @@ AcademicMemberRouter.route('/viewReplacementReq') //done and written tested..
         }
     });
 
-AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
+AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested ..
     .post(async(req, res, next) =>
     {
         try
@@ -198,26 +198,52 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
                 return
             }
             const CurrentID = DecodeToken.id;
-            if (req.body.memberID == null || !(validator.isMongoId(req.body.memberID)))
+            const found = await member.findOne(
             {
-                return res.status(400).send("your ID should be given!!");
-            }
-            else if (req.body.requestedID == null || !(validator.isMongoId(req.body.requestedID)))
+                id: CurrentID
+            });
+            const FID = found._id; 
+            const reqSlot= await slots.findOne({
+                _id: req.body.requestedSlot 
+            })
+             if (req.body.requestedID == null|| !(typeof(req.body.requestedID=='string')))
+     
             {
                 return res.status(400).send("Please provide the member id to send request to!");
-            }
-            else if (req.body.requestedDay == null || !(validator.isDate(req.body.requestedDay)))
+            } //|| !(validator.isDate(req.body.requestedDay))
+            else if (req.body.requestedDay == null )
             {
+               // console.log();
                 return res.status(400).send("Please provide  the day!");
             }
+            
             else if ((req.body.requestedSlot == null) || !(validator.isMongoId(req.body.requestedSlot)))
             {
                 return res.status(400).send("Please provide which slot of the day!");
             } else if(!(typeof(req.body.comment=='string'))){
                 return res.status(400).send("Please provide the comment as string!");
             }
+           
+            else if (reqSlot==null){
+                return res.status(400).send("This slot doesn't exist!");
+            }
             else
-            {
+            { 
+               // const MEMBERID= req.body.requestedID;
+                const mem= await member.findOne({
+                    id : req.body.requestedID
+                });
+                //console.log( mem)
+                if(mem==null){
+                    return res.send("there is no member with this ID");
+                }
+                const academicmem= await academicMember.findOne({
+                    Memberid: mem._id
+                });
+                console.log(academicmem)
+
+                // hagib l academic member l 3ndo l _id bta3 ac-x --done ,replace all reqids be _id bta3 l academic member 
+
                 //get the last id available and increment it by 1
                 flagAc = true;
                 const reqID = await ReplacementRequest.find(
@@ -227,7 +253,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
                         $regex: 'R'
                     }
                 });
-                console.log(reqID);
+                //console.log(reqID);
                 if(reqID.length ==0){
                     nID= 1 ;
                 }else{
@@ -244,11 +270,13 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
                 }
                 //all data required are given    
                 //Akhiran make a new request
+                console.log(academicmem._id);
                 const ReplacementReq = new ReplacementRequest(
                 {
+                    
                     requestID: assignedID,
-                    memberID: req.body.memberID,
-                    requestedID: req.body.requestedID,
+                    memberID : FID ,
+                    requestedID:academicmem._id,  //academic member ._id 
                     requestedDay: req.body.requestedDay,
                     requestedSlot: req.body.requestedSlot,
                     comment: req.body.comment
@@ -270,7 +298,7 @@ AcademicMemberRouter.route('/sendReplacementReq') // done and written  tested
         }
     });
 
-AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
+AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested..
     .post(async(req, res, next) =>
     {
         try
@@ -299,11 +327,9 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
                 id: CurrentID
             });
             const FoundID = found._id;
-            if (req.body.memberID == null || !(validator.isMongoId(req.body.memberID)))
-            {
-                return res.status(400).send("your ID should be given!!");
-            }
-            else if (req.body.courseID == null || !(validator.isMongoId(req.body.courseID)))
+            console.log(FoundID);
+
+             if (req.body.courseID == null || !(typeof(req.body.courseID)=='string'))
             {
                 return res.status(400).send("The course you are assigned to should be given!!");
             }
@@ -321,9 +347,10 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
                 //verfiy that this member is assigned to the course of this slot
                 const ac = await academicMember.findOne(
                 {
-                    _id: req.body.memberID,
+                    Memberid: FoundID,
 
                 });
+                
                 if (ac == null)
                 {
 
@@ -332,19 +359,22 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
                 }
                 const coursefound = await course.findOne(
                 {
-                    _id: req.body.courseID
+                    code: req.body.courseID
                 })
+                console.log(coursefound);
+                
+               
                 if (coursefound == null)
                 {
                     res.send("no course found")
                     return
                 }
-
+                const COURSEID= coursefound._id;
                 // console.log(ac);
                 const acfound = await academicMember.findOne(
                 {
-                    _id: req.body.memberID,
-                    courses: req.body.courseID
+                    Memberid: FoundID,
+                    courses: COURSEID
                 });
                 if (acfound == null)
                 {
@@ -355,7 +385,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
 
                 const slot = await slots.findOne(
                 {
-                    course: req.body.courseID,
+                    course: COURSEID,
                     _id: req.body.requestedSlot
                 })
                 if (slot == null)
@@ -390,8 +420,8 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
                 const LinkingRequest = new Linkreq(
                 {
                     requestID: assignedID,
-                    memberID: req.body.memberID,
-                    courseID: req.body.courseID,
+                    memberID:  ac._id,
+                    courseID: coursefound._id,
                     requestedSlot: req.body.requestedSlot,
                     comment: req.body.comment
                 });
@@ -411,7 +441,7 @@ AcademicMemberRouter.route('/sendSlotLinkReq') //done and written  tested
         }
     });
 
-AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
+AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested ..
     .post(async(req, res, next) =>
     {
         //authenticate that this is a valid member
@@ -435,6 +465,8 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
                 res.send("Sorry you are logged out .")
                 return
             }
+            console.log("EDKHOLLL");
+
             const CurrentID = DecodeToken.id;
             const found = await member.findOne(
             {
@@ -445,12 +477,9 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
             {
                 Memberid: FoundID
             });
-
-            if (req.body.memberID == null || !(validator.isMongoId(req.body.memberID)))
-            {
-                return res.status(400).send("Please enter your ID!!");
-            }
-            else if (req.body.requestedDay == null || !(typeof(req.body.requestedDay=='string')))
+            console.log("EDKHOLLL TAMIII");
+            
+            if (req.body.requestedDay == null || !(typeof(req.body.requestedDay=='string')))
             {
                 return res.status(400).send("Please enter The requested Day!!");
             }
@@ -458,15 +487,59 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
             {
                 return res.status(400).send("Please enter The comment in string");
             }
-            else
+            else if(acfound.schedule.length== 0){
+                if(req.body.requestedDay.includes(found.dayOff)){
+                    return res.status(400).send("This is your actual dayoff!!");
+                }else{
+                 flagAc = true;
+                const reqID = await Dayoffreq.find(
+                {
+                    "requestID":
+                    {
+                        $regex: 'DayOff'
+                    }
+                });
+                
+                if(reqID.length ==0){
+                    nID= 1 ;
+                }else{
+                const maxID = reqID[reqID.length - 1];
+                console.log(maxID);
+                const toBeParsed = maxID.requestID.substring(7);
+                const iID = parseInt(toBeParsed);
+                nID = iID + 1;
+                console.log(nID);
+            }
+                var assignedID = "";
+                if (flagAc)
+                {
+                    assignedID = "DayOff-" + nID + "";
+                }
+                const DayoffReq = new Dayoffreq(
+                {
+                    requestID: assignedID,
+                    memberID: acfound._id,
+                    requestedDay: req.body.requestedDay,
+                    comment: req.body.comment
+                });
+                await DayoffReq.save();
+                res.send("Day Off Request added");
+                console.log("Akhadt agaza yabnel mahzoza");
+            }
+                //return res.status(400).send("Your Schedule is empty!");
+
+
+            }else
             {
+
                 //all data is given
                 //get the desired dayOff from the body
                 const dayoff = req.body.requestedDay;
                 var scheduleslots = [];
-                //verfiy that this member does not have slots in the required dayoff
+
                 for (i = 0; i < acfound.schedule.length; i++)
                 {
+
                     scheduleslots.push(acfound.schedule[i]);
                     const SlotID = scheduleslots[i];
                     const ActualSlot = await slots.findOne(
@@ -476,6 +549,8 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
                    console.log(found.dayOff)
                     if(req.body.requestedDay.includes(found.dayOff)){
                         return res.status(400).send("This is your actual dayoff!!");
+                        
+
                     }
                     if (ActualSlot == null || !(ActualSlot.timing.includes(req.body.requestedDay)))
                     {
@@ -523,6 +598,8 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
                 }
             }
         }
+        
+        
 
 
         catch (error)
@@ -534,7 +611,7 @@ AcademicMemberRouter.route('/sendChangeDayOffReq') //done and written tested
         }
     });
 
-AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
+AcademicMemberRouter.route('/sendLeaveReq') //donee and written tested..
     .post(async(req, res, next) =>
     {
         try
@@ -568,11 +645,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
             {
                 Memberid: FoundID
             });
-            if (req.body.StaffID == null || !(validator.isMongoId(req.body.StaffID)) || (req.body.StaffID!=FoundID))
-            {
-                return res.status(400).send("Enter your ID");
-            }
-            else if (req.body.Leavetype == null || !(typeof(req.body.Leavetype == 'string')))
+            if (req.body.Leavetype == null || !(typeof(req.body.Leavetype == 'string')))
             {
                 return res.status(400).send("Please enter the type of leave!!");
             }
@@ -612,10 +685,8 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                         const LeaveRequest = new LEAVES(
                         {
                             requestID: assignedID,
-                            StaffID: req.body.StaffID,
-                            Leavetype: req.body.Leavetype,
-                            numberOfdays: req.body.numberOfdays,
-                            reason: req.body.reason
+                            StaffID: FoundID,
+                            
                         });
                         await LeaveRequest.save();
                         res.send("Accidental Leave Request added");
@@ -632,7 +703,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                     {
                         return res.status(400).send("Please enter The date of leave!!");
                     }
-                    else if (req.body.replacementID == null || !(validator.isMongoId(req.body.replacementID)))
+                    else if (req.body.replacementID == null || !(typeof(req.body.replacementID == 'string')))
                     {
                         return res.status(400).send("Please enter The replacement ID!!");
                     }
@@ -642,6 +713,15 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                     }
                     else
                     {
+                           const REPID= await member.findOne({
+                               id:req.body.replacementID
+                           });
+                           const MEMID= REPID._id;
+
+                          console.log(REPID);
+                    const AC= await academicMember.findOne({
+                        Memberid:MEMID
+                    })
                         flagAc = true;
                         flagAc = true;
                         const AcID = await LEAVES.find(
@@ -670,11 +750,11 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                         const LeaveRequest = new LEAVES(
                         {
                             requestID: assignedID,
-                            StaffID: req.body.StaffID,
+                            StaffID: FoundID,
                             Leavetype: req.body.Leavetype,
                             numberOfdays: req.body.numberOfdays,
                             dateOfLeave: req.body.dateOfLeave,
-                            replacementID: req.body.replacementID,
+                            replacementID: AC._id,
                             reason: req.body.reason
                         });
                         await LeaveRequest.save();
@@ -724,7 +804,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                         const LeaveRequest = new LEAVES(
                         {
                             requestID: assignedID,
-                            StaffID: req.body.StaffID,
+                            StaffID: FoundID,
                             Leavetype: req.body.Leavetype,
                             dateOfabsence: req.body.dateOfabsence,
                             dateOfcompensation: req.body.dateOfcompensation,
@@ -784,7 +864,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                         const LeaveRequest = new LEAVES(
                         {
                             requestID: assignedID,
-                            StaffID: req.body.StaffID,
+                            StaffID: FoundID,
                             Leavetype: req.body.Leavetype,
                             dateOfLeave: req.body.dateOfLeave,
                             document: req.body.document,
@@ -846,7 +926,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
                         const LeaveRequest = new LEAVES(
                         {
                             requestID: assignedID,
-                            StaffID: req.body.StaffID,
+                            StaffID: FoundID,
                             Leavetype: req.body.Leavetype,
                             dateOfLeave: req.body.dateOfLeave,
                             document: req.body.document,
@@ -874,7 +954,7 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written gested
         }
     });
 
-AcademicMemberRouter.route('/notification') //done /written in doc tested
+AcademicMemberRouter.route('/notification') //done /written in doc tested ..
     .get(async(req, res, next) =>
     {
         try
@@ -931,24 +1011,38 @@ AcademicMemberRouter.route('/notification') //done /written in doc tested
             {
                 if (ViewDAYOFF[i].status == "Accepted" || ViewDAYOFF[i].status == "rejected")
                 //console.log( ViewDAYOFF); 
-                    ALLREQ.push(ViewDAYOFF[i]);
+                ALLREQ.push({"DayoffStatus":ViewDAYOFF[i].status,"DayoffRequestID":ViewDAYOFF[i].requestID,"dayoffDayRequested":ViewDAYOFF[i].requestedDay,
+                "Dayoffcomment":ViewDAYOFF[i].comment});
+                    // ALLREQ.push(ViewDAYOFF[i]);
 
             }
             for (i = 0; i < ViewRepReq.length; i++)
             {
                 if (ViewRepReq[i].status == "Accepted" || ViewRepReq[i].status == "rejected")
-                    ALLREQ.push(ViewRepReq[i]);
+                ALLREQ.push({"repreqStatus":ViewRepReq[i].status,"repreqRequestID":ViewRepReq[i].requestID,"RequestedID":ViewRepReq[i].requestedID,
+                "repreqDayRequested":ViewRepReq[i].requestedDay,"repreqRequestedSlot":ViewRepReq[i].requestedSlot,"repreqcomment":ViewRepReq[i].comment}) 
+   
+               // ALLREQ.push(ViewRepReq[i]);
 
             }
             for (i = 0; i < ViewSlorLinkReq.length; i++)
             {
                 if (ViewSlorLinkReq[i].status == "Accepted" || ViewSlorLinkReq[i].status == "rejected")
-                    ALLREQ.push(ViewSlorLinkReq[i]);
+                ALLREQ.push({"slotlinkStatus":ViewSlorLinkReq[i].status,"slotlinkRequestID":ViewSlorLinkReq[i].requestID,"CourseID":ViewSlorLinkReq[i].courseID,
+                "linkRequestedSlot":ViewSlorLinkReq[i].requestedSlot,"slotlinkcomment":ViewSlorLinkReq[i].comment})   
+                
+                //ALLREQ.push(ViewSlorLinkReq[i]);
             }
             for (i = 0; i < ViewLeaves.length; i++)
             {
                 if (ViewLeaves[i].status == "Accepted" || ViewLeaves[i].status == "rejected")
-                    ALLREQ.push(ViewLeaves[i]);
+                  
+                ALLREQ.push({"leavesStatus":ViewLeaves[i].status,"leavesRequestID":ViewLeaves[i].requestID,"LeaveType":ViewLeaves[i].Leavetype,
+                "NoofDays":ViewLeaves[i].numberOfdays,"DateofLeave":ViewLeaves[i].dateOfLeave,"ReplacementID":ViewLeaves[i].replacementID,
+                "AbsenceDate":ViewLeaves[i].dateOfabsence,"CompensationDate":ViewLeaves[i].dateOfcompensation,"Reason":ViewLeaves[i].reason,
+                "Document":ViewLeaves[i].document,"DocumentDate":ViewLeaves[i].dateOfdocument,"leavecomment":ViewLeaves[i].HodComment}) 
+                
+                //  ALLREQ.push(ViewLeaves[i]);
             }
             //aflet else l auth 
             // console.log(ALLREQ) ;      
@@ -964,7 +1058,7 @@ AcademicMemberRouter.route('/notification') //done /written in doc tested
         }
     });
 
-AcademicMemberRouter.route('/viewAllReq') //done  / written tested
+AcademicMemberRouter.route('/viewAllReq') //done  / written tested ..
     .get(async(req, res, next) =>
     {
         try
@@ -1018,11 +1112,35 @@ AcademicMemberRouter.route('/viewAllReq') //done  / written tested
             });
             const LLength = ViewDAYOFF.length + ViewRepReq.length + ViewSlorLinkReq.length + ViewLeaves.length;
             var ALLREQ = []; //han7ot feha kolo
-            for (i = 0; i < LLength; i++)
-            {
-                ALLREQ.push(ViewDAYOFF[i], ViewRepReq[i], ViewSlorLinkReq[i], ViewLeaves[i]);
+            // var DAyoffREQ=[];
+            // var REPREQ=[];
+            // var SLOTLINKREQ=[];
+            // var DAyoffREQ=[];
 
+            for(i = 0; i < ViewDAYOFF.length; i++){
+                ALLREQ.push({"DayoffStatus":ViewDAYOFF[i].status,"DayoffRequestID":ViewDAYOFF[i].requestID,"dayoffDayRequested":ViewDAYOFF[i].requestedDay,
+                "Dayoffcomment":ViewDAYOFF[i].comment});
             }
+            for(i = 0; i < ViewRepReq.length; i++){
+                ALLREQ.push({"repreqStatus":ViewRepReq[i].status,"repreqRequestID":ViewRepReq[i].requestID,"RequestedID":ViewRepReq[i].requestedID,
+                "repreqDayRequested":ViewRepReq[i].requestedDay,"repreqRequestedSlot":ViewRepReq[i].requestedSlot,"repreqcomment":ViewRepReq[i].comment}) 
+            }
+            for(i = 0; i < ViewSlorLinkReq.length; i++){
+                ALLREQ.push({"slotlinkStatus":ViewSlorLinkReq[i].status,"slotlinkRequestID":ViewSlorLinkReq[i].requestID,"CourseID":ViewSlorLinkReq[i].courseID,
+                 "linkRequestedSlot":ViewSlorLinkReq[i].requestedSlot,"slotlinkcomment":ViewSlorLinkReq[i].comment}) 
+            }
+            for(i = 0; i < ViewLeaves.length; i++){
+                ALLREQ.push({"leavesStatus":ViewLeaves[i].status,"leavesRequestID":ViewLeaves[i].requestID,"LeaveType":ViewLeaves[i].Leavetype,
+                "NoofDays":ViewLeaves[i].numberOfdays,"DateofLeave":ViewLeaves[i].dateOfLeave,"ReplacementID":ViewLeaves[i].replacementID,
+                "AbsenceDate":ViewLeaves[i].dateOfabsence,"CompensationDate":ViewLeaves[i].dateOfcompensation,"Reason":ViewLeaves[i].reason,
+                "Document":ViewLeaves[i].document,"DocumentDate":ViewLeaves[i].dateOfdocument,"leavecomment":ViewLeaves[i].HodComment}) 
+            }
+            //console.log(ALLREQ)
+            // for (i = 0; i < LLength; i++)
+            // {
+            //     ALLREQ.push({"DayOff":ViewDAYOFF[i],"ReplacementReq": ViewRepReq[i], "SlotLinkReq":ViewSlorLinkReq[i],"Leaves": ViewLeaves[i]});
+
+            // }
             res.send(ALLREQ);
         }
 
@@ -1035,7 +1153,7 @@ AcademicMemberRouter.route('/viewAllReq') //done  / written tested
         }
     });
 
-AcademicMemberRouter.route('/viewAcceptedReq') //done  / written tested
+AcademicMemberRouter.route('/viewAcceptedReq') //done  / written tested ..
     .get(async(req, res, next) =>
     {
         try
@@ -1092,31 +1210,45 @@ AcademicMemberRouter.route('/viewAcceptedReq') //done  / written tested
             {
                 if (ViewDAYOFF[i].status == "Accepted")
                 {
-                    ALLREQ.push(ViewDAYOFF[i]);
+                    ALLREQ.push({"DayoffStatus":ViewDAYOFF[i].status,"DayoffRequestID":ViewDAYOFF[i].requestID,"dayoffDayRequested":ViewDAYOFF[i].requestedDay,
+                    "Dayoffcomment":ViewDAYOFF[i].comment});
+                   // ALLREQ.push(ViewDAYOFF[i]);
                 }
             }
             for (i = 0; i < ViewRepReq.length; i++)
             {
                 if (ViewRepReq[i].status == "Accepted")
                 {
-                    ALLREQ.push(ViewRepReq[i]);
+
+                    ALLREQ.push({"repreqStatus":ViewRepReq[i].status,"repreqRequestID":ViewRepReq[i].requestID,"RequestedID":ViewRepReq[i].requestedID,
+                    "repreqDayRequested":ViewRepReq[i].requestedDay,"repreqRequestedSlot":ViewRepReq[i].requestedSlot,"repreqcomment":ViewRepReq[i].comment}) 
+    
+
+                   // ALLREQ.push(ViewRepReq[i]);
                 }
             }
             for (i = 0; i < ViewSlorLinkReq.length; i++)
             {
                 if (ViewSlorLinkReq[i].status == "Accepted")
                 {
-                    ALLREQ.push(ViewSlorLinkReq[i]);
+                    ALLREQ.push({"slotlinkStatus":ViewSlorLinkReq[i].status,"slotlinkRequestID":ViewSlorLinkReq[i].requestID,"CourseID":ViewSlorLinkReq[i].courseID,
+                    "linkRequestedSlot":ViewSlorLinkReq[i].requestedSlot,"slotlinkcomment":ViewSlorLinkReq[i].comment})    
+
+                    //ALLREQ.push(ViewSlorLinkReq[i]);
                 }
             }
             for (i = 0; i < ViewLeaves.length; i++)
             {
                 if (ViewLeaves[i].status == "Accepted")
                 {
-                    ALLREQ.push(ViewLeaves[i]);
+                    ALLREQ.push({"leavesStatus":ViewLeaves[i].status,"leavesRequestID":ViewLeaves[i].requestID,"LeaveType":ViewLeaves[i].Leavetype,
+                    "NoofDays":ViewLeaves[i].numberOfdays,"DateofLeave":ViewLeaves[i].dateOfLeave,"ReplacementID":ViewLeaves[i].replacementID,
+                    "AbsenceDate":ViewLeaves[i].dateOfabsence,"CompensationDate":ViewLeaves[i].dateOfcompensation,"Reason":ViewLeaves[i].reason,
+                    "Document":ViewLeaves[i].document,"DocumentDate":ViewLeaves[i].dateOfdocument,"leavecomment":ViewLeaves[i].HodComment})     
+                    //ALLREQ.push(ViewLeaves[i]);
                 }
             }
-            // console.log(ALLREQ) ;      
+             console.log(ALLREQ) ;      
             res.send(ALLREQ);
         }
 
@@ -1129,7 +1261,7 @@ AcademicMemberRouter.route('/viewAcceptedReq') //done  / written tested
         }
     });
 
-AcademicMemberRouter.route('/viewPendingReq') //done  /written tested
+AcademicMemberRouter.route('/viewPendingReq') //done  /written tested ..
     .get(async(req, res, next) =>
     {
         try
@@ -1187,28 +1319,39 @@ AcademicMemberRouter.route('/viewPendingReq') //done  /written tested
             {
                 if (ViewDAYOFF[i].status == "Pending")
                 {
-                    ALLREQ.push(ViewDAYOFF[i]);
+                    ALLREQ.push({"DayoffStatus":ViewDAYOFF[i].status,"DayoffRequestID":ViewDAYOFF[i].requestID,"dayoffDayRequested":ViewDAYOFF[i].requestedDay,
+                    "Dayoffcomment":ViewDAYOFF[i].comment});
+                   // ALLREQ.push(ViewDAYOFF[i]);
                 }
             }
             for (i = 0; i < ViewRepReq.length; i++)
             {
                 if (ViewRepReq[i].status == "Pending")
                 {
-                    ALLREQ.push(ViewRepReq[i]);
+                    ALLREQ.push({"repreqStatus":ViewRepReq[i].status,"repreqRequestID":ViewRepReq[i].requestID,"RequestedID":ViewRepReq[i].requestedID,
+                    "repreqDayRequested":ViewRepReq[i].requestedDay,"repreqRequestedSlot":ViewRepReq[i].requestedSlot,"repreqcomment":ViewRepReq[i].comment}) 
+
+                   // ALLREQ.push(ViewRepReq[i]);
                 }
             }
             for (i = 0; i < ViewSlorLinkReq.length; i++)
             {
                 if (ViewSlorLinkReq[i].status == "Pending")
                 {
-                    ALLREQ.push(ViewSlorLinkReq[i]);
+                    ALLREQ.push({"slotlinkStatus":ViewSlorLinkReq[i].status,"slotlinkRequestID":ViewSlorLinkReq[i].requestID,"CourseID":ViewSlorLinkReq[i].courseID,
+                    "linkRequestedSlot":ViewSlorLinkReq[i].requestedSlot,"slotlinkcomment":ViewSlorLinkReq[i].comment})    
+                   // ALLREQ.push(ViewSlorLinkReq[i]);
                 }
             }
             for (i = 0; i < ViewLeaves.length; i++)
             {
                 if (ViewLeaves[i].status == "Pending")
                 {
-                    ALLREQ.push(ViewLeaves[i]);
+                    ALLREQ.push({"leavesStatus":ViewLeaves[i].status,"leavesRequestID":ViewLeaves[i].requestID,"LeaveType":ViewLeaves[i].Leavetype,
+                    "NoofDays":ViewLeaves[i].numberOfdays,"DateofLeave":ViewLeaves[i].dateOfLeave,"ReplacementID":ViewLeaves[i].replacementID,
+                    "AbsenceDate":ViewLeaves[i].dateOfabsence,"CompensationDate":ViewLeaves[i].dateOfcompensation,"Reason":ViewLeaves[i].reason,
+                    "Document":ViewLeaves[i].document,"DocumentDate":ViewLeaves[i].dateOfdocument,"leavecomment":ViewLeaves[i].HodComment})     
+                   // ALLREQ.push(ViewLeaves[i]);
                 }
             }
             // console.log(ALLREQ) ;      
@@ -1224,7 +1367,7 @@ AcademicMemberRouter.route('/viewPendingReq') //done  /written tested
         }
     });
 
-AcademicMemberRouter.route('/viewRejectedReq') //done /written tested
+AcademicMemberRouter.route('/viewRejectedReq') //done /written tested ..
     .get(async(req, res, next) =>
     {
         try
@@ -1281,31 +1424,42 @@ AcademicMemberRouter.route('/viewRejectedReq') //done /written tested
             for (i = 0; i < ViewDAYOFF.length; i++)
             {
                 if (ViewDAYOFF[i].status == "rejected")
-                {
-                    ALLREQ.push(ViewDAYOFF[i]);
+                { ALLREQ.push({"DayoffStatus":ViewDAYOFF[i].status,"DayoffRequestID":ViewDAYOFF[i].requestID,"dayoffDayRequested":ViewDAYOFF[i].requestedDay,
+                "Dayoffcomment":ViewDAYOFF[i].comment});
+                    //ALLREQ.push(ViewDAYOFF[i]);
                 }
             }
             for (i = 0; i < ViewRepReq.length; i++)
             {
                 if (ViewRepReq[i].status == "rejected")
-                {
-                    ALLREQ.push(ViewRepReq[i]);
+                { ALLREQ.push({"repreqStatus":ViewRepReq[i].status,"repreqRequestID":ViewRepReq[i].requestID,"RequestedID":ViewRepReq[i].requestedID,
+                "repreqDayRequested":ViewRepReq[i].requestedDay,"repreqRequestedSlot":ViewRepReq[i].requestedSlot,"repreqcomment":ViewRepReq[i].comment}) 
+
+                    //ALLREQ.push(ViewRepReq[i]);
                 }
             }
             for (i = 0; i < ViewSlorLinkReq.length; i++)
             {
                 if (ViewSlorLinkReq[i].status == "rejected")
                 {
-                    ALLREQ.push(ViewSlorLinkReq[i]);
+                    ALLREQ.push({"slotlinkStatus":ViewSlorLinkReq[i].status,"slotlinkRequestID":ViewSlorLinkReq[i].requestID,"CourseID":ViewSlorLinkReq[i].courseID,
+                    "linkRequestedSlot":ViewSlorLinkReq[i].requestedSlot,"slotlinkcomment":ViewSlorLinkReq[i].comment})    
+                   // ALLREQ.push(ViewSlorLinkReq[i]);
                 }
             }
             for (i = 0; i < ViewLeaves.length; i++)
             {
                 if (ViewLeaves[i].status == "rejected")
                 {
-                    ALLREQ.push(ViewLeaves[i]);
+                    ALLREQ.push({"leavesStatus":ViewLeaves[i].status,"leavesRequestID":ViewLeaves[i].requestID,"LeaveType":ViewLeaves[i].Leavetype,
+                    "NoofDays":ViewLeaves[i].numberOfdays,"DateofLeave":ViewLeaves[i].dateOfLeave,"ReplacementID":ViewLeaves[i].replacementID,
+                    "AbsenceDate":ViewLeaves[i].dateOfabsence,"CompensationDate":ViewLeaves[i].dateOfcompensation,"Reason":ViewLeaves[i].reason,
+                    "Document":ViewLeaves[i].document,"DocumentDate":ViewLeaves[i].dateOfdocument,"leavecomment":ViewLeaves[i].HodComment})    
+                    //ALLREQ.push(ViewLeaves[i]);
                 }
             }
+                         console.log(ALLREQ) ;      
+
             res.send(ALLREQ);
         }
 
@@ -1318,7 +1472,7 @@ AcademicMemberRouter.route('/viewRejectedReq') //done /written tested
         }
     });
 
-AcademicMemberRouter.route('/cancelReq') // tested 
+AcademicMemberRouter.route('/cancelReq') // tested ..
     .delete(async(req, res, next) =>
     {
         try
@@ -1354,12 +1508,13 @@ AcademicMemberRouter.route('/cancelReq') // tested
                 Memberid: FoundID
             });
             const acID = acfound._id;
+            console.log(req.body.requestID)
             //get the type of requests he is willing to cancel from the body
             if(!(typeof(req.body.requestID=='string'))){
                 return res.status(400).send("ID of the request must be entered as string");
             }
             if (req.body.requestID.includes("SL")) //--tested
-            {
+            {           
                 const slotrequest = await Linkreq.findOne(
                 {
                     requestID: req.body.requestID
@@ -1434,6 +1589,7 @@ AcademicMemberRouter.route('/cancelReq') // tested
                    }
                     if (req.body.requestID.includes("DayOff")) //tested 
                 {
+                    console.log(req.body.requestID)
                     const DayOffrequest = await Dayoffreq.findOne(
                     {
                         requestID: req.body.requestID
@@ -1602,7 +1758,7 @@ AcademicMemberRouter.route('/cancelReq') // tested
     });
 
 
-AcademicMemberRouter.route('/AcceptReq')//done written --tested
+AcademicMemberRouter.route('/AcceptReq')//done written --tested..
     .post(async(req, res, next) =>
     {
         try
@@ -1631,10 +1787,12 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested
                 {
                     requestID: req.body.requestID
                 })
+                //console.log(req.body.requestID)
                 if (!request)
                 {
-                    return res.send("Request Doesnt Exist");
+                    return res.send("Request Doesn't Exist");
                 }
+               
                 if (!request.requestedID.equals(acfound._id))
                 {
                     return res.send("You are not the academic person requested.")

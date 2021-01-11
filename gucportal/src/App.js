@@ -49,8 +49,16 @@ import viewDayOffReq from "./components/pages/Hod_Components/viewDayOffReq";
 import ViewProfile from "./components/pages/viewProfile";
 import ViewAllAttendance from "./components/pages/Attendance";
 
-
-
+import viewAllreq from "./components/viewallReq.component";
+import acceptreqs from "./components/acceptedreq.component";
+import pendngreqs from "./components/pendingreq.component";
+import rejectedreqs from "./components/rejectedreq.component";
+import Replacementreq from "./components/sendreplacementreq.component";
+import SlotLinkreq from "./components/sendslotlinkreq.component";
+import Dayoffreq from "./components/changedayoffreq.component";
+import Leavereqq from "./components/sendleavereq.component";
+import Cancelreq from "./components/Cancelrequest.component";
+import Acceptreq from "./components/acceptrequest.component";
 
 class App extends Component {
 	render() {
@@ -92,7 +100,7 @@ class App extends Component {
 
 							<Navbar />
 							<br />
-							<Route path="/" component={Login} />
+							<Route path="/" exact component={Login} />
 							<Route path="/Hr" component={HRPage} />
 							<Route path="/notification" component={Notification} />
 							<Route path="/schedule" component={Schedule} />
@@ -101,6 +109,17 @@ class App extends Component {
 								path="/replacementrequest"
 								component={ReplacementRequest}
 							/>
+							<Route path="/viewallReq" component={viewAllreq}/>
+							<Route path="/acceptedreq" component={acceptreqs}/>
+							<Route path="/pendingreq" component={pendngreqs}/>
+                            <Route path ="/rejectedreq" component={rejectedreqs}/>
+							<Route path ="/sendreplacementreq" component={Replacementreq}/>
+							<Route path ="/sendslotlinkreq" component={SlotLinkreq}/>
+							<Route path ="/changedayoffreq" component={Dayoffreq}/>
+							<Route path ="/sendleavereq" component={Leavereqq}/>
+							<Route path ="/acceptrequest" component={Acceptreq}/>
+							<Route path ="/Cancelrequest" component={Cancelreq}/>
+
 							<Route
 								path="/CourseInstructor"
 								component={CourseInstructorPage}
