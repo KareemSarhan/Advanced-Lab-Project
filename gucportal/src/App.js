@@ -9,12 +9,33 @@ import Login from "./components/pages/LoginModal";
 
 import HRPage from "./components/pages/HR_Components/HRPage";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import CourseInstructorPage from "./components/pages/CI_Components/CourseInstructor";
+import CourseInstructorPage from "./components/pages/CI_Components/CourseInstructor.jsx";
 import Navbar from "./components/navbar.component";
 import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
 import ReplacementRequest from "./components/replacementrequest.component";
+import Menu from "./components/layout/Menu";
+import viewMembers from "./components/pages/Hod_Components/viewMembers";
+import viewLeaveRequests from "./components/pages/Hod_Components/viewLeaveRequests";
+import viewSickLeaves from "./components/pages/Hod_Components/viewSickLeaves";
+import viewAccidentalLeaves from "./components/pages/Hod_Components/viewAccidentalLeaves";
+import { Link } from "react-router-dom";
+import viewAnnualLeaves from "./components/pages/Hod_Components/viewAnnualLeaves";
+import viewCompensationLeaves from "./components/pages/Hod_Components/viewCompensationLeaves";
+import viewMaternityLeaves from "./components/pages/Hod_Components/viewMaternityLeaves";
+import viewCoverage from "./components/pages/Hod_Components/viewCoverage";
+import viewDaysOffAll from "./components/pages/Hod_Components/viewDaysOffAll";
+import viewDayOffReq from "./components/pages/Hod_Components/viewDayOffReq";
+import ViewProfile from "./components/pages/Member/viewProfile";
+import ViewAllAttendance from "./components/pages/Member/Attendance2";
+import ViewHours from "./components/pages/Member/MissingHours";
+import ViewDays from "./components/pages/Member/MissingDays2";
+import ViewAllAttendanceByMonth from "./components/pages/Member/AttendanceByMonth";
+import UpdateSlot from "./components/pages/CC/UpdateSlot";
+import ViewSlotLinkingReq from "./components/pages/CC/ViewSlotLinkinReq";
+import DeleteSlot from "./components/pages/CC/DeleteSlot";
+import RejectSlotLReq from "./components/pages/CC/RejectSlotLinkingReq";
 import Menu from './components/layout/Menu';
 import viewMembers from './components/pages/Hod_Components/viewMembers';
 import viewLeaveRequests from './components/pages/Hod_Components/viewLeaveRequests'
@@ -46,6 +67,8 @@ import ViewMissing from './components/pages/HR_Components/ViewMissing';
 import ViewMemberAttendance from './components/pages/HR_Components/ViewMemberAttendance';
 import ViewMemAttButtonModal from './components/pages/HR_Components/ViewMemAttButton';
 
+import ViewMyCourses from "./components/pages/CI_Components/ViewMyCourses.jsx";
+import ViewMyDepartmentStaff from "./components/pages/CI_Components/ViewMyDepartmentStaff.jsx";
 import viewAllreq from "./components/viewallReq.component";
 import acceptreqs from "./components/acceptedreq.component";
 import pendngreqs from "./components/pendingreq.component";
@@ -58,6 +81,18 @@ import Cancelreq from "./components/Cancelrequest.component";
 import Acceptreq from "./components/acceptrequest.component";
 
 class App extends Component {
+	render() {
+		return (
+			<div>
+				<div className="app">
+					<Header />
+					<SideBar />
+					<Router>
+						<div className="container">
+							<br />
+							<Route path="/" exact component={Login} />
+							<Route path="/viewProfile" exact component={ViewProfile} />
+							<Route path="/viewMissingHours" exact component={ViewHours} />
   render(){
   return (
     <div>
@@ -106,6 +141,10 @@ class App extends Component {
 							<Route path="/" component={Login} />
               <Route path="/viewProfile" exact component={ViewProfile} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
+							<Route path="/viewMissingDays" component={ViewDays} />
+							<Route
+								path="/viewAllAttendanceByMonth"
+								component={ViewAllAttendanceByMonth}
 
 							<Navbar />
 							<br />
@@ -126,6 +165,7 @@ class App extends Component {
 								path="/replacementrequest"
 								component={ReplacementRequest}
 							/>
+							<Route path="/UpdateSlot" component={UpdateSlot} />
 							<Route path="/viewallReq" component={viewAllreq}/>
 							<Route path="/acceptedreq" component={acceptreqs}/>
 							<Route path="/pendingreq" component={pendngreqs}/>
@@ -138,8 +178,26 @@ class App extends Component {
 							<Route path ="/Cancelrequest" component={Cancelreq}/>
 
 							<Route
+								path="/viewSlotLinkingReq/"
+								component={ViewSlotLinkingReq}
+							/>
+							<Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
+							<Route path="/DeleteSlots" component={DeleteSlot} />
+							<Route path="/logout" component={Login} />
+
+							<Route path="/viewMissingDays" component={ViewDays} />
+
+							<Route
 								path="/CourseInstructor"
 								component={CourseInstructorPage}
+							/>
+							<Route
+								path="/CourseInstructor/ViewMyCourses"
+								component={ViewMyCourses}
+							/>
+							<Route
+								path="/CourseInstructor/ViewMyDepartmentStaff"
+								component={ViewMyDepartmentStaff}
 							/>
      
     </div>
