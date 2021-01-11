@@ -77,6 +77,8 @@ class App extends Component {
 						<Link to="/Menu" className="navbar-brand">
 							Menu
 						</Link>
+						<Route path="/hr" exact component={HRPage} />
+            <Route path="/homepage" component={Home} />
 						<Route path="/" exact component={Login} />
 						{/* <Route path="/viewProfile" exact component={ViewProfile} /> */}
 						<Route path="/viewMissingHours" exact component={ViewHours} />
@@ -120,7 +122,6 @@ class App extends Component {
 							{/* <Navbar /> */}
 							<br />
 							<br />
-							{/* <Route path="/" component={Login} /> */}
 							<Route path="/viewProfile" exact component={ViewProfile} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
 							<Route path="/viewMissingDays" component={ViewDays} />
@@ -128,8 +129,6 @@ class App extends Component {
 								path="/viewAllAttendanceByMonth"
 								component={ViewAllAttendanceByMonth}></Route>
 							<br />
-							{/* <Route path="/" exact component={Login} /> */}
-							<Route path="/Hr" component={HRPage} />
 							<Route path="/ViewMissing" component={ViewMissing} />
 							<Route
 								path="/ViewMemberAttendance/"
@@ -141,15 +140,12 @@ class App extends Component {
 							/>
 							<Route path="/notification" component={Notification} />
 							<Route path="/schedule" component={Schedule} />
-							<Route path="/homepage" component={Home} />
+							{/* <Route path="/homepage" component={Home} /> */}
 							<Route
 								path="/replacementrequest"
 								component={ReplacementRequest}
 							/>
-							<Route
-								path="/CourseInstructor"
-								component={CourseInstructorPage}
-							/>
+							<Route path="/" component={CourseInstructorPage} />
 							<Route
 								path="/replacementrequest"
 								component={ReplacementRequest}
