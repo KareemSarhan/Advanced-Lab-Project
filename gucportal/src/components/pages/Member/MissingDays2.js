@@ -16,39 +16,44 @@ const useStyles = makeStyles({
 	},
 });
 
-
-
-
-
-
-export default class ViewPofile2 extends Component {
+export default class ViewMissingDays2 extends Component {
 	constructor(props) {
 		super(props);
 		this.state = { members: [] };
 	}
-	
-	componentDidMount() {
-		axios
-			.get("/Member/viewAllAttendance")
-			.then((res) => {
-				this.setState({ members: res.data });
-				console.log(this.state.members);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+ componentDidMount() {
+    axios.get('Member/viewMissingDays',{headers:{"authtoken":localStorage.getItem("authtoken")}})
+      .then(res => {
+        this.setState(res.data);
+        console.log(this.state.TheAbsentDays)
+
+
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  
 	}
 	render() {
+        if (this.state == null) {
+            return (
+                <div>
+                    <h1>Loading..</h1>
+                </div>
+            );
+        } else
 		return (
 				<div>
-				
+				<div>
+					
+				</div>
 			<TableContainer component={Paper}>
 				<Table aria-label="simple table">
 					<TableHead>
 						<TableRow>
 							<TableCell align="center">Signin </TableCell>
-							<TableCell align="center">Signout</TableCell>
-							<TableCell align="center">Duration</TableCell>
+							
+							
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -59,19 +64,17 @@ export default class ViewPofile2 extends Component {
 										<TableHead>
 											<TableRow>
 												<TableCell align="center">Date </TableCell>
-												<TableCell align="center">Time</TableCell>
+											
 											</TableRow>
 										</TableHead>
 										<TableBody>
 											{/* shofy kda da hay3ml eh  */}
-											{this.state.members.map((members) => (
+											{this.state.members.map((day) => (
 												<TableRow>
 													<TableCell component="th" scope="row" align="center">
-														{members.signIn.substring(0,10)}
+                                                    {day.i.substring(8,16)}
 													</TableCell>
-													<TableCell component="th" scope="row" align="center">
-														{members.signIn.substring(11,16)}
-													</TableCell>
+													
 												</TableRow>
 											))}
 

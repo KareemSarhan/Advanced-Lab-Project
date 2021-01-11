@@ -1,72 +1,186 @@
-import React, { Component, useState } from 'react'
-import axios from "axios";
-import { Button,Collapse,Nav,Navbar,NavDropdown, NavbarBrand, NavLink, Container, Form,FormControl, Card ,DropdownButton,Dropdown} from 'react-bootstrap'
+import React, { Component, useState, history, useHistory } from 'react'
+import { Button,Modal,Form} from 'react-bootstrap'
+import {Link, Router, Route, Redirect} from 'react-router-dom'
+import axios from 'axios'
+import { withRouter } from 'react-router-dom';
+import { makeStyles } from "@material-ui/core/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Spinner from "react-bootstrap/Spinner";
 
 
-
-function ViewAllAttendanceByMonth() {
+function AttendenceByMonth(props) {
     const [show, setShow] = useState(true);
-    const [Month, setMonth]= useState("");
-  
+    const [month, setMonth] = useState("january");
+    const [WantedData, setWantedData] = useState([]);
+ 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleMonth = (e) => setMonth(e.target.value);
-    const handleJan =(e)=>{
-        e.preventDefault();
-
-        console.log("yalaa")
+    const handleCourse = (e) => setCourse(e.target.value);
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const mem = {
-            Month: Month
+            month: month
         };
-       console.log(mem);
-       setMonth(e.target.value)
-        axios.post('/Member/viewAttendanceByMonth', mem)
-        .then(
-          res =>
-          {
-            console.log(res)
-            console.log(res.headers.authtoken)
-            localStorage.setItem("authtoken",res.headers.authtoken)
-            setMonth(e.target.value)
-
-        },
-        err =>
-        {
-          console.log("Feeeeeeee errorrrrrrrr"+err)
-        })
-    }
+        console.log("sabah el fol " + mem.month)
+        axios.get('/Member/viewAttendanceByMonth/'+ mem.month)
+        .then(res => {
+          console.log(res.data);
+          setWantedData(res.data.WantedRecords);
+    })
+    .catch((err) => console.log(err))
+}
+     
+if (WantedData == null) {
+  return (
+      <Spinner animation="grow" role="status">
+          <span className="sr-only">Loading...</span>
+      </Spinner>
+  );
+} else
   
     return (
       <div>
-       
-       <DropdownButton id="dropdown-basic-button" title="Choose a month">
-       <Dropdown.Item  Month="january" type="SignIn" onSelect={handleJan}>
-                january
-            </Dropdown.Item>
-        <Dropdown.Item href="#/action-2">February </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">March </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">April </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">May </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">June </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">July </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">Augest </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">September </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">October </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">November </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">December </Dropdown.Item>
-        </DropdownButton>
-            
+       <Form.Group controlId="formBasicType" required>
+                <Form.Label>Choose a month</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setMonth(e.currentTarget.value)
+                  }>
+                    <option value="January">January</option>
+                    <option value= "February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value= "June">June</option>
+                    <option value="July">July</option>
+                    <option value="Augest">Augest</option>
+                    <option value= "September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                  </Form.Control>
+                </Form.Group>
+                <Button variant="primary" type="submit" onClick={handleSubmit}>
+                Submit
+            </Button>
+
+            <TableContainer component={Paper}>
+				<Table aria-label="simple table">
+					<TableHead>
+						<TableRow>
+							<TableCell align="center">Signin </TableCell>
+							<TableCell align="center">Signout</TableCell>
+							<TableCell align="center">Duration</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						<TableRow>
+							<TableCell component="th" scope="row">
+								<TableContainer component={Paper}>
+									<Table aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="center">Date </TableCell>
+												<TableCell align="center">Time</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{/* shofy kda da hay3ml eh  */}
+                      {WantedData.map((members) => (
+												members.signIn?
+												<TableRow>
+													<TableCell component="th" scope="row" align="center">
+														{members.signIn.substring(0,10)}
+													</TableCell>
+													<TableCell component="th" scope="row" align="center">
+														{members.signIn.substring(11,16)}
+													</TableCell>
+												</TableRow>
+												:<TableRow>
+													<TableCell component="th" scope="row" align="right">
+													{"You did not sign In that day !"}
+													</TableCell>
+													
+												</TableRow>
+											))}
+
+										</TableBody>
+
+										
+										
+									</Table>
+								</TableContainer>
+							</TableCell>
+							<TableCell align="right">
+								{" "}
+								<TableContainer component={Paper}>
+									<Table aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="center">Date </TableCell>
+												<TableCell align="center">Time</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											{/* shofy kda da hay3ml eh  */}
+											{WantedData.map((members) => (
+												members.signOut?
+												<TableRow>
+													<TableCell component="th" scope="row" align="center">
+														{members.signOut.substring(0,10)}
+													</TableCell>
+													<TableCell component="th" scope="row" align="center">
+														{members.signOut.substring(11,16)}
+													</TableCell>
+												</TableRow>
+												:<TableRow>
+													<TableCell component="th" scope="row" align="right">
+													{"You did not sign Out that day !"}
+													</TableCell>
+													
+												</TableRow>
+											))}
+
+										</TableBody>
+									</Table>
+								</TableContainer>
+							</TableCell>
+							<TableCell align="right">
+								{" "}
+								<TableContainer component={Paper}>
+									<Table aria-label="simple table">
+										<TableHead>
+											<TableRow>
+												<TableCell align="center">Hours</TableCell>
+											</TableRow>
+										</TableHead>
+										<TableBody>
+											
+											{WantedData.map((members) => (
+												<TableRow>
+													<TableCell component="th" scope="row" align="center">
+														{members.duration}
+													</TableCell>
+													
+												</TableRow>
+											))}
+											
+										</TableBody>
+									</Table>
+								</TableContainer>
+							</TableCell>
+						</TableRow>
+					</TableBody>
+				</Table>
+			</TableContainer>
+
       </div>
+     
     );
   }
   
-  class ViewAttendanceByMonth extends Component{
-  render(){
-  return(
-      <div>
-          <ViewAllAttendanceByMonth />
-      </div>
-  );
-  };
-};
-export default ViewAllAttendanceByMonth;
+ export default  withRouter(AttendenceByMonth)

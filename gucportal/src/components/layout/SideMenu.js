@@ -27,7 +27,7 @@ class SideBar extends Component {
                             </a>
                         </NavIcon>
                         <NavText>
-                            <a style={{ paddingRight:"25px" ,fontSize:"15px" }}href="/personalinfo">Add Acedmic Member</a>
+                            <a style={{ paddingRight:"25px" ,fontSize:"15px" }}href="/UpdateSlot">Update slot</a>
                         </NavText>
                     </NavItem>
 
@@ -38,7 +38,7 @@ class SideBar extends Component {
                             </a>
                         </NavIcon>
                         <NavText>
-                            <a style={{ paddingRight:"50px" ,fontSize:"15px" }}href="/changeemail">Change your email</a>
+                            <a style={{ paddingRight:"50px" ,fontSize:"15px" }}href="/viewSlotLinkingReq">View Slot Linking Requests</a>
                         </NavText>
                     </NavItem>
 

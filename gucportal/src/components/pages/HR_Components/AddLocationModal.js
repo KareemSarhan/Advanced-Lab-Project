@@ -9,7 +9,7 @@ function AddLocationModal() {
     //const [type, setType] = useState("");
     const [capacity, setCapacity] = useState(0);
 
-    const [type, setType] = useState("");
+    
 
     // const radios = [
     //   { name: "Office", value: 'Office' },

@@ -49,7 +49,16 @@ import viewDayOffReq from "./components/pages/Hod_Components/viewDayOffReq";
 import ViewProfile from "./components/pages/Member/viewProfile";
 import ViewAllAttendance from "./components/pages/Member/Attendance2";
 import ViewHours from "./components/pages/Member/MissingHours";
-import ViewDays from "./components/pages/Member/MissingDays";
+import ViewDays from "./components/pages/Member/MissingDays2";
+import ViewAllAttendanceByMonth from "./components/pages/Member/AttendanceByMonth";
+import UpdateSlot from  "./components/pages/CC/UpdateSlot";
+import ViewSlotLinkingReq from "./components/pages/CC/ViewSlotLinkinReq";
+import DeleteSlot from "./components/pages/CC/DeleteSlot";
+import RejectSlotLReq from "./components/pages/CC/RejectSlotLinkingReq";
+
+
+
+
 
 
 
@@ -74,6 +83,19 @@ class App extends Component {
               <Route path="/viewMissingHours" exact component={ViewHours} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
               <Route path="/viewMissingDays" component={ViewDays} />
+              <Route path="/viewAllAttendanceByMonth" component={ViewAllAttendanceByMonth} />
+              <Route path="/UpdateSlot" component={UpdateSlot} />
+              <Route path="/viewSlotLinkingReq/" component={ViewSlotLinkingReq} />
+              <Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
+              <Route path="/DeleteSlots" component={DeleteSlot} />
+              <Route path="/logout" component={Login} />
+
+
+
+
+
+
+
 
 
 													<Route

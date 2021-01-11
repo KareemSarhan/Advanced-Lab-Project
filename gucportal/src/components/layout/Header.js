@@ -4,8 +4,6 @@ import Carousel from 'react-bootstrap/Carousel';
 import UpdateProfile from '../pages/Member/UpdateProfile'
 import ResetPassword from '../pages/Member/ResetPass'
 import swal from 'sweetalert';
-
-
 import axios from 'axios'
 
 
@@ -27,8 +25,17 @@ const handleSignIn =(e)=>{
         swal(res.data.msg)
   })
   .catch((err) => swal(err.response.data.errmsg || err.response.data));
-
   }
+  const handleLogout =(e)=>{
+    e.preventDefault();
+      axios.get('/Member/logout')
+      .then(res => {
+        swal(res.data.msg)
+  })
+  .catch((err) => swal(err.response.data.errmsg || err.response.data));
+  }
+
+  
 class Header extends Component{
     state = {
         isOpen: false
@@ -56,11 +63,13 @@ class Header extends Component{
             <Nav.Link variant="primary" type="SignOut" onClick={handleSignOut}>
                 SignOut
             </Nav.Link>
-                        <Nav.Link href="#link">LogOut</Nav.Link>
+                        <Nav.Link href="/logOut" onClick={handleLogout}>LogOut</Nav.Link>
                         <NavDropdown title="Attendance" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/viewMissingHours">View Missing Hours</NavDropdown.Item>
                             <NavDropdown.Item href="/viewMissingDays">View Missing Days</NavDropdown.Item>
                             <NavDropdown.Item href="/viewAllAttendance">View Attendance</NavDropdown.Item>
+                            <NavDropdown.Item href="/viewAllAttendanceByMonth">View Attendance by Month</NavDropdown.Item>
+
 
 
                             <NavDropdown.Divider />
@@ -75,6 +84,8 @@ class Header extends Component{
                         </Navbar.Collapse>
                     </Container>
                 </Navbar>
+
+                
             
 //             </div>
           );

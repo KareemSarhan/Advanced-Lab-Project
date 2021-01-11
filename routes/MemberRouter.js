@@ -89,7 +89,10 @@ MemberRouter.route('/logout')
     const token  = req.header('authtoken');
     const t = new DeletedToken({token : token})
     await t.save()
-   res.send("Logged out.")
+    console.log("You are logged out .")
+   res.json({
+       msg:'GoodByee'
+   })
  }
  catch(error){
     res.status(500).json({error:error.message})
@@ -492,51 +495,65 @@ if(deletedtoken){
     //get all the records with the id from params 
 });
 
-MemberRouter.route('/viewAttendanceByMonth')
+MemberRouter.route('/viewAttendanceByMonth/:month')
 .get(async(req,res,next) =>{
     try{
-        console.log("d5l wla eh ")
-        const Month = req.body.Month;
-       // console.log(Month)
-        const token  = req.header('authtoken');
+        // console.log("D5lna")
+        // console.log(req.params.month)
+        const month = req.params.month;
+
+        console.log(month)
+        const token  = req.header("authtoken");
+       console.log(token)
+
         const DecodeToken = jwt_decode(token);
+      //  console.log()
+
         const id = DecodeToken.id;
+       // console.log("d5l wla eh ")
+
         const existingUser = await members.findOne({id:id});
+      //  console.log(existingUser)
         const deletedtoken = await DeletedToken.findOne({token:token});
         const allMonths =['January','February','March', 'April','May','June', 'July', 'August','September', 'October', 'November','December' ];
         const allMonth =['january','february','march', 'april','may','june', 'july', 'august','september', 'october', 'november','december' ];
-        const wantedIndex = allMonths.indexOf(Month);
-        const wantedIndex2 = allMonth.indexOf(Month);
-
+        const wantedIndex = allMonths.indexOf(month);
+        const wantedIndex2 = allMonth.indexOf(month);
         console.log(wantedIndex)
+        console.log(wantedIndex2)
+
+
+
         if(!existingUser){
-            res.send("Not authenticated ")
+            res.json({msg :"Not Authenticated"})
             return
         }
         if(deletedtoken){
-            res.send("sorry you are logged out .")
+            res.json({msg :"You are logged out !"})
             return;
         }
         if(wantedIndex==-1 && wantedIndex2==-1){
-            res.send("Please enter a Month.")
+            res.json({msg :"Enter a Month"})
         }
         else{
     const existingUser = await members.findOne({id:id});
     const AttendanceRecord = await attendance.find({Memberid:existingUser._id})
     var WantedRecords = new Array();
     for(i=0 ; i<AttendanceRecord.length;i++ ){
+        if(AttendanceRecord[i].signOut){
       if(AttendanceRecord[i].signOut.getMonth()==wantedIndex || AttendanceRecord[i].signOut.getMonth()==wantedIndex2 )  {
           //console.log("here")
         WantedRecords.push(AttendanceRecord[i])
       }
         }
+        }
         res.json({
             WantedRecords
-        })   
+        }) 
      }   
     }
     catch(error){
-        res.status(500).json({error:error.message})
+        res.status(500).json({err:error.message})
     }
 });
 
