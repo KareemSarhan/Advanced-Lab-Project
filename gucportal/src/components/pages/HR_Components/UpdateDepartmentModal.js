@@ -14,7 +14,8 @@ function UpdateDepartmentModal() {
     const handleName = (e) => setName(e.target.value);
     const handleCode = (e) => setCode(e.target.value);
     const handleHod= (e) => setHod(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const dep = {
             name: name,
             code: code,
@@ -24,10 +25,9 @@ function UpdateDepartmentModal() {
         axios.put('/Hr/updateDepartment/'+name, dep).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   

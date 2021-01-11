@@ -12,7 +12,8 @@ function UpdateSalaryModal() {
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
     const handleNewSalary = (e) => setNewSalary(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const cour = {
             id: id,
             newSalary: newSalary
@@ -21,10 +22,9 @@ function UpdateSalaryModal() {
         axios.put('/Hr/updateSalary/'+id, cour).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   

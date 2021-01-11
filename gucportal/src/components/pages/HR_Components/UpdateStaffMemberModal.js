@@ -12,7 +12,8 @@ function UpdateStaffMemberModal() {
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
     const handleOfficeLocation = (e) => setOfficeLocation(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             id: id,
             officeLocation: officeLocation
@@ -21,10 +22,9 @@ function UpdateStaffMemberModal() {
         axios.put('/Hr/updateStaffMember/'+ id, loc).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   

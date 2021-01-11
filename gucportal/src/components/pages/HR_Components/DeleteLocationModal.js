@@ -10,7 +10,8 @@ function DeleteLocationModal() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             name: name
         };
@@ -18,10 +19,9 @@ function DeleteLocationModal() {
         axios.delete('/Hr/deleteLocation/' + name, loc).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   

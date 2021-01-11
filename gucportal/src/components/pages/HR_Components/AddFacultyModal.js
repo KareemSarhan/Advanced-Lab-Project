@@ -12,7 +12,8 @@ function AddFacultyModal() {
     const handleShow = () => setShow(true);
     const handleName = (e) => setName(e.target.value);
     const handleNumberOfYears = (e) => setNumberOfYears(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             name: name,
             numberOfYears: numberOfYears
@@ -21,10 +22,9 @@ function AddFacultyModal() {
         axios.post('/Hr/addFaculty', loc).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   
