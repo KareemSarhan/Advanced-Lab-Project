@@ -15,7 +15,6 @@ import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
 import ReplacementRequest from "./components/replacementrequest.component";
-import Menu from "./components/layout/Menu";
 import viewMembers from "./components/pages/Hod_Components/viewMembers";
 import viewLeaveRequests from "./components/pages/Hod_Components/viewLeaveRequests";
 import viewSickLeaves from "./components/pages/Hod_Components/viewSickLeaves";
@@ -36,39 +35,24 @@ import UpdateSlot from "./components/pages/CC/UpdateSlot";
 import ViewSlotLinkingReq from "./components/pages/CC/ViewSlotLinkinReq";
 import DeleteSlot from "./components/pages/CC/DeleteSlot";
 import RejectSlotLReq from "./components/pages/CC/RejectSlotLinkingReq";
-import Menu from './components/layout/Menu';
-import viewMembers from './components/pages/Hod_Components/viewMembers';
-import viewLeaveRequests from './components/pages/Hod_Components/viewLeaveRequests'
-import viewSickLeaves from './components/pages/Hod_Components/viewSickLeaves'
-import viewAccidentalLeaves from './components/pages/Hod_Components/viewAccidentalLeaves'
-import {Link} from 'react-router-dom'
-import viewAnnualLeaves from './components/pages/Hod_Components/viewAnnualLeaves';
-import viewCompensationLeaves from './components/pages/Hod_Components/viewCompensationLeaves';
-import viewMaternityLeaves from './components/pages/Hod_Components/viewMaternityLeaves'
-import viewCoverage from './components/pages/Hod_Components/viewCoverage'
-import viewDaysOffAll from './components/pages/Hod_Components/viewDaysOffAll';
-import viewDayOffReq from './components/pages/Hod_Components/viewDayOffReq'
-import viewCourseMembers from './components/pages/Hod_Components/ViewCourseMembersModal'
-import acceptDayOffReq from './components/pages/Hod_Components/acceptDayOffReq';
-import AssignInstructor from './components/pages/Hod_Components/AssignInstructorModal'
-import DeleteInstructor from './components/pages/Hod_Components/DeleteInstructorModal'
-import updateInstructor from './components/pages/Hod_Components/UpdateInstructorModal'
-import acceptSickLeave from './components/pages/Hod_Components/acceptLeave';
-import rejectLeave from './components/pages/Hod_Components/RejectLeave'
-import rejectDayOffReq from './components/pages/Hod_Components/RejectDayOffReq'
-import viewMember from './components/pages/Hod_Components/viewMember'
-import ViewCourseSlotsModal from './components/pages/Hod_Components/ViewCourseSlotsModal'
-import viewSlots from './components/pages/Hod_Components/viewSlotAssignments'
-import ViewMemberDayOffModal from './components/pages/Hod_Components/ViewMemberDayOffModal';
-import viewMemberDayOff from './components/pages/Hod_Components/viewMemberDayOff';
-import ViewProfile from "./components/pages/viewProfile";
-import ViewAllAttendance from "./components/pages/Attendance";
-import ViewMissing from './components/pages/HR_Components/ViewMissing';
-import ViewMemberAttendance from './components/pages/HR_Components/ViewMemberAttendance';
-import ViewMemAttButtonModal from './components/pages/HR_Components/ViewMemAttButton';
+import Menu from "./components/layout/Menu";
+import viewCourseMembers from "./components/pages/Hod_Components/ViewCourseMembersModal";
+import acceptDayOffReq from "./components/pages/Hod_Components/acceptDayOffReq";
+import AssignInstructor from "./components/pages/Hod_Components/AssignInstructorModal";
+import DeleteInstructor from "./components/pages/Hod_Components/DeleteInstructorModal";
+import updateInstructor from "./components/pages/Hod_Components/UpdateInstructorModal";
+import acceptSickLeave from "./components/pages/Hod_Components/acceptLeave";
+import rejectLeave from "./components/pages/Hod_Components/RejectLeave";
+import rejectDayOffReq from "./components/pages/Hod_Components/RejectDayOffReq";
+import viewMember from "./components/pages/Hod_Components/viewMember";
+import ViewCourseSlotsModal from "./components/pages/Hod_Components/ViewCourseSlotsModal";
+import viewSlots from "./components/pages/Hod_Components/viewSlotAssignments";
+import ViewMemberDayOffModal from "./components/pages/Hod_Components/ViewMemberDayOffModal";
+import viewMemberDayOff from "./components/pages/Hod_Components/viewMemberDayOff";
+import ViewMissing from "./components/pages/HR_Components/ViewMissing";
+import ViewMemberAttendance from "./components/pages/HR_Components/ViewMemberAttendance";
+import ViewMemAttButtonModal from "./components/pages/HR_Components/ViewMemAttButton";
 
-import ViewMyCourses from "./components/pages/CI_Components/ViewMyCourses.jsx";
-import ViewMyDepartmentStaff from "./components/pages/CI_Components/ViewMyDepartmentStaff.jsx";
 import viewAllreq from "./components/viewallReq.component";
 import acceptreqs from "./components/acceptedreq.component";
 import pendngreqs from "./components/pendingreq.component";
@@ -86,96 +70,101 @@ class App extends Component {
 			<div>
 				<div className="app">
 					<Header />
-					<SideBar />
+					<br />
+					<br />
+
+					<Router>
+						<Link to="/Menu" className="navbar-brand">
+							Menu
+						</Link>
+						<Route path="/" exact component={Login} />
+						<Route path="/viewProfile" exact component={ViewProfile} />
+						<Route path="/viewMissingHours" exact component={ViewHours} />
+						<Route path="/Menu" exact component={Menu} />
+						<Route path="/viewMembers" exact component={viewMembers} />
+						<Route path="/viewLeaveReq" component={viewLeaveRequests} />
+						<Route path="/SickLeaves" component={viewSickLeaves} />
+						<Route path="/AccidentalLeaves" component={viewAccidentalLeaves} />
+						<Route path="/AnnualLeaves" component={viewAnnualLeaves} />
+						<Route
+							path="/CompensationLeaves"
+							component={viewCompensationLeaves}
+						/>
+						<Route path="/MaternityLeaves" component={viewMaternityLeaves} />
+						<Route path="/viewCoverage" component={viewCoverage} />
+						<Route path="/viewDaysOffAll" component={viewDaysOffAll} />
+						<Route path="/viewDayOffReq" component={viewDayOffReq} />
+						<Route path="/viewCourseMember" component={viewCourseMembers} />
+						<Route path="/acceptDayOffReq/" component={acceptDayOffReq} />
+						<Route path="/acceptLeaveReq/" component={acceptSickLeave} />
+						<Route path="/AssignInstructor/" component={AssignInstructor} />
+						<Route path="/deleteInstructor/" component={DeleteInstructor} />
+						<Route path="/updateInstructor/" component={updateInstructor} />
+						{/* <Route path="/acceptSickLeave/:id?" component={acceptSickLeave}/>  */}
+						<Route path="/rejectLeaveReq/" component={rejectLeave} />
+						<Route path="/rejectDayOffReq/" component={rejectDayOffReq} />
+						<Route path="/viewCourseMembers/" component={viewMember} />
+						<Route path="/viewSlotAssignments/" component={viewSlots} />
+						<Route
+							path="/viewSlotAssignment/"
+							component={ViewCourseSlotsModal}
+						/>
+						<Route path="/viewDayOff/" component={ViewMemberDayOffModal} />
+						<Route path="/viewDaysOff/" component={viewMemberDayOff} />
+					</Router>
+					<br />
+					<br />
+
 					<Router>
 						<div className="container">
+							<Navbar />
 							<br />
-							<Route path="/" exact component={Login} />
-							<Route path="/viewProfile" exact component={ViewProfile} />
-							<Route path="/viewMissingHours" exact component={ViewHours} />
-  render(){
-  return (
-    <div>
-      <div className="app">
-        <Header /><br/><br/>  
-        
-       <Router>
-       <Link to="/Menu" className="navbar-brand">Menu</Link>
-        <Route path="/Menu" exact component={Menu}/>
-      <Route path="/viewMembers"  exact component={viewMembers}/>
-      <Route path="/viewLeaveReq"  component={viewLeaveRequests}/>
-      <Route path="/SickLeaves"  component={viewSickLeaves}/>
-      <Route path="/AccidentalLeaves"  component={viewAccidentalLeaves}/>
-      <Route path="/AnnualLeaves"  component={viewAnnualLeaves}/>
-      <Route path="/CompensationLeaves"  component={viewCompensationLeaves}/>
-      <Route path="/MaternityLeaves"  component={viewMaternityLeaves}/>
-      <Route path="/viewCoverage"  component={viewCoverage}/>
-      <Route path="/viewDaysOffAll"  component={viewDaysOffAll}/>
-      <Route path="/viewDayOffReq"  component={viewDayOffReq}/>
-      <Route path="/viewCourseMember"  component={viewCourseMembers}/>
-      <Route path="/acceptDayOffReq/"  component={acceptDayOffReq}/>
-      <Route path="/acceptLeaveReq/"  component={acceptSickLeave}/>
-      <Route path="/AssignInstructor/"  component={AssignInstructor}/>
-      <Route path="/deleteInstructor/"  component={DeleteInstructor}/>
-      <Route path="/updateInstructor/"  component={updateInstructor}/>
-      {/* <Route path="/acceptSickLeave/:id?" component={acceptSickLeave}/>  */}
-      <Route path="/rejectLeaveReq/" component={rejectLeave}/> 
-      <Route path="/rejectDayOffReq/" component={rejectDayOffReq}/>
-      <Route path="/viewCourseMembers/" component={viewMember}/> 
-      <Route path="/viewSlotAssignments/" component={viewSlots}/> 
-      <Route path="/viewSlotAssignment/" component={ViewCourseSlotsModal}/> 
-      <Route path="/viewDayOff/" component={ViewMemberDayOffModal}/>
-      <Route path="/viewDaysOff/" component={viewMemberDayOff}/>  
-      	
-      </Router>
-        <br/>
-        <br/>
-       
-        
-        <Router>
-       
-      <div className="container">
-      <Navbar />
-<br/>
-      <br />
+							<br />
 							<Route path="/" component={Login} />
-              <Route path="/viewProfile" exact component={ViewProfile} />
+							<Route path="/viewProfile" exact component={ViewProfile} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
 							<Route path="/viewMissingDays" component={ViewDays} />
 							<Route
 								path="/viewAllAttendanceByMonth"
-								component={ViewAllAttendanceByMonth}
-
-							<Navbar />
+								component={ViewAllAttendanceByMonth}></Route>
 							<br />
 							<Route path="/" exact component={Login} />
 							<Route path="/Hr" component={HRPage} />
 							<Route path="/ViewMissing" component={ViewMissing} />
-							<Route path="/ViewMemberAttendance/" component={ViewMemberAttendance} />
-							<Route path="/viewMemAttButton/" component={ViewMemAttButtonModal}/>
-      <Route path="/notification" component={Notification} />
-      <Route path="/schedule" component={Schedule} />
-      <Route path="/homepage" component={Home} />
-      <Route path="/replacementrequest" component={ReplacementRequest} />
-      <Route
+							<Route
+								path="/ViewMemberAttendance/"
+								component={ViewMemberAttendance}
+							/>
+							<Route
+								path="/viewMemAttButton/"
+								component={ViewMemAttButtonModal}
+							/>
+							<Route path="/notification" component={Notification} />
+							<Route path="/schedule" component={Schedule} />
+							<Route path="/homepage" component={Home} />
+							<Route
+								path="/replacementrequest"
+								component={ReplacementRequest}
+							/>
+							<Route
 								path="/CourseInstructor"
 								component={CourseInstructorPage}
 							/>
-              <Route
+							<Route
 								path="/replacementrequest"
 								component={ReplacementRequest}
 							/>
 							<Route path="/UpdateSlot" component={UpdateSlot} />
-							<Route path="/viewallReq" component={viewAllreq}/>
-							<Route path="/acceptedreq" component={acceptreqs}/>
-							<Route path="/pendingreq" component={pendngreqs}/>
-                            <Route path ="/rejectedreq" component={rejectedreqs}/>
-							<Route path ="/sendreplacementreq" component={Replacementreq}/>
-							<Route path ="/sendslotlinkreq" component={SlotLinkreq}/>
-							<Route path ="/changedayoffreq" component={Dayoffreq}/>
-							<Route path ="/sendleavereq" component={Leavereqq}/>
-							<Route path ="/acceptrequest" component={Acceptreq}/>
-							<Route path ="/Cancelrequest" component={Cancelreq}/>
+							<Route path="/viewallReq" component={viewAllreq} />
+							<Route path="/acceptedreq" component={acceptreqs} />
+							<Route path="/pendingreq" component={pendngreqs} />
+							<Route path="/rejectedreq" component={rejectedreqs} />
+							<Route path="/sendreplacementreq" component={Replacementreq} />
+							<Route path="/sendslotlinkreq" component={SlotLinkreq} />
+							<Route path="/changedayoffreq" component={Dayoffreq} />
+							<Route path="/sendleavereq" component={Leavereqq} />
+							<Route path="/acceptrequest" component={Acceptreq} />
+							<Route path="/Cancelrequest" component={Cancelreq} />
 
 							<Route
 								path="/viewSlotLinkingReq/"
@@ -186,27 +175,12 @@ class App extends Component {
 							<Route path="/logout" component={Login} />
 
 							<Route path="/viewMissingDays" component={ViewDays} />
-
-							<Route
-								path="/CourseInstructor"
-								component={CourseInstructorPage}
-							/>
-							<Route
-								path="/CourseInstructor/ViewMyCourses"
-								component={ViewMyCourses}
-							/>
-							<Route
-								path="/CourseInstructor/ViewMyDepartmentStaff"
-								component={ViewMyDepartmentStaff}
-							/>
-     
-    </div>
-    </Router>
-      </div>
-    </div>
-      
-    
-  );
-}}
+						</div>
+					</Router>
+				</div>
+			</div>
+		);
+	}
+}
 
 export default App;
