@@ -20,11 +20,7 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import VisibilitySensor from "react-visibility-sensor";
 import SlotGrid from "./SlotGrid";
-import Spinner from "react-bootstrap/Spinner";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import DialpadIcon from "@material-ui/icons/Dialpad";
-import HomeTwoToneIcon from "@material-ui/icons/HomeTwoTone";
-import FingerprintTwoToneIcon from "@material-ui/icons/FingerprintTwoTone";
+
 var useStyles = makeStyles((theme) => ({
 	root: {
 		maxWidth: 300,
@@ -41,79 +37,23 @@ var useStyles = makeStyles((theme) => ({
 		transform: "rotate(180deg)",
 	},
 }));
-
-export default function MemberCard(props) {
+const props = { Location: {} };
+export default function LocationCard(props) {
 	const classes = useStyles();
 	const [expanded, setExpanded] = React.useState(false);
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
-		if (expanded) {
-			console.log(props.Member.Memberid);
-			useStyles = makeStyles((theme) => ({
-				root: {
-					maxWidth: 300,
-				},
-				expand: {
-					transform: "rotate(0deg)",
-					marginLeft: "auto",
-					transition: theme.transitions.create("transform", {
-						duration: theme.transitions.duration.shortest,
-					}),
-				},
-				expandOpen: {
-					transform: "rotate(180deg)",
-				},
-			}));
-		} else {
-			useStyles = makeStyles((theme) => ({
-				root: {},
-				expand: {
-					transform: "rotate(0deg)",
-					marginLeft: "auto",
-					transition: theme.transitions.create("transform", {
-						duration: theme.transitions.duration.shortest,
-					}),
-				},
-				expandOpen: {
-					transform: "rotate(180deg)",
-				},
-			}));
-		}
 	};
-
-	if (props.Member == null) {
+	if (props.Location)
 		return (
-			<Spinner animation="grow" role="status">
-				<span className="sr-only">Loading...</span>
-			</Spinner>
-		);
-	} else
-		return (
-			<Card className={classes.root}>
+			<Card>
 				<CardHeader
-					action={
-						<IconButton aria-label="settings">
-							<MoreVertIcon />
-						</IconButton>
-					}
-					avatar={
-						<Avatar
-							aria-label={props.Member.Memberid.name}
-							className={classes.avatar}></Avatar>
-					}
-					title={props.Member.Memberid.name}></CardHeader>
-
-				<CardContent style={{ width: "150px", alignSelf: "center" }}>
-					<MailOutlineIcon />
-					<h4>{props.Member.Memberid.email}</h4>
-					<DialpadIcon />
-					<h4>{props.Member.Memberid.phoneNumber}</h4>
-					<HomeTwoToneIcon />
-					<h4>{props.Member.Memberid.dayOff}</h4>
-					<FingerprintTwoToneIcon />
-					<h4>{props.Member.Memberid.id}</h4>
-				</CardContent>
+					title={props.Location.type}
+					subheader={props.Location.name}
+				/>
+				<CardContent
+					style={{ width: "150px", alignSelf: "center" }}></CardContent>
 				<CardActions disableSpacing>
 					<IconButton
 						className={clsx(classes.expand, {
@@ -126,8 +66,35 @@ export default function MemberCard(props) {
 					</IconButton>
 				</CardActions>
 				<Collapse in={expanded} timeout="auto" unmountOnExit>
-					<CardContent></CardContent>
+					<CardContent>
+						<VisibilitySensor>
+							{({ isVisible }) => {
+								const percentage = isVisible
+									? (props.Location.capacity / props.Location.capacitySoFar) *
+									  100
+									: 0;
+								return (
+									<CircularProgressbarWithChildren value={percentage}>
+										<div
+											style={{
+												justifyContent: "center",
+												alignItems: "center",
+												textalign: "center",
+												fontSize: 10,
+											}}>
+											<strong>{props.Location.capacitySoFar}</strong>
+											<br />
+											Of
+											<br />
+											<strong>{props.Location.capacity}</strong>
+										</div>
+									</CircularProgressbarWithChildren>
+								);
+							}}
+						</VisibilitySensor>
+					</CardContent>
 				</Collapse>
 			</Card>
 		);
+	else return <Card />;
 }
