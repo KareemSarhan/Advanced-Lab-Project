@@ -1811,4 +1811,47 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested..
 
         }
     });
+
+
+    AcademicMemberRouter.route('/GetType') 
+    .get(async(req, res, next) =>{
+        try{
+            const token = req.header('authtoken');
+            const DecodeToken = jwt_decode(token);
+            console.log(DecodeToken);
+            const id = DecodeToken.id;
+            if (!((id).includes("ac")))
+            {
+                return res.status(401).send("not authorized");
+            }
+            const deletedtoken = await DeletedToken.findOne(
+            {
+                token: token
+            });
+            if (deletedtoken)
+            {
+                res.send("Sorry you are logged out .")
+                return
+            }
+            const CurrentID = DecodeToken.id;
+            const found = await member.findOne(
+                {
+                    id: CurrentID
+                });
+                const FoundID = found._id; //bta3 l ac member obj id
+                const acfound = await academicMember.findOne(
+                {
+                    Memberid: FoundID
+                });
+        res.send( acfound.type);
+        console.log(acfound.type);
+            }
+        catch (error)
+        {
+            res.status(500).json(
+            {
+                error: error.message
+            })
+        }
+    });
 module.exports = AcademicMemberRouter;

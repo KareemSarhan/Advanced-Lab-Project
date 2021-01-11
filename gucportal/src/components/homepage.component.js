@@ -4,8 +4,19 @@ import Replacementreq from './sendreplacementreq.component';
 import SlotLinkreq from "./sendslotlinkreq.component";
 import DayOffreq from "./changedayoffreq.component";
 import Leavereq from "./sendleavereq.component";
-
+import axios from "axios";
 export default class Home extends Component {
+
+    componentDidMount(){
+        axios.get('/AM/GetType')
+        .then(response=>{
+            
+                console.log(response.data);  
+        })
+        .catch(error=>{
+            console.log(error);
+        } )
+    }
     render() {
         return (
             <div>
