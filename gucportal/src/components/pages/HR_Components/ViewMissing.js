@@ -1,62 +1,93 @@
-import React, { Component } from 'react'
-import axios from "axios";
-
-const Members = props => (
-  <tr>
-    <td>{props.member.Memberid}</td>
-    <td>{props.member.missingDays}</td>
-    <td>{props.member.remainingDays}</td>
-    <td>{props.member.ExtraHours}</td>
-    <td>{props.member.missingHours}</td>
-    <td>{props.member.remainingHours}</td>
- 
-    {/* <td>
-      <Link to={"/edit/"+props.exercise._id}>edit</Link> | <a href="#" onClick={() => { props.deleteExercise(props.exercise._id) }}>delete</a>
-    </td> */}
-  </tr>
-)
-
-
+import React, { Component } from 'react';
+//import { Link } from 'react-router-dom';
+import axios from 'axios';
+import{DropdownButton,Dropdown} from 'react-bootstrap'
 
  class ViewMissing extends Component {
-  constructor(props) {
-    super(props);
 
-    //this.getMembers = this.getMembers.bind(this)  
+    constructor(props) {
+        super(props);
 
-    this.state = {Members: []};
-  }
-  componentDidMount() {
-    axios.get('Hr/viewMissing')
-      .then(response => {
-        this.setState({ Members: response.data })
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
+        this.state = {missings: []};     
+    }
+    
+    componentDidMount(){
+        axios.get('/Hr/viewMissing')
+        .then(res=>{
+          console.log("here");
+                this.setState({missings:res.data })      
+                swal(res.data.msg)
+              })
+              .catch((err) => {swal(err)});
+    }
 
-
-    render() {
+    
+      render() {
         return (
             <div>
-           
-                <h3>Missings</h3>
+        <h3>Missings </h3>
+       
         <table className="table">
           <thead className="thead-light">
             <tr>
-              <th>Memberid</th>
-              <th>missingDays</th>
-              <th>remainingDays</th>
-              <th>ExtraHours</th>
-              <th>missingHours</th>
-              <th>remainingHours</th>
+              <th>MemberID</th>
+              <th>Missing Days</th>
+              <th>Remaining Days</th>
+              <th>Extra Hours</th>
+              <th>Missing Hours</th>
+              <th>Remaining Hours</th>
             </tr>
           </thead>
+          <tbody>
+            <td>
+            {
+            this.state.missings.map((missing)=>
+            <div>{missing.Memberid}</div>
+            )
+            }
+            </td>
+            <td>
+          {
+            this.state.missings.map((missing)=>
+            <div>{missing.missingDays}</div>
+            )
+            }
+          </td>
+          <td>
+          {
+            this.state.missings.map((missing)=>
+            <div>{missing.remainingDays}</div>
+            )
+            }
+          </td>
+          <td>
+          {
+            this.state.missings.map((missing)=>
+            <div>{missing.ExtraHours}</div>
+            )
+            }
+          </td>
+          <td>
+          {
+            this.state.missings.map((missing)=>
+            <div>{missing.missingHours}</div>
+            )
+            }
+          </td>
+          <td>
+          {
+            this.state.missings.map((missing)=>
+            <div>{missing.remainingHours}</div>
+            )
+            }
+          </td>
+          </tbody>
         </table>
-        </div>
-        )
-    }
+      </div>
+
+
+            );
+  }
 }
 
 export default ViewMissing;

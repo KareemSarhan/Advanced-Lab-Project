@@ -19,10 +19,9 @@ function DeleteDepartmentModal() {
         axios.delete('/Hr/deleteDepartment/' + name, dep).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   

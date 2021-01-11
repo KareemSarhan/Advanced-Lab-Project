@@ -1,32 +1,36 @@
-import React, { Component } from 'react'
-import axios from "axios";
-//import members from '../../../../../models/members';
+import React, { Component, useState, history, useHistory } from 'react'
+import { Button,Modal,Form} from 'react-bootstrap'
+import {Link, Router, Route, Redirect} from 'react-router-dom'
+import axios from 'axios'
+import viewMembers from './viewMembers';
+import { withRouter } from 'react-router-dom';
+import ViewCourseMembersModal from './ViewCourseMembersModal'
 
-var x ;
-export class viewMembers extends Component {
-  constructor(props) {
-    super(props);
-
-    //this.getMembers = this.getMembers.bind(this)  
-
-    this.state = {members: []};
-  }
-  componentDidMount() {
-    axios.get('/Hod/viewMembersDep')
-      .then(res => {
-       this.setState( {members: res.data})
-       console.log(this.state.members)
-     
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-
+class viewMember extends Component{
+    
+    constructor(props) {
+      super(props);
   
-    render() {
-        return (
-            <div>
+      //this.getMembers = this.getMembers.bind(this)  
+  
+      this.state = {members: []};
+    }
+    componentDidMount(){
+   console.log(this.props.history.location.pathname.substring(19))
+        axios.get('/Hod/viewMembers/'+ this.props.history.location.pathname.substring(19))
+          .then(res => {
+           this.setState( {members: res.data})
+         
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+    }
+  render(){
+  return(
+    
+    <div>
+    {/* <div><ViewCourseMembersModal history= {this.props.history}/></div> */}
             <br/>
             <br/>
                 <h3>Members</h3>
@@ -119,8 +123,7 @@ export class viewMembers extends Component {
           </tbody>
         </table>
             </div>
-        )
-    }
-}
-
-export default viewMembers
+  );
+  };
+};
+export default viewMember;

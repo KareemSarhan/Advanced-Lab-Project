@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import axios from "axios";
 import{Button,Modal,Form,DropdownButton,Dropdown} from 'react-bootstrap'
 
-
 export class viewLeaveRequests extends Component {
   constructor(props) {
     super(props);
@@ -46,7 +45,7 @@ export class viewLeaveRequests extends Component {
               <th>ID</th>
               <th>Type</th>
               <th>Status</th>  
-              <th>Action</th>
+             
             </tr>
           </thead>
           <tbody>
@@ -55,7 +54,9 @@ export class viewLeaveRequests extends Component {
           <td>
           {
             this.state.leaves.map((leave)=>
-            <div>{leave.requestID}</div>
+            <div> 
+            {leave.requestID}
+            </div>
             )
             }
           </td>
@@ -86,10 +87,9 @@ export class viewLeaveRequests extends Component {
             <div>{leave.status}</div>
             )
             }
+          
           </td>
-          {/* <td>
-          <Link to={"/acceptLeaveReq/"}>Accept</Link> | <Link to={"/rejectLeaveReq/"}>Reject</Link>
-          </td> */}
+         
           </tr>
           </tbody>
         </table>

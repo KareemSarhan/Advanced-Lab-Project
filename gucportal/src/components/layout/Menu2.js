@@ -3,13 +3,14 @@ import { Button,Modal,Form, InputGroup, FormControl, DropdownButton, ToggleButto
 
 import axios from 'axios'
 
-function AddLocationModal() {
+function Menu2Modal() {
     const [show, setShow] = useState(false);
-    const [name, setName]= useState("");
+    //const [name, setName]= useState("");
     //const [type, setType] = useState("");
-    const [capacity, setCapacity] = useState(0);
+    //const [capacity, setCapacity] = useState(0);
 
     const [type, setType] = useState("Office");
+    console.log(type)
 
     // const radios = [
     //   { name: "Office", value: 'Office' },
@@ -20,32 +21,32 @@ function AddLocationModal() {
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleName = (e) => setName(e.target.value);
+    //const handleName = (e) => setName(e.target.value);
     //const handleType = (e) => setType(e.target.value);
     //setTypeR("hkj");
-    const handleCapacity = (e) => setCapacity(e.target.value);
-    const handleSubmit =(e)=>{
-      e.preventDefault();
-        const loc = {
-            name: name,
-            type: type,
-            capacity: capacity
-        };
-        console.log(loc);
-        axios.post('/Hr/addLocation', loc).then((res)=>{
-            console.log("success");
-            //console.log(res.data.msg)
-
-         swal(res.data.msg)
-  })
-  .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
-        handleClose();
-    }
+   // const handleCapacity = (e) => setCapacity(e.target.value);
+    // const handleSubmit =(e)=>{
+    //   e.preventDefault();
+    //     const loc = {
+    //         name: name,
+    //         type: type,
+    //         capacity: capacity
+    //     };
+    //     console.log(loc);
+    //     axios.post('/Hr/addLocation', loc).then((res)=>{
+    //         console.log("success");
+    //         //console.log(res.data.msg)
+            
+    //     }).catch((err)=>{
+    //         console.log("error");
+    //     });
+    //     handleClose();
+    // }
   
     return (
       <div>
         <Button variant="primary" onClick={handleShow} class= "mt-10">
-          AddLocation
+          Menu2
         </Button>
   
         <Modal show={show}
@@ -55,14 +56,10 @@ function AddLocationModal() {
         aria-labelledby="contained-modal-title-vcenter"
         centered>
           <Modal.Header>
-            <Modal.Title>AddLocation</Modal.Title>
+            <Modal.Title>Menu2</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Form>
-            <Form.Group controlId="formBasicName" required>
-                <Form.Label>Location Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter location name" onChange = {handleName}/>
-            </Form.Group>
               
                 <Form.Group controlId="formBasicType" required>
                 <Form.Label>Location Type</Form.Label><br/>
@@ -73,14 +70,6 @@ function AddLocationModal() {
                     <option value="Lab">Lab</option>
                   </Form.Control>
                 </Form.Group>
-
-            <Form.Group controlId="formBasicCapacity" required>
-                <Form.Label>Location Capacity</Form.Label>
-                <Form.Control type="number" min = "0" placeholder="Enter location capacity" onChange = {handleCapacity} />
-            </Form.Group>
-            <Button variant="primary" type="submit" onClick={handleSubmit}>
-                Submit
-            </Button>
             </Form>
           </Modal.Body>
           <Modal.Footer>
@@ -90,13 +79,13 @@ function AddLocationModal() {
     );
   }
   
-  class AddLocation extends Component{
+  class Menu2 extends Component{
   render(){
   return(
       <div>
-          <AddLocationModal />
+          <Menu2Modal />
       </div>
   );
   };
 };
-export default AddLocation;
+export default Menu2;

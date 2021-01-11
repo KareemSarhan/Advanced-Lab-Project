@@ -12,7 +12,8 @@ function AssignHodModal() {
     const handleShow = () => setShow(true);
     const handleID = (e) => setID(e.target.value);
     const handleDepartment= (e) => setDepartment(e.target.value);
-    const handleSubmit =()=>{
+    const handleSubmit =(e)=>{
+      e.preventDefault();
         const loc = {
             id: id,
             department: department
@@ -21,10 +22,9 @@ function AssignHodModal() {
         axios.put('/Hr/AssignHod/'+ department, loc).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+            swal(res.data.msg)
+          })
+          .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   

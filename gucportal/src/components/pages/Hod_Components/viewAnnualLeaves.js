@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-
+import {Link} from 'react-router-dom'
 export class viewAnnualLeaves extends Component {
     constructor(props) {
         super(props);
@@ -34,6 +34,7 @@ export class viewAnnualLeaves extends Component {
               <th>Status</th> 
               <th>Date of Leave</th>
               <th>Annual Balance</th> 
+              <th>HOD Comment</th> 
               <th>Action</th>
             </tr>
           </thead>
@@ -89,9 +90,22 @@ export class viewAnnualLeaves extends Component {
             )
             }
           </td>
-          {/* <td>
-          <Link to={"/acceptLeaveReq/"}>Accept</Link> | <Link to={"/rejectLeaveReq/"}>Reject</Link>
-          </td> */}
+          <td>
+          {
+            this.state.leaves.map((leave)=>
+            <div>{leave.HodComment}</div>
+            )
+            }
+          </td>
+          <td>
+          {       
+          this.state.leaves.map((leave)=>
+          <div>
+          <Link to={"/acceptLeaveReq/"+leave.requestID}>Accept</Link> | <Link to={"/rejectLeaveReq/"+leave.requestID}>Reject</Link>
+          </div>
+          )
+          }
+          </td>
           </tr>
           </tbody>
         </table>

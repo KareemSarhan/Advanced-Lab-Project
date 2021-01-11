@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import {Link} from 'react-router-dom'
 export class viewDayOffReq extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +42,11 @@ export class viewDayOffReq extends Component {
           <td>
           {
             this.state.requests.map((requests)=>
-            <div>{requests.requestID}</div>
+            <div>
+            {requests.requestID}
+            {/* <acceptDayOffReq valueFromviewDayOffReq= {requests.requestID}/> */}
+            </div>
+
             )
             }
           </td>
@@ -80,9 +85,15 @@ export class viewDayOffReq extends Component {
             )
             }
           </td>
-          {/* <td>
-          <Link to={"/acceptLeaveReq/"}>Accept</Link> | <Link to={"/rejectLeaveReq/"}>Reject</Link>
-          </td> */}
+          <td>
+          {       
+          this.state.requests.map((requests)=>
+          <div>
+          <Link to={"/acceptDayOffReq/"+requests.requestID}>Accept</Link> | <Link to={"/rejectDayOffReq/"+requests.requestID}>Reject</Link>
+          </div>
+          )
+          }
+          </td>
           </tr>
           </tbody>
         </table>

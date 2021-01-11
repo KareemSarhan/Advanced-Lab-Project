@@ -29,11 +29,9 @@ function UpdateLocationModal() {
     //         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     // res.header("Access-Control-Expose-Headers", "authtoken")
     // res.header("Access-Control-Allow-Origin", "*");
-            
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
+    swal(res.data.msg)
+  })
+  .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
         handleClose();
     }
   
