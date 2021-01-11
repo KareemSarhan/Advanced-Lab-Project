@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import acceptr from "./acceptrequest.component";
 //import{DropdownButton,Dropdown} from 'react-bootstrap'
 
-// const Replacement = props => (
-//     <tr>
-//       {/* <td>{"526682361"}</td>
-//       <td>{"sad56446551dsf5"}</td> */}
-//       <td>{props.replacementrequest.requestID}</td>
-//       <td>{props.replacementrequest.requestedID}</td>
-//       <td>{props.replacementrequest.requestedDay.substring(0,10)}</td>
-//       <td>{props.replacementrequest.requestedSlot}</td>
-//       <td>{props.replacementrequest.status}</td>
-//       <td>{props.replacementrequest.comment}</td>
-//     </tr>
-//   )
-  
 
 
 export default class replacementrequest extends Component {
@@ -23,7 +11,7 @@ export default class replacementrequest extends Component {
     constructor(props) {
         super(props);
 
-        this.acceptReq = this.acceptReq.bind(this)
+     
 
         this.state = {replacementrequests: []};     
     }
@@ -32,30 +20,21 @@ export default class replacementrequest extends Component {
         axios.get('/AM/viewReplacementReq')
         .then(res=>{
             
-                this.setState({replacementrequests:res.data })      
+                this.setState({replacementrequests:res.data })  
+                    
         })
         .catch(error=>{
             console.log(error);
         } )
     }
 
-    acceptReq(requestID) {
-      axios.post('/AM/AcceptReq'+requestID)
-        .then(res => { console.log(res.data)})
-        }
-
       render() {
+        if(!(this.state.replacementrequests.length)){
+          return <div>NO Replacement Requests</div>
+        }
         return (
             <div>
         <h3>My Replacement Requests </h3>
-        {/* <h4>
-           
-        <DropdownButton id="dropdown-basic-button" title="Choose request status">
-        <Dropdown.Item href="#/acceptedreq">Accepted</Dropdown.Item>
-        <Dropdown.Item href="#/action-2">Rejected </Dropdown.Item>
-         <Dropdown.Item href="#/action-3">Pending </Dropdown.Item>
-        </DropdownButton>
-  </h4> */}
   
        
         <table className="table">
@@ -74,7 +53,8 @@ export default class replacementrequest extends Component {
           <tbody>
             <td>
             {
-            this.state.replacementrequests.map((replacementrequests)=>
+            this.state.replacementrequests.filter((replacementrequests)=>
+            {return replacementrequests.RequestID}).map((replacementrequests)=>
             <div>{replacementrequests.RequestID}</div>
             )
             }
@@ -82,8 +62,9 @@ export default class replacementrequest extends Component {
             <td>
           {
             this.state.replacementrequests.map((replacementrequests)=>
-            <div>{replacementrequests.RequestedID}</div>
-            )
+           <div>{replacementrequests.RequestedID}</div>
+           
+           )
             }
           </td>
           <td>
@@ -114,12 +95,24 @@ export default class replacementrequest extends Component {
             )
             }
           </td>
-          <td>
-          {
+          
+         
+           {
+             <td>
+             {       
+             this.state.replacementrequests.filter((replacementrequests)=>
+             {return replacementrequests.RequestID}).map((replacementrequests)=>
+             <div>
+             <Link to={"/acceptrequest/"+replacementrequests.RequestID  }>Accept</Link> 
+              | <Link to={"/Cancelrequest/"+replacementrequests.RequestID}>Cancel</Link>
             
-            <Link to={"/replacementrequest"} onClick={() => { this.state.acceptReq(this.replacementrequests.RequestedID) }}>Accept</Link> 
-            }
-          </td>
+             </div>
+             )
+             }
+             </td>
+            
+          } 
+
           </tbody>
         </table>
       </div>

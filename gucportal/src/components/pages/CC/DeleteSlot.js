@@ -5,35 +5,27 @@ import axios from 'axios'
 
 function LoginModal() {
     const [show, setShow] = useState(true);
-    const [email, setEmail]= useState("");
-    const [password, setPassword] = useState("");
+    const [SlotMember, setSlotMember]= useState("");
+    const [SlotTiming, setSlotTiming] = useState("");
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const handleEmail = (e) => setEmail(e.target.value);
-    const handlePassword = (e) => setPassword(e.target.value);
+    const handleSlotMember = (e) => setSlotMember(e.target.value);
+    const handleSlotTiming = (e) => setSlotTiming(e.target.value);
     const handleSubmit =(e)=>{
       e.preventDefault();
         const mem = {
-            email: email,
-            password: password
+            SlotMember: SlotMember,
+            SlotTiming: SlotTiming
         };
      //   console.log(mem);
-        axios.post('/Member/login', mem)
-        .then(
-          res =>
-          {
-            //console.log(res)
-            //console.log(res.headers.authtoken)
-            localStorage.setItem("authtoken",res.headers.authtoken)
-            handleClose();
-
-        },
-        err =>
-        {
-          console.log("Feeeeeeee errorrrrrrrr"+err)
+        axios.put('/CC/deleteSlot', mem)
+        .then((res) => {
+            swal(res.data.msg);
         })
-    }
+        .catch((err) => swal(err.response.data.errmsg || err.response.data));
+    handleClose();
+};
   
     return (
       <div>
@@ -46,21 +38,21 @@ function LoginModal() {
         aria-labelledby="contained-modal-title-vcenter"
         centered>
           <Modal.Header>
-            <Modal.Title>Login</Modal.Title>
+            <Modal.Title>Delete a slot .</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Form>
             <Form.Group controlId="formBasicEmail" required>
-                <Form.Label>Email address</Form.Label>
-                <Form.Control type="email" placeholder="Enter email" onChange = {handleEmail}/>
+                <Form.Label>Slot Member</Form.Label>
+                <Form.Control type="SlotMember" placeholder="Enter id of the member giving the slot" onChange = {handleSlotMember}/>
             </Form.Group>
 
             <Form.Group controlId="formBasicPassword" required>
-                <Form.Label>Password</Form.Label>
-                <Form.Control type="password" placeholder="Password" onChange = {handlePassword} />
+                <Form.Label>Slot timing</Form.Label>
+                <Form.Control type="SlotTiming" placeholder="Enter the slot timing" onChange = {handleSlotTiming} />
             </Form.Group>
             <Button variant="primary" type="submit" onClick={handleSubmit}>
-                Submit
+                Delete
             </Button>
             </Form>
           </Modal.Body>

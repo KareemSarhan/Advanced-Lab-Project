@@ -1,10 +1,8 @@
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 
-// Be sure to include styles at some point, probably during your bootstraping
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-// import Menu from '@material-ui/core/Menu';
 
 class SideBar extends Component {
 
@@ -17,9 +15,7 @@ class SideBar extends Component {
                 <br/>
 
 			<SideNav
-                // marginLeft="50px"
                 onSelect={(selected) => {}}
-                // direction="rtl"
                 style={{backgroundColor:"black", height: '100%', position: 'fixed',direction:'rtl' ,width:"4%",top:"50px"}}
             >
                 <SideNav.Toggle />
@@ -31,7 +27,7 @@ class SideBar extends Component {
                             </a>
                         </NavIcon>
                         <NavText>
-                            <a style={{ paddingRight:"25px" ,fontSize:"15px" }}href="/personalinfo">Add Acedmic Member</a>
+                            <a style={{ paddingRight:"25px" ,fontSize:"15px" }}href="/UpdateSlot">Update slot</a>
                         </NavText>
                     </NavItem>
 
@@ -42,7 +38,7 @@ class SideBar extends Component {
                             </a>
                         </NavIcon>
                         <NavText>
-                            <a style={{ paddingRight:"50px" ,fontSize:"15px" }}href="/changeemail">Change your email</a>
+                            <a style={{ paddingRight:"50px" ,fontSize:"15px" }}href="/viewSlotLinkingReq">View Slot Linking Requests</a>
                         </NavText>
                     </NavItem>
 

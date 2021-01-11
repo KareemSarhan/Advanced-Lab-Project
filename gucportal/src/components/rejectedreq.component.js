@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-export default class acceptedrequest extends Component {
+export default class rejectedrequest extends Component {
 
     constructor(props) {
         super(props);
 
-        this.state = {acceptedreqs: []};     
+        this.state = {rejectedreqs: []};     
     }
 
     componentDidMount(){
-        axios.get('/AM/viewAcceptedReq')
+        axios.get('/AM/viewRejectedReq')
         .then(res=>{
             
-                this.setState({acceptedreqs:res.data })      
+                this.setState({rejectedreqs:res.data })      
         })
         .catch(error=>{
             console.log(error);
@@ -23,8 +23,8 @@ export default class acceptedrequest extends Component {
 
 
     render() {
-      if(!(this.state.acceptedreqs.length)){
-        return <div>NO Accepted Requests</div>
+      if(!(this.state.rejectedreqs.length)){
+        return <div>NO rejected Requests</div>
       }
         return (
             <div>
@@ -41,30 +41,30 @@ export default class acceptedrequest extends Component {
           <tbody>
             <td>
             {
-            this.state.acceptedreqs.filter((acceptedreqs)=>
-            {return acceptedreqs.DayoffRequestID}).map((acceptedreqs)=>
-            <div>{acceptedreqs.DayoffRequestID}</div>
+            this.state.rejectedreqs.filter((rejectedreqs)=>
+            {return rejectedreqs.DayoffRequestID}).map((rejectedreqs)=>
+            <div>{rejectedreqs.DayoffRequestID}</div>
             )
             }
             </td>
             <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.DayoffStatus}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.DayoffStatus}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.dayoffDayRequested}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.dayoffDayRequested}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.Dayoffcomment}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.Dayoffcomment}</div>
             )
             }
           </td>
@@ -86,44 +86,44 @@ export default class acceptedrequest extends Component {
 
           <td>
           {
-            this.state.acceptedreqs.filter((acceptedreqs)=>
-            {return acceptedreqs.repreqRequestID}).map((acceptedreqs)=>
-            <div>{acceptedreqs.repreqRequestID}</div>
+            this.state.rejectedreqs.filter((rejectedreqs)=>
+            {return rejectedreqs.repreqRequestID}).map((rejectedreqs)=>
+            <div>{rejectedreqs.repreqRequestID}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.repreqStatus}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.repreqStatus}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.repreqDayRequested}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.repreqDayRequested}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.RequestedID}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.RequestedID}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.repreqRequestedSlot}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.repreqRequestedSlot}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.repreqcomment}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.repreqcomment}</div>
             )
             }
           </td>
@@ -145,37 +145,37 @@ export default class acceptedrequest extends Component {
  
           <td>
           {
-            this.state.acceptedreqs.filter((acceptedreqs)=>
-            {return acceptedreqs.slotlinkRequestID}).map((acceptedreqs)=>
-            <div>{acceptedreqs.slotlinkRequestID}</div>
+            this.state.rejectedreqs.filter((rejectedreqs)=>
+            {return rejectedreqs.slotlinkRequestID}).map((rejectedreqs)=>
+            <div>{rejectedreqs.slotlinkRequestID}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.slotlinkStatus}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.slotlinkStatus}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.CourseID}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.CourseID}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.linkRequestedSlot}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.linkRequestedSlot}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.slotlinkcomment}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.slotlinkcomment}</div>
             )
             }
           </td>
@@ -204,86 +204,86 @@ export default class acceptedrequest extends Component {
 
           <td>
           {
-            this.state.acceptedreqs.filter((acceptedreqs)=>
-            {return acceptedreqs.leavesRequestID}).map((acceptedreqs)=>
-            <div>{acceptedreqs.leavesRequestID}</div>
+            this.state.rejectedreqs.filter((rejectedreqs)=>
+            {return rejectedreqs.leavesRequestID}).map((rejectedreqs)=>
+            <div>{rejectedreqs.leavesRequestID}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.leavesStatus}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.leavesStatus}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.LeaveType}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.LeaveType}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.NoofDays}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.NoofDays}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.DateofLeave}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.DateofLeave}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.ReplacementID}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.ReplacementID}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.AbsenceDate}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.AbsenceDate}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.CompensationDate}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.CompensationDate}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.Reason}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.Reason}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.Document}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.Document}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.DocumentDate}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.DocumentDate}</div>
             )
             }
           </td>
           <td>
           {
-            this.state.acceptedreqs.map((acceptedreqs)=>
-            <div>{acceptedreqs.leavecomment}</div>
+            this.state.rejectedreqs.map((rejectedreqs)=>
+            <div>{rejectedreqs.leavecomment}</div>
             )
             }
           </td>

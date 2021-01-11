@@ -22,7 +22,8 @@ const missingSchema = new mongoose.Schema(
         default:335},
     ExtraHours:{
         type: Number,
-        default:0},
+        default:0
+    },
     missingHours: {
         type: Number,
         default:0},
