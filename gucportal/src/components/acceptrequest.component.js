@@ -14,13 +14,11 @@ const x={requestID:this.props.location.pathname.substring(15)};
             .then(
               res =>
               { console.log("success" )
-            },
-            err =>
-            {
-              console.log("Feeeeeeee errorrrrrrrr"+err)
-            })
-    //}
-   
+              swal(res.data.msg)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
 }
 
 

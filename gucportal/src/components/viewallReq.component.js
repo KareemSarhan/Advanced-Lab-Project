@@ -19,10 +19,12 @@ export default class Allrequest extends Component {
         .then(res=>{
             
                 this.setState({requests:res.data })      
-        })
-        .catch(error=>{
-            console.log(error);
-        } )
+                swal(res.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
+       
     }
 
     

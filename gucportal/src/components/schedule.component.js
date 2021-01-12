@@ -14,11 +14,12 @@ componentDidMount(){
     axios.get('/AM/viewSchedule')
     .then(response=>{
         
-            this.setState({schedule:response.data })      
-    })
-    .catch(error=>{
-        console.log(error);
-    } )
+            this.setState({schedule:response.data })    
+            swal(res.data)
+          })
+          .catch((error) => {
+            console.log(error)
+          });
 }
 
 // schedule() {

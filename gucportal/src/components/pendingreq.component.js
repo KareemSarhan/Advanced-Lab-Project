@@ -15,10 +15,11 @@ export default class pendingrequest extends Component {
         .then(res=>{
             
                 this.setState({pendingreqs:res.data })      
-        })
-        .catch(error=>{
-            console.log(error);
-        } )
+                swal(res.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
     }
 
 
