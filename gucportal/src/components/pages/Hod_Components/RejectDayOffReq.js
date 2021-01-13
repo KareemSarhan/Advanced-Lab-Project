@@ -20,6 +20,7 @@ function RejectDayOffReq (props) {
             .then(
               res =>
               { console.log("success")
+              swal(res.data.msg)
             },
             err =>
             {

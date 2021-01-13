@@ -5,7 +5,7 @@ import UpdateProfile from '../pages/Member/UpdateProfile'
 import ResetPassword from '../pages/Member/ResetPass'
 import swal from 'sweetalert';
 import axios from 'axios'
-
+import SideBar from '../layout/SideMenu'
 
 
 

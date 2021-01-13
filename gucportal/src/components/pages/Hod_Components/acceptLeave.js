@@ -11,6 +11,7 @@ console.log(this.props.location.pathname.substring(16))
             .then(
               res =>
               { console.log("success")
+              swal(res.data.msg)
             },
             err =>
             {

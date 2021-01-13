@@ -16,7 +16,7 @@ export class viewMembers extends Component {
       .then(res => {
        this.setState( {members: res.data})
        console.log(this.state.members)
-     
+       swal(res.data.msg)
       })
       .catch((error) => {
         console.log(error);
