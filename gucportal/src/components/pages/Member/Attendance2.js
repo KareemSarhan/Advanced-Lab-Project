@@ -65,6 +65,7 @@ export default class ViewPofile2 extends Component {
 										<TableBody>
 											{/* shofy kda da hay3ml eh  */}
 											{this.state.members.map((members) => (
+												members.signIn?
 												<TableRow>
 													<TableCell component="th" scope="row" align="center">
 														{members.signIn.substring(0,10)}
@@ -72,6 +73,12 @@ export default class ViewPofile2 extends Component {
 													<TableCell component="th" scope="row" align="center">
 														{members.signIn.substring(11,16)}
 													</TableCell>
+												</TableRow>
+												:<TableRow>
+													<TableCell component="th" scope="row" align="right">
+													{"You did not signIn that day !"}
+													</TableCell>
+													
 												</TableRow>
 											))}
 
