@@ -14,13 +14,9 @@ import React, { Component } from 'react'
     .then(
         res =>
         { console.log("success" )
-            },
-            err =>
-            {
-              console.log(err)
-            })
-    //}
-   
+        swal(res.data.msg)
+      })
+      .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
 }
 
 

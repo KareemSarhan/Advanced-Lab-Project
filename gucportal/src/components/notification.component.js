@@ -15,18 +15,11 @@ componentDidMount(){
         
             this.setState({notifications:response.data })    
             //console.log(this.state.notifications)  
-            let dayoffid =  this.state.notifications.filter(function (notifications) { 
-              return notifications.DayoffRequestID ==="DayOff"; 
-          }).map(function (notifications) { 
-              return notifications.DayoffRequestID; 
-            }) 
-            console.log(dayoffid);
-    })
-   
-
-    .catch(error=>{
-        console.log(error);
-    } )
+			swal(res.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
 }
       
 

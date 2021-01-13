@@ -19,14 +19,17 @@ export default class replacementrequest extends Component {
     componentDidMount(){
         axios.get('/AM/viewReplacementReq')
         .then(res=>{
-            
-                this.setState({replacementrequests:res.data })  
+          //console.log(res);
+                this.setState({replacementrequests:res.data})  
+                 swal(res.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
                     
-        })
-        .catch(error=>{
-            console.log(error);
-        } )
-    }
+        }
+       
+    
 
       render() {
         if(!(this.state.replacementrequests.length)){

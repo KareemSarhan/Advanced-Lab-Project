@@ -141,10 +141,7 @@ class App extends Component {
 							<Route path="/notification" component={Notification} />
 							<Route path="/schedule" component={Schedule} />
 							{/* <Route path="/homepage" component={Home} /> */}
-							<Route
-								path="/replacementrequest"
-								component={ReplacementRequest}
-							/>
+							
 							<Route path="/" component={CourseInstructorPage} />
 							<Route
 								path="/replacementrequest"
