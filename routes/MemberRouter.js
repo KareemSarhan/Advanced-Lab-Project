@@ -662,7 +662,7 @@ MemberRouter.route("/viewMissingDays").get(async (req, res, next) => {
 		var daysOftheMonth = [];
 		//filling days of the month from 11 of this month till the 10th of the coming month .
 		for (i = 0; i < numberOfDaysInMonth; i++) {
-			//console.log(new Date(currentYear,currentMonth,12+i));
+			//console.log("ay 7aga");
 			daysOftheMonth.push(new Date(currentYear, currentMonth, 12 + i));
 		}
 		for (i = 1; i <= 11; i++) {
@@ -674,7 +674,9 @@ MemberRouter.route("/viewMissingDays").get(async (req, res, next) => {
 
 		//console.log(GetAttendeddays + "get attended days")
 		for (let j = 0; j < GetAttendeddays.length; j++) {
+			if (GetAttendeddays[j].signIn != null){
 			var mon = GetAttendeddays[j].signIn.getMonth();
+			//console.log(GetAttendeddays[j].signIn);
 			var year = GetAttendeddays[j].signIn.getFullYear();
 			var d = GetAttendeddays[j].signIn.getDate() + 1;
 			var dateOnly = new Date(year, mon, d);
@@ -689,7 +691,8 @@ MemberRouter.route("/viewMissingDays").get(async (req, res, next) => {
 				//to avoid getting not needed data
 			}
 		}
-		//console.log(monthAttendance)
+		}
+		console.log("monthAttendance")
 		var current;
 		var uniqueDays = 0;
 		var UniqueAttendenceDays = [];
@@ -710,7 +713,7 @@ MemberRouter.route("/viewMissingDays").get(async (req, res, next) => {
 				//else this is the same day but different sign in time
 			}
 		}
-		// console.log("taniiii console "+UniqueAttendenceDays +uniqueDays);
+		 console.log("taniiii console ");
 
 		var numberOfmissingDays = 0;
 		//  console.log("taleeet console "+UniqueAttendenceDays);
@@ -730,13 +733,15 @@ MemberRouter.route("/viewMissingDays").get(async (req, res, next) => {
 		// console.log("taleeet console "+UniqueAttendenceDays);
 
 		//getting all the days he missed even if dayOff and fridays
-		//console.log(daysOftheMonth)
+		console.log("daysOftheMonth")
 		var daysMissed = [];
 		for (i = 0; i < daysOftheMonth.length; i++) {
 			var found = false;
 			for (let y = 0; y < UniqueAttendenceDays.length; y++) {
 				const y2 = UniqueAttendenceDays[y].signIn.getFullYear();
+				console.log(UniqueAttendenceDays[y].signIn);
 				const m2 = UniqueAttendenceDays[y].signIn.getMonth();
+				
 				const d2 = UniqueAttendenceDays[y].signIn.getDate() + 1;
 				const dOnly2 = new Date(y2, m2, d2);
 				if (dOnly2.getTime() == daysOftheMonth[i].getTime()) {

@@ -24,7 +24,7 @@ import viewDayOffReq from "./components/pages/Hod_Components/viewDayOffReq";
 import ViewProfile from "./components/pages/Member/viewProfile";
 import ViewAllAttendance from "./components/pages/Member/Attendance2";
 import ViewHours from "./components/pages/Member/MissingHours";
-import ViewDays from "./components/pages/Member/MissingDays2";
+import ViewDays from "./components/pages/Member/MissingDays";
 import ViewAllAttendanceByMonth from "./components/pages/Member/AttendanceByMonth";
 import UpdateSlot from "./components/pages/CC/UpdateSlot";
 import ViewSlotLinkingReq from "./components/pages/CC/ViewSlotLinkinReq";
@@ -57,6 +57,7 @@ import Dayoffreq from "./components/changedayoffreq.component";
 import Leavereqq from "./components/sendleavereq.component";
 import Cancelreq from "./components/Cancelrequest.component";
 import Acceptreq from "./components/acceptrequest.component";
+import CCPage from "./components/pages/CC/CCPage"
 
 class App extends Component {
 	render() {
@@ -75,6 +76,7 @@ class App extends Component {
 						<Route path="/hr" exact component={HRPage} />
 						<Route path="/homepage" component={Home} />
 						<Route path="/Menu" exact component={Menu} />
+						<Route path="/CC" exact component={CCPage} />
 						{/* <Route path="/viewProfile" exact component={ViewProfile} /> */}
 						<Route path="/viewMissingHours" exact component={ViewHours} />
 						<Route path="/viewMembers" exact component={viewMembers} />
@@ -124,7 +126,7 @@ class App extends Component {
 							<Route path="/schedule" component={Schedule} />
 							{/* <Route path="/homepage" component={Home} /> */}
 							
-							<Route path="/" component={CourseInstructorPage} />
+							<Route path="/ci" component={CourseInstructorPage} />
 							<Route
 								path="/replacementrequest"
 								component={ReplacementRequest}

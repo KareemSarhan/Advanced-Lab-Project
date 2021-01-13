@@ -24,12 +24,12 @@ const x={requestID:this.props.location.pathname.substring(15)};
 
 render() {
     return (
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Request Accepted Successfully!!</strong> 
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+         <div class="alert alert-warning alert-dismissible fade show" role="alert">
+         {/* <strong>Request Accepted Successfully!!</strong> 
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button> */}
+       </div>
     )
 }
 }
