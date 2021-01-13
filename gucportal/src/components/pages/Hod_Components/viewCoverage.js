@@ -13,7 +13,7 @@ export class viewCoverage extends Component {
         axios.get('/Hod/viewCoverage')
           .then(res => {
            this.setState( {courses: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

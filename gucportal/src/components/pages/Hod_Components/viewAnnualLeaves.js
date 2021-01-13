@@ -13,7 +13,7 @@ export class viewAnnualLeaves extends Component {
         axios.get('/Hod/viewAnnualLeaveReq')
           .then(res => {
            this.setState( {leaves: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

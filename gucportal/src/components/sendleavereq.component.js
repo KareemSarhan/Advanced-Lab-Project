@@ -46,11 +46,11 @@ function LeaveModal() {
         axios.post('/AM/sendLeaveReq', mem).then((res)=>{
             console.log("success");
             //console.log(res.data.msg)
-            
-        }).catch((err)=>{
-            console.log("error");
-        });
-        handleClose();
+            swal(res.data.msg)
+        })
+        .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
+      handleClose(); 
+       
     }
    
   

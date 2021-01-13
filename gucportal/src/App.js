@@ -2,15 +2,11 @@ import "./App.css";
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "./components/layout/Header";
-import SideBar from "./components/layout/SideMenu";
-import Menu2 from "./components/layout/Menu2";
-
 import Login from "./components/pages/LoginModal";
-
 import HRPage from "./components/pages/HR_Components/HRPage";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import CourseInstructorPage from "./components/pages/CI_Components/CourseInstructor.jsx";
-import Navbar from "./components/navbar.component";
+//import Navbar from "./components/navbar.component";
 import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
 import Home from "./components/homepage.component";
@@ -19,7 +15,6 @@ import viewMembers from "./components/pages/Hod_Components/viewMembers";
 import viewLeaveRequests from "./components/pages/Hod_Components/viewLeaveRequests";
 import viewSickLeaves from "./components/pages/Hod_Components/viewSickLeaves";
 import viewAccidentalLeaves from "./components/pages/Hod_Components/viewAccidentalLeaves";
-import { Link } from "react-router-dom";
 import viewAnnualLeaves from "./components/pages/Hod_Components/viewAnnualLeaves";
 import viewCompensationLeaves from "./components/pages/Hod_Components/viewCompensationLeaves";
 import viewMaternityLeaves from "./components/pages/Hod_Components/viewMaternityLeaves";
@@ -52,7 +47,6 @@ import viewMemberDayOff from "./components/pages/Hod_Components/viewMemberDayOff
 import ViewMissing from "./components/pages/HR_Components/ViewMissing";
 import ViewMemberAttendance from "./components/pages/HR_Components/ViewMemberAttendance";
 import ViewMemAttButtonModal from "./components/pages/HR_Components/ViewMemAttButton";
-
 import viewAllreq from "./components/viewallReq.component";
 import acceptreqs from "./components/acceptedreq.component";
 import pendngreqs from "./components/pendingreq.component";
@@ -74,22 +68,21 @@ class App extends Component {
 					<br />
 
 					<Router>
-						<Link to="/Menu" className="navbar-brand">
+						{/* <Link to="/Menu" className="navbar-brand">
 							Menu
-						</Link>
+						</Link> */}
 						<Route path="/" exact component={Login} />
-						<Route path="/viewProfile" exact component={ViewProfile} />
-						<Route path="/viewMissingHours" exact component={ViewHours} />
+						<Route path="/hr" exact component={HRPage} />
+						<Route path="/homepage" component={Home} />
 						<Route path="/Menu" exact component={Menu} />
+						{/* <Route path="/viewProfile" exact component={ViewProfile} /> */}
+						<Route path="/viewMissingHours" exact component={ViewHours} />
 						<Route path="/viewMembers" exact component={viewMembers} />
 						<Route path="/viewLeaveReq" component={viewLeaveRequests} />
 						<Route path="/SickLeaves" component={viewSickLeaves} />
 						<Route path="/AccidentalLeaves" component={viewAccidentalLeaves} />
 						<Route path="/AnnualLeaves" component={viewAnnualLeaves} />
-						<Route
-							path="/CompensationLeaves"
-							component={viewCompensationLeaves}
-						/>
+						<Route path="/CompensationLeaves" component={viewCompensationLeaves}/>
 						<Route path="/MaternityLeaves" component={viewMaternityLeaves} />
 						<Route path="/viewCoverage" component={viewCoverage} />
 						<Route path="/viewDaysOffAll" component={viewDaysOffAll} />
@@ -111,25 +104,13 @@ class App extends Component {
 						/>
 						<Route path="/viewDayOff/" component={ViewMemberDayOffModal} />
 						<Route path="/viewDaysOff/" component={viewMemberDayOff} />
-					</Router>
-					<br />
-					<br />
-
-					<Router>
-						<div className="container">
-							<Navbar />
-							<br />
-							<br />
-							{/* <Route path="/" component={Login} /> */}
-							<Route path="/viewProfile" exact component={ViewProfile} />
+						<Route path="/viewProfile" exact component={ViewProfile} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
 							<Route path="/viewMissingDays" component={ViewDays} />
 							<Route
 								path="/viewAllAttendanceByMonth"
 								component={ViewAllAttendanceByMonth}></Route>
 							<br />
-							{/* <Route path="/" exact component={Login} /> */}
-							<Route path="/Hr" component={HRPage} />
 							<Route path="/ViewMissing" component={ViewMissing} />
 							<Route
 								path="/ViewMemberAttendance/"
@@ -141,15 +122,9 @@ class App extends Component {
 							/>
 							<Route path="/notification" component={Notification} />
 							<Route path="/schedule" component={Schedule} />
-							<Route path="/homepage" component={Home} />
-							<Route
-								path="/replacementrequest"
-								component={ReplacementRequest}
-							/>
-							<Route
-								path="/CourseInstructor"
-								component={CourseInstructorPage}
-							/>
+							{/* <Route path="/homepage" component={Home} /> */}
+							
+							<Route path="/" component={CourseInstructorPage} />
 							<Route
 								path="/replacementrequest"
 								component={ReplacementRequest}
@@ -175,6 +150,16 @@ class App extends Component {
 							<Route path="/logout" component={Login} />
 
 							<Route path="/viewMissingDays" component={ViewDays} />
+					</Router>
+					<br />
+					<br />
+
+					<Router>
+						<div className="container">
+							{/* <Navbar /> */}
+							<br />
+							<br />
+							
 						</div>
 					</Router>
 				</div>

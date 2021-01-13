@@ -19,7 +19,7 @@ class viewMemberDayOff extends Component{
         axios.get('/Hod/viewDaysOff/'+ this.props.history.location.pathname.substring(13))
           .then(res => {
            this.setState( {members: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

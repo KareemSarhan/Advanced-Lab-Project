@@ -13,7 +13,7 @@ export class viewDayOffReq extends Component {
         axios.get('/Hod/viewDayOffReq')
           .then(res => {
            this.setState( {requests: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

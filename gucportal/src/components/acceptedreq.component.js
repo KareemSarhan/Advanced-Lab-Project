@@ -14,11 +14,12 @@ export default class acceptedrequest extends Component {
         axios.get('/AM/viewAcceptedReq')
         .then(res=>{
             
-                this.setState({acceptedreqs:res.data })      
-        })
-        .catch(error=>{
-            console.log(error);
-        } )
+                this.setState({acceptedreqs:res.data })   
+                swal(res.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
     }
 
 

@@ -27,7 +27,7 @@ function UpdateInstructorModal() {
           res =>
           {
             handleClose();
-           
+            swal(res.data.msg)
 
         },
         err =>

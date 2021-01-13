@@ -25,7 +25,7 @@ function DeleteInstructorModal() {
           {
             console.log(mem);
             handleClose();
-
+            swal(res.data.msg)
         },
         err =>
         {

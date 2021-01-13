@@ -14,7 +14,7 @@ export class viewMaternityLeaves extends Component {
         axios.get('/Hod/viewMaternityLeaveReq')
           .then(res => {
            this.setState( {leaves: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

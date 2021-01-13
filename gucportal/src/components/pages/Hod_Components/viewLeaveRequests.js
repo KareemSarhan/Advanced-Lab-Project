@@ -15,7 +15,7 @@ export class viewLeaveRequests extends Component {
     axios.get('/Hod/viewLeaveReq')
       .then(res => {
        this.setState( {leaves: res.data})
-     
+       swal(res.data.msg)
       })
       .catch((error) => {
         console.log(error);

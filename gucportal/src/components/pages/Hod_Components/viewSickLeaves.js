@@ -15,7 +15,7 @@ export class viewSickLeaves extends Component {
         axios.get('/Hod/viewSickLeaveReq')
           .then(res => {
            this.setState( {leaves: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

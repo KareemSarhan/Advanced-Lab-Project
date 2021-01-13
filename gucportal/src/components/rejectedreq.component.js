@@ -14,11 +14,12 @@ export default class rejectedrequest extends Component {
         axios.get('/AM/viewRejectedReq')
         .then(res=>{
             
-                this.setState({rejectedreqs:res.data })      
-        })
-        .catch(error=>{
-            console.log(error);
-        } )
+                this.setState({rejectedreqs:res.data })
+                swal(res.data)
+              })
+              .catch((error) => {
+                console.log(error)
+              });
     }
 
 
