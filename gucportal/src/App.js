@@ -120,7 +120,7 @@ class App extends Component {
 							<Navbar />
 							<br />
 							<br />
-							<Route path="/" component={Login} />
+							{/* <Route path="/" component={Login} /> */}
 							<Route path="/viewProfile" exact component={ViewProfile} />
 							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
 							<Route path="/viewMissingDays" component={ViewDays} />
@@ -128,7 +128,7 @@ class App extends Component {
 								path="/viewAllAttendanceByMonth"
 								component={ViewAllAttendanceByMonth}></Route>
 							<br />
-							<Route path="/" exact component={Login} />
+							{/* <Route path="/" exact component={Login} /> */}
 							<Route path="/Hr" component={HRPage} />
 							<Route path="/ViewMissing" component={ViewMissing} />
 							<Route
