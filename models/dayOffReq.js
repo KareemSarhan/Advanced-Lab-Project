@@ -27,7 +27,13 @@ const dayOffReqSchema = new mongoose.Schema(
         type: String,
         default: "Pending"
     },
-    comment: String
+    comment: String,
+    
+    seen :
+    { 
+   type: Boolean ,
+    default : true
+    }
 
 });
 

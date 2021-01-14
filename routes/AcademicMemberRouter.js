@@ -984,34 +984,58 @@ AcademicMemberRouter.route('/notification') //done /written in doc tested ..
             var ALLREQ = []; //han7ot feha kolo
             for (i = 0; i < ViewDAYOFF.length; i++)
             {
-                if (ViewDAYOFF[i].status == "Accepted" || ViewDAYOFF[i].status == "rejected")
+               
+                if ((ViewDAYOFF[i].status == "Accepted" || ViewDAYOFF[i].status == "rejected" )&& ViewDAYOFF[i].seen== false){
+           
+                   // ViewDAYOFF[i].seen= true;
+
                 //console.log( ViewDAYOFF); 
                 ALLREQ.push({"DayoffStatus":ViewDAYOFF[i].status,"DayoffRequestID":ViewDAYOFF[i].requestID,"dayoffDayRequested":ViewDAYOFF[i].requestedDay,
                 "Dayoffcomment":ViewDAYOFF[i].comment});
                     // ALLREQ.push(ViewDAYOFF[i]);
-
             }
+            }
+            await Dayoffreq.updateMany({
+                memberID: acID,
+                seen: false
+            }, {$set: {seen:true}});
+            
             for (i = 0; i < ViewRepReq.length; i++)
             {
-                if (ViewRepReq[i].status == "Accepted" || ViewRepReq[i].status == "rejected")
+                if ((ViewRepReq[i].status == "Accepted" || ViewRepReq[i].status == "rejected")&& ViewRepReq[i].seen==false){
+                    ViewRepReq[i].seen= true;
+               
                 ALLREQ.push({"repreqStatus":ViewRepReq[i].status,"repreqRequestID":ViewRepReq[i].requestID,"RequestedID":ViewRepReq[i].requestedID,
                 "repreqDayRequested":ViewRepReq[i].requestedDay,"repreqRequestedSlot":ViewRepReq[i].requestedSlot,"repreqcomment":ViewRepReq[i].comment}) 
    
                // ALLREQ.push(ViewRepReq[i]);
-
             }
+            
+            }
+            await ReplacementRequest.updateMany({
+                memberID: acID,
+                seen: false
+            }, {$set: {seen:true}});
             for (i = 0; i < ViewSlorLinkReq.length; i++)
             {
-                if (ViewSlorLinkReq[i].status == "Accepted" || ViewSlorLinkReq[i].status == "rejected")
+                if ((ViewSlorLinkReq[i].status == "Accepted" || ViewSlorLinkReq[i].status == "rejected")&& ViewSlorLinkReq[i].seen==false){
+                    ViewSlorLinkReq[i].seen=true;
+                
                 ALLREQ.push({"slotlinkStatus":ViewSlorLinkReq[i].status,"slotlinkRequestID":ViewSlorLinkReq[i].requestID,"CourseID":ViewSlorLinkReq[i].courseID,
                 "linkRequestedSlot":ViewSlorLinkReq[i].requestedSlot,"slotlinkcomment":ViewSlorLinkReq[i].comment})   
                 
                 //ALLREQ.push(ViewSlorLinkReq[i]);
             }
+            }
+            await Linkreq.updateMany({
+                memberID: acID,
+                seen: false
+            }, {$set: {seen:true}});
             for (i = 0; i < ViewLeaves.length; i++)
             {
-                if (ViewLeaves[i].status == "Accepted" || ViewLeaves[i].status == "rejected")
-                  
+                if ((ViewLeaves[i].status == "Accepted" || ViewLeaves[i].status == "rejected")&& ViewLeaves[i].seen==false){
+                    ViewLeaves[i].seen= true;
+                
                 ALLREQ.push({"leavesStatus":ViewLeaves[i].status,"leavesRequestID":ViewLeaves[i].requestID,"LeaveType":ViewLeaves[i].Leavetype,
                 "NoofDays":ViewLeaves[i].numberOfdays,"DateofLeave":ViewLeaves[i].dateOfLeave,"ReplacementID":ViewLeaves[i].replacementID,
                 "AbsenceDate":ViewLeaves[i].dateOfabsence,"CompensationDate":ViewLeaves[i].dateOfcompensation,"Reason":ViewLeaves[i].reason,
@@ -1019,6 +1043,11 @@ AcademicMemberRouter.route('/notification') //done /written in doc tested ..
                 
                 //  ALLREQ.push(ViewLeaves[i]);
             }
+            }
+            await LEAVES.updateMany({
+                memberID: acID,
+                seen: false
+            }, {$set: {seen:true}});
             //aflet else l auth 
             // console.log(ALLREQ) ;      
             res.send(ALLREQ);
@@ -1753,6 +1782,7 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested..
                     return res.json({msg:"Request not in Pending state."})
                 }
                 request.status = "Accepted"
+                request.seen = false 
                 request.save();
                 return res.json({msg:"Request Accepted YAAAY"})
             }
