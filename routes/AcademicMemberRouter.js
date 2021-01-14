@@ -1824,7 +1824,7 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested..
                     Memberid: FoundID
                 });
         res.send( acfound.type);
-        console.log("type: "+acfound);
+        console.log(CurrentID);
             }
         catch (error)
         {

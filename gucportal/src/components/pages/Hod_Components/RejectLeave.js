@@ -21,6 +21,7 @@ function RejectLeave (props) {
               res =>
               { console.log("success")
               swal(res.data.msg)
+              handleClose();
             },
             err =>
             {
@@ -65,6 +66,7 @@ function RejectLeave (props) {
         <Modal.Footer>
         </Modal.Footer>
       </Modal>
+      <Link to= '/viewLeaveReq'> Leave Requests </Link >
     </div>
     )
 }

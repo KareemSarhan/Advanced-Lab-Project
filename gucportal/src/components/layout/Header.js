@@ -6,6 +6,7 @@ import ResetPassword from '../pages/Member/ResetPass'
 import swal from 'sweetalert';
 import axios from 'axios'
 import SideBar from '../layout/SideMenu'
+import Login from '../pages/LoginModal'
 
 
 
@@ -31,6 +32,7 @@ const handleSignIn =(e)=>{
       axios.get('/Member/logout')
       .then(res => {
         swal(res.data.msg)
+       
   })
   .catch((err) => swal(err.response.data.errmsg || err.response.data));
   }
@@ -64,7 +66,7 @@ class Header extends Component{
             <Nav.Link variant="primary" type="SignOut" onClick={handleSignOut}>
                 SignOut
             </Nav.Link>
-                        <Nav.Link href="/logOut" onClick={handleLogout}>LogOut</Nav.Link>
+                        <Nav.Link href="/logOut" onClick='/'>LogOut</Nav.Link>
                         <NavDropdown title="Attendance" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/viewMissingHours">View Missing Hours</NavDropdown.Item>
                             <NavDropdown.Item href="/viewMissingDays">View Missing Days</NavDropdown.Item>

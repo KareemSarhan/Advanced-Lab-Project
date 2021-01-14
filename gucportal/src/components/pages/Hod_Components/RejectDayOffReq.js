@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { Component, useState } from 'react'
 import { Button,Modal,Form} from 'react-bootstrap'
+import {Link} from 'react-router-dom'
 
 function RejectDayOffReq (props) {
   const [show, setShow] = useState(true);
@@ -26,6 +27,8 @@ function RejectDayOffReq (props) {
             {
               console.log("Feeeeeeee errorrrrrrrr"+err)
             })
+            handleClose();
+           
     //}
    
 }
@@ -65,6 +68,7 @@ function RejectDayOffReq (props) {
         <Modal.Footer>
         </Modal.Footer>
       </Modal>
+      <Link to = '/viewDayOffReq'> Day Off requests</Link>
     </div>
     )
 }
