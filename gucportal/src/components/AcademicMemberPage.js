@@ -5,13 +5,8 @@ import SlotLinkreq from "./sendslotlinkreq.component";
 import DayOffreq from "./changedayoffreq.component";
 import Leavereq from "./sendleavereq.component";
 import axios from "axios";
-import Menu from './layout/Menu'
-import CCPage from './pages/CC/CCPage'
-import { useHistory } from "react-router-dom";
-import CourseInstructorPage from './pages/CI_Components/CourseInstructor';
-import AcademicMemberPage from './AcademicMemberPage'
 
-export default class Home extends Component {
+export default class AcademicMemberPage extends Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +19,6 @@ export default class Home extends Component {
         axios.get('/AM/GetType')
         .then(response=>{
             //console.log(this.props.history);
-            console.log(response.data)
             this.setState( {members: response.data});
                 //console.log(response.data);  
                 // if (response.data == "HeadOfDepartment") {
@@ -40,38 +34,37 @@ export default class Home extends Component {
             <div>
 
         
-    {/* <Link to="/schedule" className="navbar-brand"><button type="button" class="btn btn-dark">View Schedule</button></Link> 
+    <Link to="/schedule" className="navbar-brand"><button type="button" class="btn btn-dark">View Schedule</button></Link> 
     <br/>
     <br/>
     <Link to="/viewallReq" className="navbar-brand"><button type="button" class="btn btn-dark"> View All Requests</button></Link> 
     <br/>
     <br/>
     <Link to="/replacementrequest" className="navbar-brand"><button type="button" class="btn btn-dark">View Replacement Request</button></Link> 
-    <br/> */}
+    <br/>
 <br/>
-{/* <Link to="/sendreplacementreq" className="navbar-brand"><button type="button" class="btn btn-dark"> Add Replacement Request</button></Link>  */}
-{/* <Replacementreq/> */}
-
-<br/>
-{/* <Link to="/sendslotLinkreq" className="navbar-brand"><button type="button" class="btn btn-dark"> Slot Link Request</button></Link>  */}
-
-{/* <SlotLinkreq/> */}
+<Link to="/sendreplacementreq" className="navbar-brand"><button type="button" class="btn btn-dark"> Add Replacement Request</button></Link> 
+<Replacementreq/>
 
 <br/>
-{/* <DayOffreq/> */}
-{/* <Link to="/senddayoffreq" className="navbar-brand"><button type="button" class="btn btn-dark">Change Day Off Request</button></Link>  */}
-<br/>
+<Link to="/sendslotLinkreq" className="navbar-brand"><button type="button" class="btn btn-dark"> Slot Link Request</button></Link> 
 
-{/* <Link to="/sendleavereq" className="navbar-brand"><button type="button" class="btn btn-dark"> Leave Request</button></Link>  */}
-
-{/* <Leavereq/> */}
+<SlotLinkreq/>
 
 <br/>
-{this.state.members == "academic member" ? <AcademicMemberPage /> :null}
-{this.state.members == "CourseInstructor" ? <CourseInstructorPage /> : null}
-{this.state.members == "HeadOfDepartment" ? <Menu /> : null}
+<DayOffreq/>
+<Link to="/senddayoffreq" className="navbar-brand"><button type="button" class="btn btn-dark">Change Day Off Request</button></Link> 
+<br/>
+
+<Link to="/sendleavereq" className="navbar-brand"><button type="button" class="btn btn-dark"> Leave Request</button></Link> 
+
+<Leavereq/>
+
+<br/>
+{/* {this.state.members == "HeadOfDepartment" ? <Menu /> : null}
 {this.state.members == "CourseCoordinator" ? <CCPage /> : null}
-
+{this.state.members == "CourseInstructor" ? <CourseInstructorPage /> : null}
+{this.state.members == "academic member" ? <AcademicMemberPage /> : null} */}
 
 </div>  
 

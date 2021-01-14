@@ -58,6 +58,7 @@ import Leavereqq from "./components/sendleavereq.component";
 import Cancelreq from "./components/Cancelrequest.component";
 import Acceptreq from "./components/acceptrequest.component";
 import CCPage from "./components/pages/CC/CCPage"
+import AcademicMemberPage from "./components/AcademicMemberPage";
 
 class App extends Component {
 	render() {
@@ -77,6 +78,7 @@ class App extends Component {
 						<Route path="/homepage" component={Home} />
 						<Route path="/Menu" exact component={Menu} />
 						<Route path="/CC" exact component={CCPage} />
+						<Route path="/AC" exact component={AcademicMemberPage} />
 						{/* <Route path="/viewProfile" exact component={ViewProfile} /> */}
 						<Route path="/viewMissingHours" exact component={ViewHours} />
 						<Route path="/viewMembers" exact component={viewMembers} />
