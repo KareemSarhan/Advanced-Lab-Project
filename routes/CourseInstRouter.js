@@ -97,7 +97,7 @@ CourseInstRouter.route("/ViewCoverage").get(async (req, res, next) => {
 			});
 			const LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 
 			if (!LoggedAcm) {
@@ -141,7 +141,7 @@ CourseInstRouter.route("/ViewSlotAssignment").get(async (req, res, next) => {
 			const LoggedAcm = await academicMember
 				.findOne({
 					Memberid: loggedMember._id,
-					type: "CourseInstructor",
+					type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 				})
 				.populate({
 					path: "courses",
@@ -199,7 +199,7 @@ CourseInstRouter.route("/DepNotInCourseStaff").post(async (req, res, next) => {
 			});
 			const LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
@@ -251,7 +251,7 @@ CourseInstRouter.route("/ViewInDepStaff").get(async (req, res, next) => {
 			});
 			const LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
@@ -330,7 +330,7 @@ CourseInstRouter.route("/ViewInCourseStaff").get(async (req, res, next) => {
 			});
 			const LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
@@ -424,7 +424,7 @@ CourseInstRouter.route("/AssignMemberToSlot").put(async (req, res, next) => {
 			});
 			var LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
@@ -525,7 +525,7 @@ CourseInstRouter.route("/RemoveMemberFromSlot").delete(
 				});
 				var LoggedAcm = await academicMember.findOne({
 					Memberid: loggedMember._id,
-					type: "CourseInstructor",
+					type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 				});
 				if (!LoggedAcm) {
 					return res.status(403).send("You are not a Course Instructor.");
@@ -629,7 +629,7 @@ CourseInstRouter.route("/AddMemberToCourse").put(async (req, res, next) => {
 			});
 			var LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
@@ -706,7 +706,7 @@ CourseInstRouter.route("/RemoveMemberFromCourse").delete(
 				});
 				var LoggedAcm = await academicMember.findOne({
 					Memberid: loggedMember._id,
-					type: "CourseInstructor",
+					type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 				});
 				if (!LoggedAcm) {
 					return res.status(403).send("You are not a Course Instructor.");
@@ -820,7 +820,7 @@ CourseInstRouter.route("/UpdateMemberCourse").put(async (req, res, next) => {
 			});
 			var LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
@@ -975,7 +975,7 @@ CourseInstRouter.route("/AssignAsCoordinator").put(async (req, res, next) => {
 			});
 			var LoggedAcm = await academicMember.findOne({
 				Memberid: loggedMember._id,
-				type: "CourseInstructor",
+				type: { $in: ["CourseInstructor", "HeadOfDepartment"] },
 			});
 			if (!LoggedAcm) {
 				return res.status(403).send("You are not a Course Instructor.");
