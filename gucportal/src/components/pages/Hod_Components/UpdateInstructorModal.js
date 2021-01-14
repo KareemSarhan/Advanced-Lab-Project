@@ -4,7 +4,7 @@ import { Button,Modal,Form} from 'react-bootstrap'
 import axios from 'axios'
 
 function UpdateInstructorModal() {
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const [id, setID]= useState("");
     const [codeOld, setOldCourse] = useState("");
     const [codeNew, setNewCourse] = useState("");
@@ -38,9 +38,9 @@ function UpdateInstructorModal() {
   
     return (
       <div>
-        {/* <Button variant="primary" onClick={handleShow}>
-          AssignInstructor
-        </Button> */}
+        <Button variant="primary" onClick={handleShow}>
+          UpdateInstructor
+        </Button>
   
         <Modal show={show}
         onHide={handleClose}
