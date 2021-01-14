@@ -48,7 +48,7 @@ function SlotLinkModal() {
         aria-labelledby="contained-modal-title-vcenter"
         centered>
           <Modal.Header>
-            <Modal.Title>AddReplacementRequest</Modal.Title>
+            <Modal.Title>AddSlotLinkRequest</Modal.Title>
           </Modal.Header>
           <Modal.Body>
           <Form>

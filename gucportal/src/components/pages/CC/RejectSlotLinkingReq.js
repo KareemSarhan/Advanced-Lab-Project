@@ -4,10 +4,10 @@ import React, { Component } from 'react'
 export class RejectSLotReq extends Component {  
     constructor(props){
     super(props)
-    const { params } = this.props.location.pathname.substring(16);
+    //const { params } = this.props.location.pathname.substring(16);
         
-console.log(this.props.location.pathname.substring(16))
-        axios.put('/CC/RejectSlotLReq/'+this.props.location.pathname.substring(16))
+        console.log(this.props)
+        axios.put('/CC/RejectSlotLReq/')
             .then(
               res =>
               { console.log("success"+ this.props.location.pathname.substring(19)) 

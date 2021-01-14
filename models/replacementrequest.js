@@ -42,6 +42,11 @@ const ReplacementRequestSchema = new mongoose.Schema(
     comment:
     {
         type: String
+    },
+    seen :
+    { 
+   type: Boolean ,
+    default : true
     }
 
 });

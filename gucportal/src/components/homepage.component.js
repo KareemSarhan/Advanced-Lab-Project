@@ -6,7 +6,10 @@ import DayOffreq from "./changedayoffreq.component";
 import Leavereq from "./sendleavereq.component";
 import axios from "axios";
 import Menu from './layout/Menu'
+import CCPage from './pages/CC/CCPage'
 import { useHistory } from "react-router-dom";
+import CourseInstructorPage from './pages/CI_Components/CourseInstructor';
+
 export default class Home extends Component {
 
     constructor(props) {
@@ -19,9 +22,9 @@ export default class Home extends Component {
     componentDidMount(){
         axios.get('/AM/GetType')
         .then(response=>{
-            console.log(this.props.history);
+            //console.log(this.props.history);
             this.setState( {members: response.data});
-                console.log(response.data);  
+                //console.log(response.data);  
                 // if (response.data == "HeadOfDepartment") {
 				// 	this.props.history.push("/Menu");
 				// }
@@ -63,6 +66,8 @@ export default class Home extends Component {
 
 <br/>
 {this.state.members == "HeadOfDepartment" ? <Menu /> : null}
+{this.state.members == "CourseCoordinator" ? <CCPage /> : null}
+{this.state.members == "CourseInstructor" ? <CourseInstructorPage /> : null}
 
 </div>  
 

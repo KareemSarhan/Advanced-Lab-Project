@@ -3,8 +3,8 @@ import { Button,Modal,Form} from 'react-bootstrap'
 
 import axios from 'axios'
 
-function LoginModal() {
-    const [show, setShow] = useState(true);
+function DeleteSlot() {
+    const [show, setShow] = useState(false);
     const [SlotMember, setSlotMember]= useState("");
     const [SlotTiming, setSlotTiming] = useState("");
   
@@ -63,13 +63,13 @@ function LoginModal() {
     );
   }
   
-  class Login extends Component{
+  class Deleteslot extends Component{
   render(){
   return(
       <div>
-          <LoginModal />
+          <DeleteSlot />
       </div>
   );
   };
 };
-export default Login;
+export default Deleteslot;

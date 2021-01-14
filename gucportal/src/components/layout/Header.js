@@ -56,7 +56,8 @@ class Header extends Component{
                     <Navbar.Collapse isOpen = {this.state.isOpen} id="responsive-navbar-nav">
                         <Nav className="ml-auto">
                         <Nav.Link href="/viewProfile">Profile</Nav.Link>
-                        <Nav.Link href="#link">Notifications</Nav.Link>
+                        {/* <Nav.Link href="#link">Notifications</Nav.Link> */}
+                        <Nav.Link href="/notification" className="nav-link">notifications </Nav.Link>
                         <Nav.Link variant="primary" type="SignIn" onClick={handleSignIn}>
                 SignIn
             </Nav.Link>
