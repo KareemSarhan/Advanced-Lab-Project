@@ -19,7 +19,7 @@ class viewSlotAssignments extends Component{
         axios.get('/Hod/viewSlotAssignments/'+ this.props.history.location.pathname.substring(21))
           .then(res => {
            this.setState( {members: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

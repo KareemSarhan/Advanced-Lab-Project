@@ -12,7 +12,7 @@ export class viewDaysOffAll extends Component {
         axios.get('/Hod/viewDaysOffAll')
           .then(res => {
            this.setState( {members: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);

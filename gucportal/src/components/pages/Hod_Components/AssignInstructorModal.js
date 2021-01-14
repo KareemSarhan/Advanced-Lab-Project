@@ -23,8 +23,9 @@ function AssignInstructorModal() {
         .then(
           res =>
           {
-            handleClose();
 
+            handleClose();
+            swal(res.data.msg)
         },
         err =>
         {

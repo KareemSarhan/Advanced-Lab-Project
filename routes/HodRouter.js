@@ -38,11 +38,11 @@ HodRouter.route('/assignInstructor')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             // const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             if (typeof (req.body.id) == "string" && typeof (req.body.code) == "string") {
                 const insID = req.body.id
                 const c = req.body.code
@@ -55,23 +55,23 @@ HodRouter.route('/assignInstructor')
                         id: insID
                     });
                 if (m == null) {
-                    return res.status(401).send("User does not exist");
+                    return res.status(401).json({msg:"User does not exist"});
                 }
                 const a = await academicMember.findOne(
                     {
                         Memberid: m._id
                     });
                 if (!currentid.includes("ac")) {
-                    return res.status(401).send("not authorized");
+                    return res.status(401).json({msg:"not authorized"});
                 }
                 if (ufound.type != "HeadOfDepartment") {
-                    return res.status(401).send("not authorized");
+                    return res.status(401).json({msg:"not authorized"});
                 }
                 if (a.department != ufound.department) {
-                    return res.status(401).send("The instructor is not in your department");
+                    return res.status(401).json({msg:"The instructor is not in your department"});
                 }
                 if (a.type == "academic member") {
-                    return res.status(401).send("The user is not an instructor");
+                    return res.status(401).json({msg:"The user is not an instructor"});
                 }
                 //get the course instructor id from the body
                 //get the course code from the body
@@ -85,12 +85,12 @@ HodRouter.route('/assignInstructor')
                             code: c
                         });
                     if (co == null) {
-                        return res.status(401).send("Course does not exist");
+                        return res.status(401).json({msg:"Course does not exist"});
                     }
                     if(a.courses != null){
                     for(j=0;j<a.courses.length;j++){
                         if(a.courses[j].equals(co._id))
-                        return res.status(401).send("The instructor is already assigned to this course");
+                        return res.status(401).json({msg:"The instructor is already assigned to this course"});
                     }
                 }
                     const courseId = await course.findOne({ code: c });
@@ -110,9 +110,9 @@ HodRouter.route('/assignInstructor')
                     }
                 }
                     if (flag == false)
-                        return res.status(401).send("This course is not in your department");
+                        return res.status(401).json({msg:"This course is not in your department"});
                 }
-                res.json("Instructor added successfully")
+                res.json({msg:"Instructor added successfully"})
             }
         }
         catch (error) {
@@ -131,18 +131,18 @@ HodRouter.route('/DeleteInstructor/:id/:code')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
 
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the course instructor id from the body
             //get the course code from the body
@@ -157,19 +157,19 @@ HodRouter.route('/DeleteInstructor/:id/:code')
                     
                     const m = await members.findOne({ id: courseIns });
                     if (m == null)
-                        return res.status(401).send("This instructor does not exist");
+                        return res.status(401).json({msg:"This instructor does not exist"});
                     const c = await courses.findOne({ code: courseCode });
                    
                     if (c == null)
-                        return res.status(401).send("This course does not exist");
+                        return res.status(401).json({msg:"This course does not exist"});
                     const a = await academicMember.findOne({ Memberid: m._id });
                     if (a.type == "academic member")
-                        return res.status(401).send("The user is not an instructor");
+                        return res.status(401).json({msg:"The user is not an instructor"});
                     if (a.department != ufound.department)
-                        return res.status(401).send("The instructor is not in your department");
+                        return res.status(401).json({msg:"The instructor is not in your department"});
                     const d = await department.findOne({ name: ufound.department }, { courses: c._id });
                     if (d == null)
-                        return res.status(401).send("The course is not in your department");
+                        return res.status(401).json({msg:"The course is not in your department"});
                     for (i = 0; i < c.instructors.length; i++) {
                         if (c.instructors[i].equals(a._id)) {
                             c.instructors.splice(i,1);
@@ -183,7 +183,7 @@ HodRouter.route('/DeleteInstructor/:id/:code')
                             
                         }
                         else {
-                            return res.status(401).send("This instructor is not assigned to this course");
+                            return res.status(401).json({msg:"This instructor is not assigned to this course"});
                         }
                     
                         const s = await slot.find({ _id: a.schedule })
@@ -211,7 +211,7 @@ HodRouter.route('/DeleteInstructor/:id/:code')
                     }
                 }
                 }
-                    res.json("instructor deleted successfully")
+                    res.json({msg:"instructor deleted successfully"})
                // }
             }
         }
@@ -235,17 +235,17 @@ HodRouter.route('/UpdateInstructor')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the course instructor id from the body
             //get the course code from the body
@@ -261,24 +261,24 @@ HodRouter.route('/UpdateInstructor')
                    
                     const m = await members.findOne({ id: courseIns });
                     if (m == null)
-                        return res.status(401).send("This instructor does not exist");
+                        return res.status(401).json({msg:"This instructor does not exist"});
                     const c = await courses.findOne({ code: courseCodeOld });
                     if (c == null)
-                        return res.status(401).send("The old course does not exist");
+                        return res.status(401).json({msg:"The old course does not exist"});
                     const c1 = await courses.findOne({ code: courseCodeNew });
                     if (c1 == null)
-                        return res.status(401).send("The new course does not exist");
+                        return res.status(401).json({msg:"The new course does not exist"});
                     const a = await academicMember.findOne({ Memberid: m._id })
                     const dep = await department.findOne({ name: ufound.department }, { courses: courseCodeNew });
                     const dep1 = await department.findOne({ name: ufound.department }, { courses: courseCodeOld });
 
                     if (dep == null)
-                        return res.status(401).send("The new course does not belong to your departmwnt");
+                        return res.status(401).json({msg:"The new course does not belong to your departmwnt"});
                     if (dep1 == null)
-                        return res.status(401).send("The old course does not belong to your deparment");
+                        return res.status(401).json({msg:"The old course does not belong to your deparment"});
 
                     if (a.department != ufound.department) {
-                        return res.status(401).send("The instructor does not belong to your deparment");
+                        return res.status(401).json({msg:"The instructor does not belong to your deparment"});
                     }
                     // if(a == null)
                     //      return res.status(401).send("The instructor is not assigned to the old course");
@@ -289,7 +289,7 @@ HodRouter.route('/UpdateInstructor')
                     // }
                     for (i = 0; i < a.courses.length; i++) {
                         if (a.courses[i].equals(c1._id)) {
-                            return res.status(401).send("The instructor is already assigned to the new course")
+                            return res.status(401).json({msg:"The instructor is already assigned to the new course"})
                         }
                         // if(a == null)
                         //      return res.status(401).send("The instructor is not assigned to the old course");
@@ -301,11 +301,11 @@ HodRouter.route('/UpdateInstructor')
                         for (i = 0; i < a.courses.length; i++) {
                            
                             if (a.courses[i].equals(c1._id)) {
-                                return res.status(401).send("The instructor is already assigned to the new course")
+                                return res.status(401).josn({msg:"The instructor is already assigned to the new course"})
                             }
                             if (!(a.courses[i].equals(c._id))) {
                                
-                                return res.status(401).send("The instructor is not assigned to the old course")
+                                return res.status(401).json({msg:"The instructor is not assigned to the old course"})
                             }
 
                         }
@@ -325,7 +325,7 @@ HodRouter.route('/UpdateInstructor')
                             
                         }
                         else {
-                            return res.status(401).send("This instructor is not assigned to this course");
+                            return res.status(401).json({msg:"This instructor is not assigned to this course"});
                         }
                     
                         const s = await slot.find({ _id: a.schedule })
@@ -356,7 +356,7 @@ HodRouter.route('/UpdateInstructor')
                     }
                 }
 
-                    res.json("Instructor updated successfully")
+                    res.json({msg:"Instructor updated successfully"})
                 }
             }
         }
@@ -381,17 +381,17 @@ HodRouter.route('/viewMembersDep')
             console.log(found)
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
 
 
@@ -479,17 +479,17 @@ HodRouter.route('/viewMembers/:cID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
 
             //get the department
@@ -504,7 +504,7 @@ HodRouter.route('/viewMembers/:cID')
                         code: courseID
                     });
                 if (c == null)
-                    return res.status(401).send("This course does not exist");
+                    return res.status(401).json({msg:"This course does not exist"});
                 if ((await department.findOne(
                     {
                         name: dep
@@ -512,7 +512,7 @@ HodRouter.route('/viewMembers/:cID')
                     {
                         courses: c._id
                     })) == null)
-                    return res.status(401).send("This course is not in your department");
+                    return res.status(401).json({msg:"This course is not in your department"});
                 var c1;
                 var cTA;
                 var ta;
@@ -592,17 +592,17 @@ HodRouter.route('/viewDaysOffAll')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
 
             //get the department
@@ -670,21 +670,21 @@ HodRouter.route('/viewDaysOff/:memID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             const mem = await members.findOne({ id: req.params.memID });
             if (mem == null) {
-                return res.status(401).send("This user does not exist");
+                return res.status(401).json({msg:"This user does not exist"});
             }
 
             //get the department
@@ -692,7 +692,7 @@ HodRouter.route('/viewDaysOff/:memID')
             //verify that this member is in the same department
             //get the day off of this member
             if (!req.params.memID.includes("ac")) {
-                return res.status(401).send("This user is not an academic staff");
+                return res.status(401).json({msg:"This user is not an academic staff"});
             }
 
             const dep = ufound.department;
@@ -703,7 +703,7 @@ HodRouter.route('/viewDaysOff/:memID')
 
             const amem = await academicMember.findOne({ Memberid: mem._id });
             if (amem.department !== dep) {
-                return res.status(401).send("This user is not in your department");
+                return res.status(401).json({msg:"This user is not in your department"});
             }
             else {
                 dayoff = mem.dayOff;
@@ -731,18 +731,18 @@ HodRouter.route('/viewDayOffReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             // const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
 
             //get the department
@@ -786,18 +786,18 @@ HodRouter.route('/viewLeaveReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //show all leave requests for members in this department
@@ -881,18 +881,18 @@ HodRouter.route('/viewLeaveReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //show all leave requests for members in this department
@@ -938,6 +938,8 @@ HodRouter.route('/viewLeaveReq')
                 })
         }
     });
+
+
     HodRouter.route('/viewAccidentalLeaveReq')
     .get(async (req, res, next) => {
         //authenticate that this is a valid member
@@ -949,18 +951,18 @@ HodRouter.route('/viewLeaveReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //show all leave requests for members in this department
@@ -1019,18 +1021,18 @@ HodRouter.route('/viewLeaveReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //show all leave requests for members in this department
@@ -1076,6 +1078,7 @@ HodRouter.route('/viewLeaveReq')
                 })
         }
     });
+
     HodRouter.route('/viewMaternityLeaveReq')
     .get(async (req, res, next) => {
         //authenticate that this is a valid member
@@ -1087,18 +1090,18 @@ HodRouter.route('/viewLeaveReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //show all leave requests for members in this department
@@ -1156,18 +1159,18 @@ HodRouter.route('/viewLeaveReq')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).josn({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //show all leave requests for members in this department
@@ -1226,18 +1229,18 @@ HodRouter.route('/acceptDayOffReq/:reqID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             // const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //verify that there is a request with this id
@@ -1250,7 +1253,7 @@ HodRouter.route('/acceptDayOffReq/:reqID')
                         requestID: req.params.reqID
                     });
                 if (dayoffreq.requestID == null) {
-                    return res.status(401).send("This request does not exist");
+                    return res.status(401).json({msg:"This request does not exist"});
                 }
                 var u = await dayOffReq.findOneAndUpdate(
                     {
@@ -1268,12 +1271,12 @@ HodRouter.route('/acceptDayOffReq/:reqID')
                         _id: a.Memberid
                     });
                 if (a.department != dep) {
-                    return res.status(401).send("This user is not in your department");
+                    return res.status(401).json({msg:"This user is not in your department"});
                 }
                 m.dayOff = dayoffreq.requestedDay;
                 await m.save();
 
-                res.json("Request changed successfully")
+                res.json({msg:"Request changed successfully"})
             }
         }
         catch (error) {
@@ -1295,18 +1298,18 @@ HodRouter.route('/acceptLeaveReq/:reqID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //   const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //verify that there is a request with this id
@@ -1317,7 +1320,7 @@ HodRouter.route('/acceptLeaveReq/:reqID')
                     requestID: req.params.reqID
                 });
             if (l1 == null)
-                return res.status(401).send("This request does not exist");
+                return res.status(401).json({msg:"This request does not exist"});
             const d = await department.findOne(
                 {
                     name: ufound.department
@@ -1331,13 +1334,13 @@ HodRouter.route('/acceptLeaveReq/:reqID')
                     Memberid: m._id
                 });
             if (!(m.id.includes("ac")))
-                return res.status(401).send("This request does not belong to an academic member");
+                return res.status(401).json({msg:"This request does not belong to an academic member"});
             const a = await academicMember.findOne(
                 {
                     Memberid: m._id
                 });
             if (a.department != ufound.department)
-                return res.status(401).send("This request does not belong to your department");
+                return res.status(401).json({msg:"This request does not belong to your department"});
             var total = [];
             if (l1 != null) {
                 l1.status = "Accepted";
@@ -1392,7 +1395,7 @@ HodRouter.route('/acceptLeaveReq/:reqID')
 
             }
 
-            res.json("Request updated successfully");
+            res.json({msg:"Request updated successfully"});
         }
         catch (error) {
             res.status(500).json(
@@ -1535,18 +1538,18 @@ HodRouter.route('/rejectDayOffReq/:reqID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //verify that there is a request with this id
@@ -1560,7 +1563,7 @@ HodRouter.route('/rejectDayOffReq/:reqID')
                         requestID: req.params.reqID
                     });
                 if (dayoffreq == null)
-                    return res.status(401).send("This request does not exist");
+                    return res.status(401).json({msg:"This request does not exist"});
                 // if (dayoffreq.requestID == null) {
                 //     return res.status(401).send("This request does not exist");
                 // }
@@ -1569,7 +1572,7 @@ HodRouter.route('/rejectDayOffReq/:reqID')
                         _id: dayoffreq.memberID
                     });
                 if (a.department != dep) {
-                    return res.status(401).send("This user is not in your department");
+                    return res.status(401).json({msg:"This user is not in your department"});
                 }
                 console.log(req.body.comment)
                 if (typeof (req.body.comment) == "string") {
@@ -1605,18 +1608,18 @@ HodRouter.route('/rejectLeaveReq/:reqID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
 
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             //get the department
             //verify that there is a request with this id
@@ -1627,7 +1630,7 @@ HodRouter.route('/rejectLeaveReq/:reqID')
                     requestID: req.params.reqID
                 });
             if (l1 == null)
-                return res.status(401).send("This request does not exist");
+                return res.status(401).json({msg:"This request does not exist"});
             const d = await department.findOne(
                 {
                     name: ufound.department
@@ -1638,18 +1641,18 @@ HodRouter.route('/rejectLeaveReq/:reqID')
                     _id: l1.StaffID
                 });
             if (!(m.id.includes("ac")))
-                return res.status(401).send("This request does not belong to an academic member");
+                return res.status(401).json({msg:"This request does not belong to an academic member"});
             const a = await academicMember.findOne(
                 {
                     Memberid: m._id
                 });
             if (a.department != ufound.department)
-                return res.status(401).send("This request does not belong to your department");
+                return res.status(401).json({msg:"This request does not belong to your department"});
             var total = [];
 
             if (l1 != null) {
                 if (req.body.comment == null) {
-                    return res.status(401).send("Please enter a comment");
+                    return res.status(401).json({msg:"Please enter a comment"});
                 }
                 if (typeof (req.body.comment) == "string") {
                     console.log(l1)
@@ -1657,7 +1660,7 @@ HodRouter.route('/rejectLeaveReq/:reqID')
                     l1.HodComment = req.body.comment;
                     await l1.save();
                 }
-                res.json("Request updated successfully");
+                res.json({msg:"Request updated successfully"});
             }
         }
         catch (error) {
@@ -1679,17 +1682,17 @@ HodRouter.route('/viewCoverage')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             //  const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
 
             //get the department
@@ -1735,17 +1738,17 @@ HodRouter.route('/viewSlotAssignments/:cID')
             const found = await member.findOne({ id: currentid });
             const deletedtoken = await DeletedToken.findOne({ token: token });
             if (deletedtoken) {
-                res.send("Sorry you are logged out .")
+                res.json({msg:"Sorry you are logged out ."})
             }
             // const found = await member.findOne({ id: currentid });
             if (!found)
-                return res.status(401).send("Not authenticated");
+                return res.status(401).json({msg:"Not authenticated"});
             const ufound = await academicMember.findOne({ Memberid: found._id });
             if (!currentid.includes("ac")) {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
             if (ufound.type != "HeadOfDepartment") {
-                return res.status(401).send("not authorized");
+                return res.status(401).json({msg:"not authorized"});
             }
 
             //get the department
@@ -1757,7 +1760,7 @@ HodRouter.route('/viewSlotAssignments/:cID')
                         code: req.params.cID
                     });
                 if (c === null) {
-                    return res.status(401).send("This course does not exist");
+                    return res.status(401).json({msg:"This course does not exist"});
                 }
                 //const d = await department.findOne({name:ufound.department});
 

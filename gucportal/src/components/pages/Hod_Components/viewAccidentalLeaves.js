@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import {Link} from 'react-router-dom'
+import Menu from '../../layout/Menu';
 export class viewAccidentalLeaves extends Component {
     constructor(props) {
         super(props);
@@ -13,7 +14,7 @@ export class viewAccidentalLeaves extends Component {
         axios.get('/Hod/viewAccidentalLeaveReq')
           .then(res => {
            this.setState( {leaves: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);
@@ -23,6 +24,7 @@ export class viewAccidentalLeaves extends Component {
     render() {
         return (
             <div>
+            <Menu/>
              <h3>Accidental Leave Requests</h3>
                 <table id="leaves"  className="table">
           <thead className="thead-light">

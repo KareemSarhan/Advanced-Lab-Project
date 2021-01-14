@@ -20,7 +20,7 @@ class viewMember extends Component{
         axios.get('/Hod/viewMembers/'+ this.props.history.location.pathname.substring(19))
           .then(res => {
            this.setState( {members: res.data})
-         
+           swal(res.data.msg)
           })
           .catch((error) => {
             console.log(error);
