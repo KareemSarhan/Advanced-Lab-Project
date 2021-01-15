@@ -57,8 +57,10 @@ import Dayoffreq from "./components/changedayoffreq.component";
 import Leavereqq from "./components/sendleavereq.component";
 import Cancelreq from "./components/Cancelrequest.component";
 import Acceptreq from "./components/acceptrequest.component";
-import CCPage from "./components/pages/CC/CCPage"
+import CCPage from "./components/pages/CC/CCPage";
 import AcademicMemberPage from "./components/AcademicMemberPage";
+import ViewMyCourses from "./components/pages/CI_Components/ViewMyCourses.jsx";
+import ViewMyDepartmentStaff from "./components/pages/CI_Components/ViewMyDepartmentStaff.jsx";
 
 class App extends Component {
 	render() {
@@ -86,7 +88,10 @@ class App extends Component {
 						<Route path="/SickLeaves" component={viewSickLeaves} />
 						<Route path="/AccidentalLeaves" component={viewAccidentalLeaves} />
 						<Route path="/AnnualLeaves" component={viewAnnualLeaves} />
-						<Route path="/CompensationLeaves" component={viewCompensationLeaves}/>
+						<Route
+							path="/CompensationLeaves"
+							component={viewCompensationLeaves}
+						/>
 						<Route path="/MaternityLeaves" component={viewMaternityLeaves} />
 						<Route path="/viewCoverage" component={viewCoverage} />
 						<Route path="/viewDaysOffAll" component={viewDaysOffAll} />
@@ -109,51 +114,54 @@ class App extends Component {
 						<Route path="/viewDayOff/" component={ViewMemberDayOffModal} />
 						<Route path="/viewDaysOff/" component={viewMemberDayOff} />
 						<Route path="/viewProfile" exact component={ViewProfile} />
-							<Route path="/viewAllAttendance" component={ViewAllAttendance} />
-							<Route path="/viewMissingDays" component={ViewDays} />
-							<Route
-								path="/viewAllAttendanceByMonth"
-								component={ViewAllAttendanceByMonth}></Route>
-							<br />
-							<Route path="/ViewMissing" component={ViewMissing} />
-							<Route
-								path="/ViewMemberAttendance/"
-								component={ViewMemberAttendance}
-							/>
-							<Route
-								path="/viewMemAttButton/"
-								component={ViewMemAttButtonModal}
-							/>
-							<Route path="/notification" component={Notification} />
-							<Route path="/schedule" component={Schedule} />
-							{/* <Route path="/homepage" component={Home} /> */}
-							
-							<Route path="/ci" component={CourseInstructorPage} />
-							<Route
-								path="/replacementrequest"
-								component={ReplacementRequest}
-							/>
-							<Route path="/UpdateSlot" component={UpdateSlot} />
-							<Route path="/viewallReq" component={viewAllreq} />
-							<Route path="/acceptedreq" component={acceptreqs} />
-							<Route path="/pendingreq" component={pendngreqs} />
-							<Route path="/rejectedreq" component={rejectedreqs} />
-							<Route path="/sendreplacementreq" component={Replacementreq} />
-							<Route path="/sendslotlinkreq" component={SlotLinkreq} />
-							<Route path="/changedayoffreq" component={Dayoffreq} />
-							<Route path="/sendleavereq" component={Leavereqq} />
-							<Route path="/acceptrequest" component={Acceptreq} />
-							<Route path="/Cancelrequest" component={Cancelreq} />
+						<Route path="/viewAllAttendance" component={ViewAllAttendance} />
+						<Route path="/viewMissingDays" component={ViewDays} />
+						<Route
+							path="/viewAllAttendanceByMonth"
+							component={ViewAllAttendanceByMonth}></Route>
+						<br />
+						<Route path="/ViewMissing" component={ViewMissing} />
+						<Route
+							path="/ViewMemberAttendance/"
+							component={ViewMemberAttendance}
+						/>
+						<Route
+							path="/viewMemAttButton/"
+							component={ViewMemAttButtonModal}
+						/>
+						<Route path="/notification" component={Notification} />
+						<Route path="/schedule" component={Schedule} />
+						{/* <Route path="/homepage" component={Home} /> */}
 
-							<Route
-								path="/viewSlotLinkingReq/"
-								component={ViewSlotLinkingReq}
-							/>
-							<Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
-							<Route path="/DeleteSlots" component={DeleteSlot} />
-							<Route path="/logout" component={Login} />
+						<Route path="/CI" component={CourseInstructorPage} />
+						<Route
+							path="/CourseInstructor/ViewMyCourses"
+							component={ViewMyCourses}
+						/>
 
-							<Route path="/viewMissingDays" component={ViewDays} />
+						<Route
+							path="/CourseInstructor/ViewMyDepartmentStaff"
+							component={ViewMyDepartmentStaff}
+						/>
+						<Route path="/replacementrequest" component={ReplacementRequest} />
+						<Route path="/UpdateSlot" component={UpdateSlot} />
+						<Route path="/viewallReq" component={viewAllreq} />
+						<Route path="/acceptedreq" component={acceptreqs} />
+						<Route path="/pendingreq" component={pendngreqs} />
+						<Route path="/rejectedreq" component={rejectedreqs} />
+						<Route path="/sendreplacementreq" component={Replacementreq} />
+						<Route path="/sendslotlinkreq" component={SlotLinkreq} />
+						<Route path="/changedayoffreq" component={Dayoffreq} />
+						<Route path="/sendleavereq" component={Leavereqq} />
+						<Route path="/acceptrequest" component={Acceptreq} />
+						<Route path="/Cancelrequest" component={Cancelreq} />
+
+						<Route path="/viewSlotLinkingReq/" component={ViewSlotLinkingReq} />
+						<Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
+						<Route path="/DeleteSlots" component={DeleteSlot} />
+						<Route path="/logout" component={Login} />
+
+						<Route path="/viewMissingDays" component={ViewDays} />
 					</Router>
 					<br />
 					<br />
@@ -163,7 +171,6 @@ class App extends Component {
 							{/* <Navbar /> */}
 							<br />
 							<br />
-							
 						</div>
 					</Router>
 				</div>
