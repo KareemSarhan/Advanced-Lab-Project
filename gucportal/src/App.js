@@ -78,9 +78,10 @@ class App extends Component {
 						<Route path="/" exact component={Login} />
 						<Route path="/hr" exact component={HRPage} />
 						<Route path="/homepage" component={Home} />
-						<Route path="/Menu" exact component={Menu} />
+						<Route path="/hod" exact component={Menu} />
 						<Route path="/CC" exact component={CCPage} />
 						<Route path="/AC" exact component={AcademicMemberPage} />
+						<Route path="/CI" component={CourseInstructorPage} />
 						{/* <Route path="/viewProfile" exact component={ViewProfile} /> */}
 						<Route path="/viewMissingHours" exact component={ViewHours} />
 						<Route path="/viewMembers" exact component={viewMembers} />
@@ -133,7 +134,7 @@ class App extends Component {
 						<Route path="/schedule" component={Schedule} />
 						{/* <Route path="/homepage" component={Home} /> */}
 
-						<Route path="/CI" component={CourseInstructorPage} />
+						
 						<Route
 							path="/CourseInstructor/ViewMyCourses"
 							component={ViewMyCourses}
@@ -161,7 +162,6 @@ class App extends Component {
 						<Route path="/DeleteSlots" component={DeleteSlot} />
 						<Route path="/logout" component={Login} />
 
-						<Route path="/viewMissingDays" component={ViewDays} />
 					</Router>
 					<br />
 					<br />

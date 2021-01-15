@@ -10,6 +10,9 @@ import AssignInstructorModal from '../pages/Hod_Components/AssignInstructorModal
 import UpdateInstructorModal from '../pages/Hod_Components/UpdateInstructorModal'
 import DeleteInstructorModal from '../pages/Hod_Components/DeleteInstructorModal'
 import ViewMemberDayOffModal from '../pages/Hod_Components/ViewMemberDayOffModal'
+import ViewMyCourses from '../pages/CI_Components/ViewMyCourses'
+import ViewMyDepartmentStaff from '../pages/CI_Components/ViewMyDepartmentStaff'
+import CourseInstructorPage from '../pages/CI_Components/CourseInstructor'
 
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
  class Menu extends Component {
@@ -227,6 +230,7 @@ render() {
         // </SideNav>
 
         // </div>
+        <div>
         <Accordion>
          <Card>
             <Card.Header>
@@ -239,9 +243,20 @@ render() {
             <Button variant="primary" href="/schedule"  class= "mt-10">
                     View My Schedule
                 </Button>
+                <Router>
+					<Route
+						path="/CourseInstructor/ViewMyCourses"
+						component={ViewMyCourses}
+					/>
+					<Route
+						path="/CourseInstructor/ViewMyDepartmentStaff"
+						component={ViewMyDepartmentStaff}
+					/>
+				</Router>
             </Card.Body>
             </Accordion.Collapse>
         </Card>
+        
         <Card>
             <Card.Header>
             <Accordion.Toggle as={Button} variant="link" eventKey="1">
@@ -260,6 +275,11 @@ render() {
                     View All Members 
                 </Button>
                 <br/><br/>
+                <Button variant="primary" href="/CourseInstructor/ViewMyDepartmentStaff"     class= "mt-10">
+                    View My Department
+                </Button>
+                <br/>
+                <br/>
                 {/* <Button variant="primary" href="/DeleteInstructor"  class= "mt-10">
                     Delete Instructor
                 </Button> */}
@@ -313,8 +333,6 @@ render() {
                 <Button variant="primary" href="/sendleavereq"  class= "mt-10">
                    Add Leave Request
                 </Button>
-
-
             </Card.Body>
             </Accordion.Collapse>
         </Card>
@@ -326,6 +344,10 @@ render() {
             </Card.Header>
             <Accordion.Collapse eventKey="3">
             <Card.Body>
+            <Button variant="primary" href="/CourseInstructor/ViewMyCourses"  class= "mt-10">
+                    View My Courses
+                </Button>
+                <br/><br/>
             <Button variant="primary" href="/viewCoverage"  class= "mt-10">
                     View Coverage
                 </Button>
@@ -340,7 +362,9 @@ render() {
             </Accordion.Collapse>
         </Card>
         
-        </Accordion>
+        </Accordion><br/>
+        {/* <CourseInstructorPage /> */}
+        </div>
     );
 }
 

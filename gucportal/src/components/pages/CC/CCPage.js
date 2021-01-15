@@ -5,6 +5,7 @@ import DeleteSlot from './DeleteSlot'
 import RejectSlotLinkingReq from './RejectSlotLinkingReq'
 import UpdateSlot from './UpdateSlot'
 import ViewSlotLinkingReq from './ViewSlotLinkinReq'
+import AcademicMemberPage from '../../AcademicMemberPage'
 
 
 
@@ -16,7 +17,8 @@ import ViewSlotLinkingReq from './ViewSlotLinkinReq'
             <AddSlot/><br/>
             <DeleteSlot/><br/>
             <UpdateSlot/><br/>
-            <ViewSlotLinkingReq/><br/>    
+            <ViewSlotLinkingReq/><br/>  
+            <AcademicMemberPage/>  
         </div>
       )
   };
