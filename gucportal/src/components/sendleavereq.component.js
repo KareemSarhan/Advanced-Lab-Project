@@ -5,7 +5,7 @@ import axios from 'axios'
 
 function LeaveModal() {
     const [show, setShow] = useState(false);
-    const [Leavetype, setLeavetype] = useState("");
+    const [Leavetype, setLeavetype] = useState("Accidental");
     const [numberOfdays, setnumberOfdays] = useState("");
     const [dateOfLeave, setdateOfLeave] = useState("");
     const [replacementID, setreplacementID] = useState("");
