@@ -10,6 +10,7 @@ import AssignInstructorModal from '../pages/Hod_Components/AssignInstructorModal
 import UpdateInstructorModal from '../pages/Hod_Components/UpdateInstructorModal'
 import DeleteInstructorModal from '../pages/Hod_Components/DeleteInstructorModal'
 import ViewMemberDayOffModal from '../pages/Hod_Components/ViewMemberDayOffModal'
+import CourseInstructorPage from '../pages/CI_Components/CourseInstructor'
 
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
  class Menu extends Component {
@@ -227,6 +228,7 @@ render() {
         // </SideNav>
 
         // </div>
+        <div>
         <Accordion>
          <Card>
             <Card.Header>
@@ -340,7 +342,9 @@ render() {
             </Accordion.Collapse>
         </Card>
         
-        </Accordion>
+        </Accordion><br/>
+        <CourseInstructorPage />
+        </div>
     );
 }
 
