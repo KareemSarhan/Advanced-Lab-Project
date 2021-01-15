@@ -163,7 +163,6 @@ class App extends Component {
 						<Route path="/DeleteSlots" component={DeleteSlot} />
 						<Route path="/logout" component={Login} />
 
-						<Route path="/viewMissingDays" component={ViewDays} />
 					</Router>
 					<br />
 					<br />
