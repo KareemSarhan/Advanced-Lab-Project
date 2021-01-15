@@ -94,7 +94,18 @@ export default function CourseCard(props) {
 				);
 			else setPopStaff(props.Course.teachingAssistants);
 		} else if (input == "assign course coordinator") {
-			setPopStaff(props.Course.teachingAssistants);
+			let data = { CourseID: props.Course._id };
+
+			axios
+				.post("CourseInstructor/DepNotInCourseStaff", data)
+				.then((response) => {
+					//console.log(response.data.DepNotInCourseStaff);
+					setPopStaff(response.data.DepNotInCourseStaff);
+				})
+
+				.catch((error) => {
+					console.log(error);
+				});
 		}
 		//console.log(PopStaff);
 		handleShowpop();
