@@ -32,20 +32,16 @@ class viewSlotAssignments extends Component{
     {/* <div><ViewCourseMembersModal history= {this.props.history}/></div> */}
             <br/>
             <br/>
-                <h3>Members</h3>
+                <h3>Course Slots</h3>
         <table className="table">
           <thead className="thead-light">
             <tr>
               <th>Name</th>
               <th>ID</th>
-              <th>Email</th>
-              <th>Courses</th>
-              <th>Type</th>
-              <th>Faculty</th>
-              <th>Department</th>
-              <th>Office</th>
-              <th>Office Hours</th>
-              <th>Day Off</th>
+              <th>Timing</th>
+              <th>Room</th>
+              <th>Room Type</th>
+              <th>Slot Type</th>
             </tr>
           </thead>
           <tbody>
@@ -66,59 +62,32 @@ class viewSlotAssignments extends Component{
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.email}</div>
+            <div>{members.timing}</div>
             )
             }
           </td>
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.courses}</div>
+            <div>{members.room}</div>
             )
             }
           </td>
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.type}</div>
+            <div>{members.roomType}</div>
             )
             }
           </td>
           <td>
           {
             this.state.members.map((members)=>
-            <div>{members.faculty}</div>
+            <div>{members.slotType}</div>
             )
             }
           </td>
-          <td>
-          {
-            this.state.members.map((members)=>
-            <div>{members.department}</div>
-            )
-            }
-          </td>
-          <td>
-          {
-            this.state.members.map((members)=>
-            <div>{members.office}</div>
-            )
-            }
-          </td>
-          <td>
-          {
-            this.state.members.map((members)=>
-            <div>{members.officeHourse}</div>
-            )
-            }
-          </td>
-          <td>
-          {
-            this.state.members.map((members)=>
-            <div>{members.dayOff}</div>
-            )
-            }
-          </td>
+         
           </tbody>
         </table>
             </div>
