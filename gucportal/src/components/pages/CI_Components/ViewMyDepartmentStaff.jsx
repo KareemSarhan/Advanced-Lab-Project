@@ -12,7 +12,7 @@ class ViewMyDepartmentStaff extends Component {
 	componentDidMount() {
 		console.log(localStorage.getItem("authtoken"));
 		axios
-			.get("CourseInstructor/ViewInDepStaff")
+			.get("/CourseInstructor/ViewInDepStaff")
 			.then((response) => {
 				this.setState(response.data.AcmDepartment);
 				console.log(response.data.AcmDepartment);

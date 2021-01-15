@@ -7,7 +7,7 @@ import CourseGrid from "./CourseGrid.jsx";
 class ViewMyCourses extends Component {
 	componentDidMount() {
 		axios
-			.get("CourseInstructor/ViewMyCourses")
+			.get("/CourseInstructor/ViewMyCourses")
 			.then((response) => {
 				this.setState(response.data);
 				//console.log(this.state.Courses);
@@ -18,7 +18,7 @@ class ViewMyCourses extends Component {
 	}
 	componentDidUpdate() {
 		axios
-			.get("CourseInstructor/ViewMyCourses")
+			.get("/CourseInstructor/ViewMyCourses")
 			.then((response) => {
 				console.log(this.state.Courses);
 				console.log(response.data.Courses);
