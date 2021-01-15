@@ -1,0 +1,102 @@
+import React, { Component, useState } from 'react'
+import { Button,Modal,Form, InputGroup, FormControl, DropdownButton, ToggleButton,ButtonGroup} from 'react-bootstrap'
+
+import axios from 'axios'
+
+function AddLocationModal() {
+    const [show, setShow] = useState(false);
+    const [name, setName]= useState("");
+    //const [type, setType] = useState("");
+    const [capacity, setCapacity] = useState(0);
+
+    const [type, setType] = useState("Office");
+
+    // const radios = [
+    //   { name: "Office", value: 'Office' },
+    //   { name: "Lab", value: "Lab" },
+    //   { name: "Lecture Hall", value: "Lecture Hall" },
+    //   { name: "Room", value: "Room" },
+    // ];
+  
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const handleName = (e) => setName(e.target.value);
+    //const handleType = (e) => setType(e.target.value);
+    //setTypeR("hkj");
+    const handleCapacity = (e) => setCapacity(e.target.value);
+    const handleSubmit =(e)=>{
+      e.preventDefault();
+        const loc = {
+            name: name,
+            type: type,
+            capacity: capacity
+        };
+        console.log(loc);
+        axios.post('/Hr/addLocation', loc).then((res)=>{
+            console.log("success");
+            //console.log(res.data.msg)
+
+         swal(res.data.msg)
+  })
+  .catch((err) => {swal(err.response.data.errmsg || err.response.data.err)});
+        handleClose();
+    }
+  
+    return (
+      <div>
+        <Button variant="primary" onClick={handleShow} class= "mt-10">
+          AddLocation
+        </Button>
+  
+        <Modal show={show}
+        onHide={handleClose}
+        keyboard={false}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered>
+          <Modal.Header>
+            <Modal.Title>AddLocation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <Form>
+            <Form.Group controlId="formBasicName" required>
+                <Form.Label>Location Name</Form.Label>
+                <Form.Control type="text" placeholder="Enter location name" onChange = {handleName}/>
+            </Form.Group>
+              
+                <Form.Group controlId="formBasicType" required>
+                <Form.Label>Location Type</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setType(e.currentTarget.value)}>
+                    <option value="Office">Office</option>
+                    <option value= "Room">Room</option>
+                    <option value="Lecture Hall">Lecture Hall</option>
+                    <option value="Lab">Lab</option>
+                  </Form.Control>
+                </Form.Group>
+
+            <Form.Group controlId="formBasicCapacity" required>
+                <Form.Label>Location Capacity</Form.Label>
+                <Form.Control type="number" min = "0" placeholder="Enter location capacity" onChange = {handleCapacity} />
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={handleSubmit}>
+                Submit
+            </Button>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+          </Modal.Footer>
+        </Modal>
+      </div>
+    );
+  }
+  
+  class AddLocation extends Component{
+  render(){
+  return(
+      <div>
+          <AddLocationModal />
+      </div>
+  );
+  };
+};
+export default AddLocation;

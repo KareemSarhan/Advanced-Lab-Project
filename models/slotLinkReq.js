@@ -34,9 +34,14 @@ const slotLinkReqSchema = new mongoose.Schema({
         type: String,
         default: "Pending"
     },
-    comment: String
-
+    comment: String,
+    seen :
+    { 
+   type: Boolean ,
+    default : true
+    }
 });
+    
 
 module.exports = mongoose.model('SlotLinkReq', slotLinkReqSchema);
 module.exports.slotLinkReqSchema = slotLinkReqSchema;
