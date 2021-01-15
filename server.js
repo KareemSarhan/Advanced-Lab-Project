@@ -34,10 +34,10 @@ const path = require("path");
 
 const cors = require("cors");
 app.use(express.static(path.join(__dirname, "client", "build")));
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
 
+app.get("*", (request, response) => {
+	response.sendFile(path.join(__dirname, "client/build", "index.html"));
+});
 app.use(function (req, res, next) {
 	res.header(
 		"Access-Control-Allow-Headers",
