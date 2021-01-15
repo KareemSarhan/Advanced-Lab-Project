@@ -81,17 +81,20 @@ export class ViewSlotLinkingReq extends Component {
 								))}
 							</td>
 							<td>
-								{this.state.SLslotsReq.map((member) => (
-									<dev>
-										<Link to={"/AcceptSlotLReq/" + member.requestID}>
-											Accept
-										</Link>
-										|
-										<Link to={"/RejectSlotLReq/" + member.memberID.Memberid.id}>
-											Reject
-										</Link>
-									</dev>
-								))}
+								{this.state.SLslotsReq.map((member) =>
+									member.status == "Pending" ? (
+										<dev>
+											<Link to={"/AcceptSlotLReq/" + member.requestID}>
+												Accept
+											</Link>
+											|
+											<Link
+												to={"/RejectSlotLReq/" + member.memberID.Memberid.id}>
+												Reject
+											</Link>
+										</dev>
+									) : null
+								)}
 							</td>
 						</tbody>
 					</table>
