@@ -245,11 +245,11 @@ render() {
                 </Button>
                 <Router>
 					<Route
-						path="/CourseInstructor/ViewMyCourses"
+						path="/CI/ViewMyCourses"
 						component={ViewMyCourses}
 					/>
 					<Route
-						path="/CourseInstructor/ViewMyDepartmentStaff"
+						path="/CI/ViewMyDepartmentStaff"
 						component={ViewMyDepartmentStaff}
 					/>
 				</Router>

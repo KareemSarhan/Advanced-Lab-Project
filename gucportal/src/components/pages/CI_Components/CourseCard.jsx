@@ -78,7 +78,7 @@ export default function CourseCard(props) {
 			let data = { CourseID: props.Course._id };
 			console.log(data);
 			axios
-				.post("CourseInstructor/DepNotInCourseStaff", data)
+				.post("/CourseInstructor/DepNotInCourseStaff", data)
 				.then((response) => {
 					//console.log(response.data.DepNotInCourseStaff);
 					setPopStaff(response.data.DepNotInCourseStaff);
@@ -97,7 +97,7 @@ export default function CourseCard(props) {
 			let data = { CourseID: props.Course._id };
 
 			axios
-				.post("CourseInstructor/DepNotInCourseStaff", data)
+				.post("/CourseInstructor/DepNotInCourseStaff", data)
 				.then((response) => {
 					//console.log(response.data.DepNotInCourseStaff);
 					setPopStaff(response.data.DepNotInCourseStaff);
