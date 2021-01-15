@@ -32,11 +32,11 @@
 	},
 	"scripts": {
 		"start": "node server.js",
-		"start2": "concurrently \"nodemon server.js\" \"npm start --prefix client\"",
+		"start2": "concurrently \"nodemon server.js\" \"npm start --prefix gucportal\"",
 		"node-install": "npm install",
 		"startB": "nodemon server.js",
-		"startF": "npm start --prefix client",
-		"heroku-postbuild": "cd client && npm install && npm run build "
+		"startF": "npm start --prefix gucportal",
+		"heroku-postbuild": "cd gucportal && npm install && npm run build "
 	},
 	"repository": {
 		"type": "git",
