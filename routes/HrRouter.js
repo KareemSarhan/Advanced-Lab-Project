@@ -645,12 +645,14 @@ HrRouter.route('/deleteCourse/:name/:dep')
                     console.log("course coordinator back to academic member");
                     //delete the course from department
                     const dC = dep[0].courses;
+                    //console.log(dC);
                     for (let w = 0 ; w < dC.length ; w++){
-                        if (dC._id == cour[0]._id + ""){
+                        if (dC[w]== cour[0]._id + ""){
+                            //console.log(cour[0]._id);
                             dC.splice(w,1);
                         }
                     }
-                    await department.findByIdAndUpdate(dep._id, {"courses": dC});
+                    await department.findByIdAndUpdate(dep[0]._id, {"courses": dC});
                     console.log("course removed from department");
                     await course.findByIdAndDelete(cour[0]._id);
                     res.json({msg:"course deleted"});
@@ -690,7 +692,7 @@ HrRouter.route('/addStaffMember')
             const office = await Location.find({"name": req.body.officeLocation});
             if (office.length == 0){
                 return res.json({msg:"there does not exist an office with this name"});
-            }else if(office[0].type != "office"){
+            }else if(office[0].type != "Office"){
                 return res.json({msg:"this location is not an office with this name"});
             }else if (office[0].capacitySoFar > office[0].capacity){
                 return res.json({msg:"this office is full"});
@@ -733,7 +735,7 @@ HrRouter.route('/addStaffMember')
                     } else if (req.body.academicType== null || req.body.academicType == ""){
                         return res.json({msg:"type of academic member should be given in body"});
                     }else{
-                        const fac = await faculty.find({"name": req.body.faculty});
+                        var fac = await faculty.find({"name": req.body.faculty});
                         const dep1 = await department.find({"name": req.body.department}); 
                         if (fac.length == 0 || dep1.length == 0){
                             return res.json({msg:"there does not exist a faculty and/or a department with this name"});
@@ -809,17 +811,21 @@ HrRouter.route('/addStaffMember')
                     if (req.body.academicType == "CourseInstructor"){
                         oldMem = dep[0].instructors;
                         oldMem.push(acID[0]._id);
+                        oldMemf = fac[0].instructors;
+                        oldMemf.push(acID[0]._id);
                         await department.findOneAndUpdate({"name":req.body.department}, {"instructors": oldMem});
                         console.log("academic member added to instructors of this department");
-                        await faculty.findOneAndUpdate({"name":req.body.faculty}, {"instructors": oldMem});
+                        await faculty.findOneAndUpdate({"name":req.body.faculty}, {"instructors": oldMemf});
                         console.log("academic member added to instructors of this faculty");
                     }else{
                         //an academic member
                         oldMem = dep[0].teachingAssistants;
                         oldMem.push(acID[0]._id);
+                        oldMemf = fac[0].teachingAssistants;
+                        oldMemf.push(acID[0]._id);
                         await department.findOneAndUpdate({"name":req.body.department}, {"teachingAssistants": oldMem});
                         console.log("academic member added to teaching assistants of this department");
-                        await faculty.findOneAndUpdate({"name":req.body.faculty}, {"teachingAssistants": oldMem});
+                        await faculty.findOneAndUpdate({"name":req.body.faculty}, {"teachingAssistants": oldMemf});
                         console.log("academic member added to teachingAssistants of this faculty");
                     }
                 }

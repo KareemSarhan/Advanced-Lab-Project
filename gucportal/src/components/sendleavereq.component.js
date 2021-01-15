@@ -72,9 +72,15 @@ function LeaveModal() {
           <Form>
 
             <Form.Group controlId="formBasicleavetype" required>
-                <Form.Label>Leave Type</Form.Label>
-                <Form.Control type="text" placeholder="Enter Leave Type" onChange = {handleLeavetype} />
-            </Form.Group>
+                <Form.Label>Leave Type</Form.Label><br/>
+                  <Form.Control as="select" onChange={(e)=> setLeavetype(e.currentTarget.value)}>
+                    <option value="Accidental">Accidental</option>
+                    <option value= "Annual">Annual</option>
+                    <option value="Compensation">Compensation</option>
+                    <option value="Maternity">Maternity</option>
+                    <option value="Sick">Sick</option>  
+                  </Form.Control>
+                </Form.Group>
 
          
 

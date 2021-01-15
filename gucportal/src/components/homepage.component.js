@@ -23,6 +23,7 @@ export default class Home extends Component {
     componentDidMount(){
         axios.get('/AM/GetType')
         .then(response=>{
+            console.log("home" +localStorage.getItem("authtoken"))
             //console.log(this.props.history);
             console.log(response.data)
             this.setState( {members: response.data});

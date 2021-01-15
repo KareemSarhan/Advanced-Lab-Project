@@ -28,7 +28,7 @@ function LoginModal(props) {
 		axios.post("/Member/login", mem).then(
 			(res) => {
 				//console.log(res)
-				//console.log(res.headers.authtoken)
+				console.log("login"+res.headers.authtoken)
 				localStorage.setItem("authtoken", res.headers.authtoken);
 
 				console.log(res);

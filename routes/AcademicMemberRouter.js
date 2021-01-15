@@ -813,7 +813,8 @@ AcademicMemberRouter.route('/sendLeaveReq') //donee and written tested..
                         return res.json({msg:"Please the reason in string"});
                     }
                    
-                    if (!(req.body.StaffID.gender != "female"))
+                    const g = (await member.findById(FoundID)).gender
+                    if (g != "female")
                     {
                         return res.json({msg:"The user should be a female Estargel !!"});
                     }

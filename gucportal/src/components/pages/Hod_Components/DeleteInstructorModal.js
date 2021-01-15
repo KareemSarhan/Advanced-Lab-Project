@@ -57,7 +57,7 @@ function DeleteInstructorModal() {
             </Form.Group>
 
             <Form.Group controlId="formBasicPassword" required>
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Course Code</Form.Label>
                 <Form.Control type="text" placeholder="Enter Course Code" onChange = {handleCourse} />
             </Form.Group>
             <Button variant="primary" type="submit" onClick={handleSubmit}>
