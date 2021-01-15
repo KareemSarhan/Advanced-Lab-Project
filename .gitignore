@@ -7,7 +7,6 @@ package-lock.json
 
 gucportal/.eslintcache
 
-package.json
 .DS_Store
 node_modules/
 .env
