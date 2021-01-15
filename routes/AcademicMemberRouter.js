@@ -20,6 +20,7 @@ const LEAVES = require("../models/Leaves");
 var validator = require("validator");
 const DeletedToken = require("../models/DeletedTokens");
 const missing = require("../models/missing");
+const location = require("../models/location");
 const AcademicMemberRouter = express.Router();
 AcademicMemberRouter.use(bodyParser.json());
 
@@ -294,10 +295,13 @@ AcademicMemberRouter.route("/sendSlotLinkReq") //done and written  tested..
 					msg: "The course you are assigned to should be given!!",
 				});
 			} else if (
-				req.body.requestedSlot == null ||
-				!validator.isMongoId(req.body.requestedSlot)
-			) {
+				req.body.requestedSlot == null || req.body.requestedSlot == "")
+				 {
 				return res.json({ msg: "Please enter the requested slot!!" });
+			}else if (
+				req.body.requestedSlotLocation == null || req.body.requestedSlotLocation == "")
+				 {
+				return res.json({ msg: "Please enter the requested slot Location!!" });
 			} else if (!(typeof req.body.comment == "string")) {
 				return res.json({ msg: "Please enter the comment as String!!" });
 			} else {
@@ -330,47 +334,47 @@ AcademicMemberRouter.route("/sendSlotLinkReq") //done and written  tested..
 					res.json({ msg: "sorry you are not assigned to this course" });
 					return;
 				}
-
-				const slot = await slots.findOne({
-					course: COURSEID,
-					_id: req.body.requestedSlot,
-				});
-				if (slot == null) {
-					res.json({ msg: "This slot doesn't exist in the requested course!" });
-					return;
+				const loc = await location.findOne({name: req.body.requestedSlotLocation});
+				if (loc != null){
+					var slot = await slots.findOne({course: COURSEID, location: loc._id, timing:req.body.requestedSlot });
+					if (slot == null) {
+						return res.json({ msg: "This slot doesn't exist in the requested course!" });
+					}
+					flagAc = true;
+					const reqID = await Linkreq.find({
+						requestID: {
+							$regex: "SL",
+						},
+					});
+					console.log(reqID);
+					if (reqID.length == 0) {
+						nID = 1;
+					} else {
+						const maxID = reqID[reqID.length - 1];
+						console.log(maxID);
+						const toBeParsed = maxID.requestID.substring(3);
+						const iID = parseInt(toBeParsed);
+						nID = iID + 1;
+					}
+					console.log(nID);
+					var assignedID = "";
+					if (flagAc) {
+						assignedID = "SL-" + nID + "";
+					}
+					const LinkingRequest = new Linkreq({
+						requestID: assignedID,
+						memberID: ac._id,
+						courseID: coursefound._id,
+						requestedSlot: slot._id,
+						comment: req.body.comment,
+					});
+	
+					await LinkingRequest.save();
+					res.json({ msg: "Slot Link Request added YAYYY!!" });
+					console.log("ya3am added");
+				}else{
+					return res.json({msg: "This location does not exist"});
 				}
-				flagAc = true;
-				const reqID = await Linkreq.find({
-					requestID: {
-						$regex: "SL",
-					},
-				});
-				console.log(reqID);
-				if (reqID.length == 0) {
-					nID = 1;
-				} else {
-					const maxID = reqID[reqID.length - 1];
-					console.log(maxID);
-					const toBeParsed = maxID.requestID.substring(3);
-					const iID = parseInt(toBeParsed);
-					nID = iID + 1;
-				}
-				console.log(nID);
-				var assignedID = "";
-				if (flagAc) {
-					assignedID = "SL-" + nID + "";
-				}
-				const LinkingRequest = new Linkreq({
-					requestID: assignedID,
-					memberID: ac._id,
-					courseID: coursefound._id,
-					requestedSlot: req.body.requestedSlot,
-					comment: req.body.comment,
-				});
-
-				await LinkingRequest.save();
-				res.json({ msg: "Slot Link Request added YAYYY!!" });
-				console.log("ya3am added");
 			}
 		} catch (err) {
 			res.status(500).json({ err: err.message });

@@ -13,13 +13,27 @@ import AcademicMemberPage from '../../AcademicMemberPage'
   class CCPage extends Component{
   render(){
       return(
-        <div>
+            <div> 
+            <AcademicMemberPage/>  
+        <Accordion>
+        <Card>
+            <Card.Header>
+            <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                Course Coordinator Actions
+            </Accordion.Toggle>
+            </Card.Header>
+            <Accordion.Collapse eventKey="0">
+            <Card.Body>
             <AddSlot/><br/>
             <DeleteSlot/><br/>
             <UpdateSlot/><br/>
             <ViewSlotLinkingReq/><br/>  
-            <AcademicMemberPage/>  
-        </div>
+            </Card.Body>
+            </Accordion.Collapse>
+        </Card>
+        
+        </Accordion>
+    </div>
       )
   };
 };

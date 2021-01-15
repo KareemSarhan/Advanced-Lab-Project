@@ -432,19 +432,23 @@ CourseCoordinatorRouter.route('/updateSlot')
     const typeOfAM = existingAM.type;
     
     if(!(typeOfAM=="CourseCoordinator")){
-        res.send("Not authorized .")
+        res.json({
+            msg:"Not authorized ."})
         return
     }
     if(!existingUser){
-        res.send("Not authenticated .")
+        res.json({
+            msg:"Not authenticated ."})
         return;
     }
 if(deletedtoken){
-    res.send("Sorry you are logged out .")
+    res.json({
+        msg:"Sorry you are logged out ."})
     return
 }
 if(!(SlotMember) || !(SlotTiming)){
-    res.send('Please enter the required Data.')
+    res.json({
+        msg:'Please enter the required Data.'})
     return
 }
 

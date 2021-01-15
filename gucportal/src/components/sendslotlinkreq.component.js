@@ -8,12 +8,14 @@ function SlotLinkModal() {
     const [memberID, setMemberID]= useState("");
     const [courseID, setCourseID] = useState("");
     const [requestedSlot, setrequestedSlot] = useState("");
+    const [requestedSlotLocation, setrequestedSlotLocation] = useState("");
     const [comment, setComment] = useState("");
   
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleCourseID = (e) => setCourseID(e.target.value);
     const handlerequestedSlot = (e) => setrequestedSlot(e.target.value);
+    const handlerequestedSlotLocation = (e) => setrequestedSlotLocation(e.target.value);
     const handleComment = (e) => setComment(e.target.value);
 
     const handleSubmit =(e)=>{
@@ -21,7 +23,8 @@ function SlotLinkModal() {
         const mem = {
             courseID: courseID,
             requestedSlot: requestedSlot,
-            comment: comment
+            comment: comment,
+            requestedSlotLocation: requestedSlotLocation
         };
         console.log(mem);
       
@@ -54,13 +57,18 @@ function SlotLinkModal() {
           <Form>
 
             <Form.Group controlId="formBasicID" required>
-                <Form.Label>Course ID</Form.Label>
+                <Form.Label>Course Code</Form.Label>
                 <Form.Control type="text" placeholder="Enter Course ID" onChange = {handleCourseID} />
             </Form.Group>
 
             <Form.Group controlId="formBasicSlot" required>
-                <Form.Label>Requested Slot</Form.Label>
+                <Form.Label>Requested Slot Timing</Form.Label>
                 <Form.Control type="text" placeholder="Enter Requested Slot" onChange = {handlerequestedSlot} />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicSlotLoc" required>
+                <Form.Label>Requested Slot Location</Form.Label>
+                <Form.Control type="text" placeholder="Enter Requested Slot Location" onChange = {handlerequestedSlotLocation} />
             </Form.Group>
 
             <Form.Group controlId="formBasiccomment" required>
