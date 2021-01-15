@@ -54,14 +54,14 @@ app.options("*", (req, res) => {
 	res.json({
 		status: "OK",
 	});
-	app.use(bodyParser.json());
-	app.use("/AM", AcademicMemberRouter);
-	app.use("/CC", CourseCoordinatorRouter);
-	app.use("/CourseInstructor", CourseInstRouter);
-	app.use("/Hod", HodRouter);
-	app.use("/Hr", HrRouter);
-	app.use("/Member", MemberRouter);
 });
+app.use(bodyParser.json());
+app.use("/AM", AcademicMemberRouter);
+app.use("/CC", CourseCoordinatorRouter);
+app.use("/CourseInstructor", CourseInstRouter);
+app.use("/Hod", HodRouter);
+app.use("/Hr", HrRouter);
+app.use("/Member", MemberRouter);
 
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "gucportal", "build")));
