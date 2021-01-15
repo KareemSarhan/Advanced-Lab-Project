@@ -34,11 +34,6 @@ const path = require("path");
 
 const cors = require("cors");
 
-if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "gucportal", "build")));
-
-	console.log("DONE!");
-}
 app.use(function (req, res, next) {
 	//res.header("Access-Control-Allow-Origin", "http://localhost:5000/"); // update to match the domain you will make the request from
 	res.header(
@@ -68,6 +63,13 @@ app.options("*", (req, res) => {
 	app.use("/Member", MemberRouter);
 });
 
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "gucportal", "build")));
+	app.get("*", (req, res) => {
+		res.sendFile(path.join(__dirname, "gucportal", "build", "index.html"));
+	});
+	console.log("DONE!");
+}
 const connection = mongoose.connection;
 mongoose.connect(mongoConnectionString, {
 	useCreateIndex: true,
@@ -81,7 +83,5 @@ connection.once("open", function () {
 		console.log("Server is running on Port: " + PORT);
 	});
 });
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "gucportal", "build", "index.html"));
-});
+
 module.exports = app;

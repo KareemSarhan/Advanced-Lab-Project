@@ -8,10 +8,10 @@ require("dotenv").config();
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
 //import reportWebVitals from './reportWebVitals';
-const baseUrl = "https://gucportalmern.herokuapp.com";
-//const baseUrl =  "http://localhost:5000";
-console.log(process.env.baseURL);
-axios.defaults.baseURL = baseUrl + "/";
+// const baseUrl = "https://gucportalmern.herokuapp.com";
+// //const baseUrl =  "http://localhost:5000";
+// console.log(process.env.baseURL);
+// axios.defaults.baseURL = baseUrl + "/";
 axios.defaults.headers.common["authtoken"] = localStorage.getItem("authtoken");
 
 ReactDOM.render(<App />, document.getElementById("root"));
