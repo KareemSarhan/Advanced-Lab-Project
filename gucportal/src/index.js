@@ -12,6 +12,7 @@ require("dotenv").config();
 // //const baseUrl =  "http://localhost:5000";
 // console.log(process.env.baseURL);
 // axios.defaults.baseURL = baseUrl + "/";
+console.log(localStorage.getItem("authtoken"));
 axios.defaults.headers.common["authtoken"] = localStorage.getItem("authtoken");
 
 ReactDOM.render(<App />, document.getElementById("root"));
