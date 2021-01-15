@@ -7,27 +7,24 @@ import { makeStyles } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import ViewMyCourses from "./ViewMyCourses.jsx";
 import ViewMyDepartmentStaff from "./ViewMyDepartmentStaff.jsx";
-import AcademicMemberPage from '../../AcademicMemberPage'
+import AcademicMemberPage from "../../AcademicMemberPage";
 
 class CourseInstructorPage extends Component {
 	render() {
 		return (
 			<div>
-				<Button
-					variant="outlined"
-					color="primary"
-					href="/CourseInstructor/ViewMyCourses">
+				<AcademicMemberPage></AcademicMemberPage>
+				<Button variant="outlined" color="primary" href="/CI/ViewMyCourses">
 					View My Courses
 				</Button>
 
 				<Button
 					variant="outlined"
 					color="primary"
-					href="/CourseInstructor/ViewMyDepartmentStaff">
+					href="/CI/ViewMyDepartmentStaff">
 					View My Department Staff
-				</Button><br/>
-				
-
+				</Button>
+				<br />
 			</div>
 		);
 	}

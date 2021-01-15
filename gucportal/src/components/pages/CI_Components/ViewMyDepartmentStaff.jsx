@@ -6,9 +6,11 @@ import CourseCard from "./CourseCard.jsx";
 import CourseGrid from "./CourseGrid.jsx";
 import MemberCard from "./MemberCard";
 import MemberGrid from "./MemberGrid";
+import ReactDOM from "react-dom";
 
 class ViewMyDepartmentStaff extends Component {
 	componentDidMount() {
+		console.log(localStorage.getItem("authtoken"));
 		axios
 			.get("CourseInstructor/ViewInDepStaff")
 			.then((response) => {
