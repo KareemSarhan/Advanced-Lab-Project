@@ -160,7 +160,7 @@ class App extends Component {
 							<Route path="/Cancelrequest" component={Cancelreq} />
 
 							<Route
-								path="/viewSlotLinkingReq/"
+								path="/viewSlotLinkingReq"
 								component={ViewSlotLinkingReq}
 							/>
 							<Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
