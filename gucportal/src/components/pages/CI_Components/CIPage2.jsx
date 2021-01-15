@@ -9,7 +9,7 @@ import ViewMyCourses from "./ViewMyCourses.jsx";
 import ViewMyDepartmentStaff from "./ViewMyDepartmentStaff.jsx";
 import AcademicMemberPage from '../../AcademicMemberPage'
 
-class CourseInstructorPage extends Component {
+class CIPage2 extends Component {
 	render() {
 		return (
 			<div>
@@ -26,10 +26,10 @@ class CourseInstructorPage extends Component {
 					href="/CourseInstructor/ViewMyDepartmentStaff">
 					View My Department Staff
 				</Button><br/>
-				
+				<AcademicMemberPage/>
 
 			</div>
 		);
 	}
 }
-export default CourseInstructorPage;
+export default CIPage2;

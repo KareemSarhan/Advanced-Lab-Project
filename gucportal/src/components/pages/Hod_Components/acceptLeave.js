@@ -16,6 +16,7 @@ console.log(this.props.location.pathname.substring(16))
             },
             err =>
             {
+              {swal(err.response.data.errmsg || err.response.data.err)}
               console.log("Feeeeeeee errorrrrrrrr"+err)
             })
     //}
