@@ -8,7 +8,7 @@ require("dotenv").config();
 
 //import 'bootstrap/dist/css/bootstrap.min.css';
 //import reportWebVitals from './reportWebVitals';
-baseUrl = process.env.baseURL || "http://localhost:5000";
+const baseUrl = process.env.baseURL || "http://localhost:5000";
 
 axios.defaults.baseURL = baseUrl + "/";
 axios.defaults.headers.common["authtoken"] = localStorage.getItem("authtoken");
