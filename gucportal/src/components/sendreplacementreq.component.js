@@ -38,7 +38,7 @@ function ReplacementModal() {
   
     return (
       <div>
-          <button type="button" class="btn btn-dark"  onClick={handleShow}> AddReplacementRequest</button>
+          <button type="button" class="btn btn-dark"  onClick={handleShow}> Send Replacement Request</button>
         {/* <Button variant="primary" class="btn btn-dark" onClick={handleShow}>
           AddReplacementRequest
         </Button> */}

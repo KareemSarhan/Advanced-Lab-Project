@@ -136,8 +136,11 @@ AcademicMemberRouter.route("/viewReplacementReq") //done and written tested..
 				id: CurrentID,
 			});
 			const FID = found._id; //bta3 l ac member obj id
+			const ACID = await academicMember.findOne({
+				Memberid:FID
+			})
 			const REQ = await ReplacementRequest.find({
-				memberID: FID,
+				memberID: ACID,
 			});
 			var ALLREQ = [];
 			for (i = 0; i < REQ.length; i++) {
@@ -181,6 +184,9 @@ AcademicMemberRouter.route("/sendReplacementReq") // done and written  tested ..
 				id: CurrentID,
 			});
 			const FID = found._id;
+			const ACID = await academicMember.findOne({
+				Memberid:FID
+			})
 			const reqSlot = await slots.findOne({
 				_id: req.body.requestedSlot,
 			});
@@ -247,7 +253,7 @@ AcademicMemberRouter.route("/sendReplacementReq") // done and written  tested ..
 				console.log(academicmem._id);
 				const ReplacementReq = new ReplacementRequest({
 					requestID: assignedID,
-					memberID: FID,
+					memberID: ACID._id,
 					requestedID: academicmem._id, //academic member ._id
 					requestedDay: req.body.requestedDay,
 					requestedSlot: req.body.requestedSlot,
