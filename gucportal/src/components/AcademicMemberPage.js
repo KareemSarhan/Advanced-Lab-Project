@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button,Modal,Form, Dropdown,Accordion,Card} from 'react-bootstrap'
 import { Link } from 'react-router-dom';
 import Replacementreq from './sendreplacementreq.component';
 import SlotLinkreq from "./sendslotlinkreq.component";
@@ -29,45 +30,79 @@ export default class AcademicMemberPage extends Component {
             console.log(error);
         } )
     }
-    render() {
-        return (
-            <div>
 
-        
-    <Link to="/schedule" className="navbar-brand"><button type="button" class="btn btn-dark">View Schedule</button></Link> 
-    <br/>
-    <br/>
-    <Link to="/viewallReq" className="navbar-brand"><button type="button" class="btn btn-dark"> View All Requests</button></Link> 
-    <br/>
-    <br/>
-    <Link to="/replacementrequest" className="navbar-brand"><button type="button" class="btn btn-dark">View Replacement Request</button></Link> 
-    <br/>
-<br/>
-<Link to="/sendreplacementreq" className="navbar-brand"><button type="button" class="btn btn-dark"> Add Replacement Request</button></Link> 
-<Replacementreq/>
+render(){
+    return(
+      <div>
+      <div>
 
-<br/>
-<Link to="/sendslotLinkreq" className="navbar-brand"><button type="button" class="btn btn-dark"> Slot Link Request</button></Link> 
-
-<SlotLinkreq/>
-
-<br/>
-<DayOffreq/>
-<Link to="/senddayoffreq" className="navbar-brand"><button type="button" class="btn btn-dark">Change Day Off Request</button></Link> 
-<br/>
-
-<Link to="/sendleavereq" className="navbar-brand"><button type="button" class="btn btn-dark"> Leave Request</button></Link> 
-
-<Leavereq/>
-
-<br/>
-{/* {this.state.members == "HeadOfDepartment" ? <Menu /> : null}
-{this.state.members == "CourseCoordinator" ? <CCPage /> : null}
-{this.state.members == "CourseInstructor" ? <CourseInstructorPage /> : null}
-{this.state.members == "academic member" ? <AcademicMemberPage /> : null} */}
-
-</div>  
-
-            );
-  }
+      <Accordion>
+          <Card>
+              <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                 Schedule
+              </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="0">
+              <Card.Body>
+              <Link to="/schedule" className="navbar-brand"><button type="button" class="btn btn-dark">View Schedule</button></Link> 
+                  {/* <UpdateLocation/><br/>
+                  <DeleteLocation/><br/> */}
+              </Card.Body>
+              </Accordion.Collapse>
+          </Card>
+          <Card>
+              <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                 View Requests 
+              </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="1">
+              <Card.Body>
+              <Link to="/viewallReq" className="navbar-brand"><button type="button" class="btn btn-dark"> View All Requests</button></Link> <br/>
+              <Link to="/replacementrequest" className="navbar-brand"><button type="button" class="btn btn-dark">View Replacement Request</button></Link> <br/>
+              </Card.Body>
+              </Accordion.Collapse>
+          </Card>
+          <Card>
+              <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="2">
+                  Slot Link
+              </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="2">
+              <Card.Body>
+              <SlotLinkreq/><br/>
+              </Card.Body>
+              </Accordion.Collapse>
+          </Card>
+          <Card>
+              <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="3">
+                 Day OFF
+              </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="3">
+              <Card.Body>
+              <DayOffreq/><br/>
+              </Card.Body>
+              </Accordion.Collapse>
+          </Card>
+          <Card>
+              <Card.Header>
+              <Accordion.Toggle as={Button} variant="link" eventKey="4">
+                  Leave Request
+              </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="4">
+              <Card.Body>
+              <Leavereq/><br/>
+              </Card.Body>
+              </Accordion.Collapse>
+          </Card>
+          </Accordion>
+      </div>
+      </div>
+    )
+};
 }

@@ -49,7 +49,6 @@ export class ViewDays extends Component {
             <tr>
               <th>Dates</th>
 
-
             </tr>
           </thead>
           <tbody>
@@ -58,26 +57,13 @@ export class ViewDays extends Component {
           <table className="table">
           <tr>
           <thead className="thead-light">
-            <tr>
-              <th>day                     </th>
-              <th>time </th>
-            </tr>
           </thead>
           </tr>
           <tbody>
                 <td>
                 {
             this.state.TheAbsentDays.map((day)=>
-            <div>{day.i.substring(8,16)}</div>
-            )
-            }
-
-                </td>
-                
-                <td>
-                {
-            this.state.TheAbsentDays.map((day)=>
-            <div>{day.i.substring(0,8)}</div>
+            <div>{day.i.substring(0,10)}</div>
             )
             }
 

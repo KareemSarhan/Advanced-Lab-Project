@@ -6,11 +6,11 @@ export class RejectSLotReq extends Component {
     super(props)
     //const { params } = this.props.location.pathname.substring(16);
         
-        console.log(this.props.location.pathname.substring(16))
-        axios.put('/CC/RejectSlotLReq/'+ this.props.location.pathname.substring(16))
+        console.log(this.props)
+        axios.put('/CC/RejectSlotLReq/')
             .then(
               res =>
-              { console.log("success") 
+              { console.log("success"+ this.props.location.pathname.substring(19)) 
             },
             err =>
             {
@@ -27,7 +27,7 @@ export class RejectSLotReq extends Component {
 render() {
     return (
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Request Rejected Successfully</strong> 
+        <strong>Request Accepted Successfully</strong> 
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

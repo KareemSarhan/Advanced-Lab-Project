@@ -6,6 +6,7 @@ import Login from "./components/pages/LoginModal";
 import HRPage from "./components/pages/HR_Components/HRPage";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import CourseInstructorPage from "./components/pages/CI_Components/CourseInstructor.jsx";
+import CIPage2 from "./components/pages/CI_Components/CIPage2.jsx";
 //import Navbar from "./components/navbar.component";
 import Notification from "./components/notification.component";
 import Schedule from "./components/schedule.component";
@@ -81,7 +82,7 @@ class App extends Component {
 						<Route path="/hod" exact component={Menu} />
 						<Route path="/CC" exact component={CCPage} />
 						<Route path="/AC" exact component={AcademicMemberPage} />
-						<Route path="/CI" component={CourseInstructorPage} />
+						<Route path="/CI" component={CIPage2} />
 						{/* <Route path="/viewProfile" exact component={ViewProfile} /> */}
 						<Route path="/viewMissingHours" exact component={ViewHours} />
 						<Route path="/viewMembers" exact component={viewMembers} />
@@ -162,7 +163,6 @@ class App extends Component {
 						<Route path="/DeleteSlots" component={DeleteSlot} />
 						<Route path="/logout" component={Login} />
 
-						<Route path="/viewMissingDays" component={ViewDays} />
 					</Router>
 					<br />
 					<br />
