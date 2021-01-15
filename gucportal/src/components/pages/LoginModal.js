@@ -27,8 +27,8 @@ function LoginModal(props) {
 		//   console.log(mem);
 		axios.post("/Member/login", mem).then(
 			(res) => {
-				//console.log(res)
-				//console.log(res.headers.authtoken)
+				console.log(res)
+				console.log("login"+res.headers.authtoken)
 				localStorage.setItem("authtoken", res.headers.authtoken);
 
 				console.log(res);
@@ -37,8 +37,15 @@ function LoginModal(props) {
 				//console.log(history);
 				if (res.data.membertype == "hr") {
 					history.push("/" + res.data.membertype + "");
-				} else {
-					history.push("/homepage");
+				} else if (res.data.membertype == "academic member"){
+					history.push("/AC");
+				}
+				else if (res.data.membertype == "CourseInstructor"){
+					history.push("/CI");
+				}else if (res.data.membertype == "CourseCoordinator"){
+					history.push("/CC");
+				}else if (res.data.membertype == "HeadOfDepartment"){
+					history.push("/hod");
 				}
 
 				handleClose();
@@ -88,8 +95,8 @@ function LoginModal(props) {
 				</Modal.Body>
 				<Modal.Footer></Modal.Footer>
 			</Modal>
-			{memtype == "hr" ? <HRPage /> : null}
-			{memtype == "ac" ? <Home /> : null}
+			{/* {memtype == "hr" ? <HRPage /> : null}
+			{memtype == "ac" ? <Home /> : null} */}
 		</div>
 	);
 }

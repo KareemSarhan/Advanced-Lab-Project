@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { Component, useState } from 'react'
 import { Button,Modal,Form} from 'react-bootstrap'
+import { Link } from 'react-router-dom';
+
 
 function RejectLeave (props) {
   const [show, setShow] = useState(true);

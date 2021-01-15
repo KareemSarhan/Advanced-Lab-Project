@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom';
 
 export class acceptLeave extends Component {  
     constructor(props){

@@ -48,23 +48,24 @@ MemberRouter.route("/login").post(async (req, res, next) => {
 
 		res.header("authtoken", token);
 		//res.header("Access-Control-Expose-Headers", "authtoken")
-		// const userID = existingUser.id;
-		// var type ;
-		// console.log(userID);
-		// if(userID.includes('hr')){
-		//     type = hr ;
-		// }
-		// else if(userID.includes('ac')){
-		//     const existingAM = AM.findOne({Memberid:existingUser._id});
-		//     console.log(existingAM)
-		//     if(existingAM){
-		//         type = existingAM.type;
-		//     }
-		// }
-		//  console.log(type)
+		 const userID = existingUser.id;
+		 var type ;
+		 console.log(userID);
+		 if(userID.includes('hr')){
+		     type = "hr" ;
+		 }
+		 else if(userID.includes('ac')){
+		     const existingAM = await AM.findOne({Memberid:existingUser._id});
+		    console.log(existingAM)
+		     if(existingAM){
+		         type = existingAM.type;
+		     }
+		 }
+		  console.log(type)
 
 		return res.json({
-			membertype: existingUser.id.substring(0, 2),
+			//membertype: existingUser.id.substring(0, 2),
+			membertype: type,
 			msg: "logged in Successfuly",
 		});
 	} catch (error) {

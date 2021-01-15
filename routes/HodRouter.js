@@ -183,6 +183,7 @@ HodRouter.route('/DeleteInstructor/:id/:code')
                             
                         }
                         else {
+                            if(i == c.instructors.length-1)
                             return res.status(401).json({msg:"This instructor is not assigned to this course"});
                         }
                     
@@ -348,12 +349,14 @@ HodRouter.route('/UpdateInstructor')
                                 }
                             }
                         }
-                            a.courses.push(c1._id);
-                                 await a.save();
+                        
                         }
                     }
                 }
                     }
+                    console.log(c1._id);
+                            a.courses.push(c1._id);
+                                 await a.save();
                 }
 
                     res.json({msg:"Instructor updated successfully"})
