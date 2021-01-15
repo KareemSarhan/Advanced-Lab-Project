@@ -29,7 +29,7 @@ export default class acceptedrequest extends Component {
       }
         return (
             <div>
-        <h3>My Accepted Accepted Requests </h3>
+        <h3>My Accepted Requests </h3>
         <table className="table">
           <thead className="thead-light">
             <tr>
