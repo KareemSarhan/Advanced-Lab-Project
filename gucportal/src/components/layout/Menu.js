@@ -10,6 +10,8 @@ import AssignInstructorModal from '../pages/Hod_Components/AssignInstructorModal
 import UpdateInstructorModal from '../pages/Hod_Components/UpdateInstructorModal'
 import DeleteInstructorModal from '../pages/Hod_Components/DeleteInstructorModal'
 import ViewMemberDayOffModal from '../pages/Hod_Components/ViewMemberDayOffModal'
+import ViewMyCourses from '../pages/CI_Components/ViewMyCourses'
+import ViewMyDepartmentStaff from '../pages/CI_Components/ViewMyDepartmentStaff'
 
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
  class Menu extends Component {
@@ -239,9 +241,29 @@ render() {
             <Button variant="primary" href="/schedule"  class= "mt-10">
                     View My Schedule
                 </Button>
+                <br/><br/>
+                <Button variant="primary" href="/CourseInstructor/ViewMyCourses"  class= "mt-10">
+                    View My Courses
+                </Button>
+               
+                <br/><br/>
+                <Button variant="primary" href="/CourseInstructor/ViewMyDepartmentStaff"     class= "mt-10">
+                    View My Department
+                </Button>
+                <Router>
+					<Route
+						path="/CourseInstructor/ViewMyCourses"
+						component={ViewMyCourses}
+					/>
+					<Route
+						path="/CourseInstructor/ViewMyDepartmentStaff"
+						component={ViewMyDepartmentStaff}
+					/>
+				</Router>
             </Card.Body>
             </Accordion.Collapse>
         </Card>
+        
         <Card>
             <Card.Header>
             <Accordion.Toggle as={Button} variant="link" eventKey="1">
@@ -341,6 +363,7 @@ render() {
         </Card>
         
         </Accordion>
+       
     );
 }
 

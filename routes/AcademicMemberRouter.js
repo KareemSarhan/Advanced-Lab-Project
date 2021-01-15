@@ -1829,7 +1829,7 @@ AcademicMemberRouter.route('/AcceptReq')//done written --tested..
         catch (error)
         {
             res.status(500).json(
-                res.status(500).json({err:err.message})
+                res.status(500).json({error:error.message})
             )
         }
         
