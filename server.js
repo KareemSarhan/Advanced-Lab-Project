@@ -37,9 +37,6 @@ const cors = require("cors");
 if (process.env.NODE_ENV === "production") {
 	app.use(express.static(path.join(__dirname, "gucportal", "build")));
 
-	app.get("*", (req, res) => {
-		res.sendFile(path.join(__dirname, "gucportal", "build", "index.html"));
-	});
 	console.log("DONE!");
 }
 app.use(function (req, res, next) {
@@ -62,14 +59,14 @@ app.options("*", (req, res) => {
 	res.json({
 		status: "OK",
 	});
+	app.use(bodyParser.json());
+	app.use("/AM", AcademicMemberRouter);
+	app.use("/CC", CourseCoordinatorRouter);
+	app.use("/CourseInstructor", CourseInstRouter);
+	app.use("/Hod", HodRouter);
+	app.use("/Hr", HrRouter);
+	app.use("/Member", MemberRouter);
 });
-app.use(bodyParser.json());
-app.use("/AM", AcademicMemberRouter);
-app.use("/CC", CourseCoordinatorRouter);
-app.use("/CourseInstructor", CourseInstRouter);
-app.use("/Hod", HodRouter);
-app.use("/Hr", HrRouter);
-app.use("/Member", MemberRouter);
 
 const connection = mongoose.connection;
 mongoose.connect(mongoConnectionString, {
@@ -83,5 +80,8 @@ connection.once("open", function () {
 	app.listen(PORT, function () {
 		console.log("Server is running on Port: " + PORT);
 	});
+});
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "gucportal", "build", "index.html"));
 });
 module.exports = app;
