@@ -31,10 +31,12 @@
 		]
 	},
 	"scripts": {
-		"start": "concurrently \"nodemon index1.js\" \"npm start --prefix gucportal\"",
+		"start": "node server.js",
+		"start2": "concurrently \"nodemon server.js\" \"npm start --prefix client\"",
 		"node-install": "npm install",
-		"startB": "nodemon index1.js",
-		"startF": "npm start --prefix gucportal"
+		"startB": "nodemon server.js",
+		"startF": "npm start --prefix client",
+		"heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
 	},
 	"repository": {
 		"type": "git",

@@ -35,7 +35,6 @@ CourseInstRouter.route("/ViewMyCourses").get(async (req, res, next) => {
 			});
 			//console.log(ac);
 
-    {
 			const acCourses = ac.courses;
 			const query = {
 				_id: acCourses,
