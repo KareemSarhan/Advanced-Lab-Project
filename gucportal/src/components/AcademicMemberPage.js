@@ -61,6 +61,7 @@ render(){
               <Card.Body>
               <Link to="/viewallReq" className="navbar-brand"><button type="button" class="btn btn-dark"> View All Requests</button></Link> <br/>
               <Link to="/replacementrequest" className="navbar-brand"><button type="button" class="btn btn-dark">View Replacement Request</button></Link> <br/>
+              <Replacementreq/> <br/>
               </Card.Body>
               </Accordion.Collapse>
           </Card>

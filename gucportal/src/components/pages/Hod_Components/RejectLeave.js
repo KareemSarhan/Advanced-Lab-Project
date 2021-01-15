@@ -27,6 +27,7 @@ function RejectLeave (props) {
             },
             err =>
             {
+              {swal(err.response.data.errmsg || err.response.data.err)}
               console.log("Feeeeeeee errorrrrrrrr"+err)
             })
     //}
