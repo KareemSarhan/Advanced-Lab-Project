@@ -60,7 +60,7 @@ function UpdatePro() {
 			<Modal
 				show={show}
 				onHide={handleClose}
-				backdrop="static"
+				
 				keyboard={false}
 				size="md"
 				aria-labelledby="contained-modal-title-vcenter"

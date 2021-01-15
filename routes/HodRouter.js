@@ -1261,7 +1261,11 @@ HodRouter.route('/acceptDayOffReq/:reqID')
                     },
                     {
                         status: "Accepted"
-                    })
+                    },
+                    {
+                        seen : false
+                    }
+                    )
                 var a = await academicMember.findOne(
                     {
                         _id: u.memberID
@@ -1344,6 +1348,7 @@ HodRouter.route('/acceptLeaveReq/:reqID')
             var total = [];
             if (l1 != null) {
                 l1.status = "Accepted";
+                l1.seen = false;
                 await l1.save();
                 if (l1.Leavetype == "Compensation") {
                     if (miss.missingDays)
@@ -1579,6 +1584,7 @@ HodRouter.route('/rejectDayOffReq/:reqID')
                     const comment = req.body.comment
                     var u= await dayOffReq.findOneAndUpdate({requestID: req.params.reqID}, {status:"rejected"})
                     dayoffreq.status = "rejected";
+                    dayoffreq.seen = false;
                     dayoffreq.comment = comment;
                     await dayoffreq.save();
 
@@ -1657,6 +1663,7 @@ HodRouter.route('/rejectLeaveReq/:reqID')
                 if (typeof (req.body.comment) == "string") {
                     console.log(l1)
                     l1.status = "rejected";
+                    l1.seen = false;
                     l1.HodComment = req.body.comment;
                     await l1.save();
                 }

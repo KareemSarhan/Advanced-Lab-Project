@@ -12,12 +12,18 @@ export default class Notification extends Component {
 componentDidMount(){
     axios.get('/AM/notification')
     .then(response=>{
-        
-            this.setState({notifications:response.data })    
+		if (response == null){
+			this.setState({notifications:[] })
+
+		}else{
+			this.setState({notifications:response.data })    
             //console.log(this.state.notifications)  
 			swal(res.data)
+		}
+            
               })
               .catch((error) => {
+				this.setState({notifications:[] })
                 console.log(error)
               });
 }

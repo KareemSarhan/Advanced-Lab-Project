@@ -24,7 +24,6 @@ export class viewAccidentalLeaves extends Component {
     render() {
         return (
             <div>
-            <Menu/>
              <h3>Accidental Leave Requests</h3>
                 <table id="leaves"  className="table">
           <thead className="thead-light">

@@ -4,7 +4,7 @@ import { Button,Modal,Form} from 'react-bootstrap'
 import axios from 'axios'
 
 function DeleteInstructorModal() {
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     const [id, setID]= useState("");
     const [code, setCourse] = useState("");
   
@@ -35,9 +35,9 @@ function DeleteInstructorModal() {
   
     return (
       <div>
-        {/* <Button variant="primary" onClick={handleShow}>
-          AssignInstructor
-        </Button> */}
+        <Button variant="primary" onClick={handleShow}>
+          DeleteInstructor
+        </Button>
   
         <Modal show={show}
         onHide={handleClose}
@@ -57,7 +57,7 @@ function DeleteInstructorModal() {
             </Form.Group>
 
             <Form.Group controlId="formBasicPassword" required>
-                <Form.Label>Password</Form.Label>
+                <Form.Label>Course Code</Form.Label>
                 <Form.Control type="text" placeholder="Enter Course Code" onChange = {handleCourse} />
             </Form.Group>
             <Button variant="primary" type="submit" onClick={handleSubmit}>

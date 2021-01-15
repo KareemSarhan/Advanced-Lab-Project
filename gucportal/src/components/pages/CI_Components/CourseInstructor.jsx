@@ -25,16 +25,7 @@ class CourseInstructorPage extends Component {
 					href="/CourseInstructor/ViewMyDepartmentStaff">
 					View My Department Staff
 				</Button>
-				<Router>
-					<Route
-						path="/CourseInstructor/ViewMyCourses"
-						component={ViewMyCourses}
-					/>
-					<Route
-						path="/CourseInstructor/ViewMyDepartmentStaff"
-						component={ViewMyDepartmentStaff}
-					/>
-				</Router>
+
 			</div>
 		);
 	}

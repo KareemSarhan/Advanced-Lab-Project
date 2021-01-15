@@ -93,109 +93,122 @@ CourseCoordinatorRouter.route("/viewSlotLinkReq").get(
     //get the course id 
     //view slot linking requests for this course
 
-CourseCoordinatorRouter.route('/acceptlotLinkReq')
-    .put(async(req, res, next) =>
-    {
-        try
-        {
-            const token = req.header('authtoken');
-            const DecodeToken = jwt_decode(token);
-            const id = DecodeToken.id;
-            const loggedMember = await members.findOne(
-            {
-                id: id
-            });
-            if (!loggedMember)
-            {
-                res.send("not Authenticated");
-                return;
-            }
-            if (id.includes('ac'))
-            {
-                const reqID = req.body.reqID;
-                const request = await SlotLinkReqs.findOne(
-                {
-                    _id: reqID,
-                })
-                if (request.status != "Pending")
-                {
-                    res.send("Request isnot in Pending state")
-                    return
+    CourseCoordinatorRouter.route("/AcceptSlotLinkReq").put(
+        async (req, res, next) => {
+            try {
+                const payload = jwt.verify(req.header("authtoken"), key);
+                if (!payload.id.includes("ac")) {
+                    //console.log(payload.id);
+                    return res.status(401).send("not authorized");
+                } else {
+                    const loggedMember = await members.findOne({
+                        id: payload.id,
+                    });
+                    var LoggedAcm = await academicMember.findOne({
+                        Memberid: loggedMember._id,
+                        type: "CourseCoordinator",
+                    });
+                    if (!LoggedAcm) {
+                        return res.status(403).send("You are not a Course Coordinator.");
+                    }
+                    const RequestID = req.body.RequestID;
+                    if (!(typeof RequestID == "string")) {
+                        return res.status(400).send("Input Type Error");
+                    }
+                    const Request = await SlotLinkReqs.findOne({
+                        requestID: RequestID,
+                    });
+                    if (!Request) {
+                        return res.status(404).send("No Course Exists With This ID.");
+                        return;
+                    }
+                    if (Request.status + "" != "Pending") {
+                        return res.status(403).send("Request Is Not In Pending State.");
+                    }
+    
+                    const CourseID = Request.courseID;
+                    var AcmCourse = await course.findOne({
+                        _id: CourseID,
+                    });
+                    if (!AcmCourse) {
+                        return res.status(404).send("No Course Exists With This ID.");
+                    }
+    
+                    if (AcmCourse.courseCoordinator + "" != LoggedAcm._id + "") {
+                        return res
+                            .status(403)
+                            .send("You Are Not The Course Coordinator For This Course.");
+                    }
+    
+                    AcID = Request.memberID;
+    
+                    var Acm = await academicMember.findOne({
+                        _id: AcID,
+                    });
+                    if (!Acm) {
+                        return res
+                            .status(404)
+                            .send("No Academic Member Exists With This ID.");
+                    }
+                    // if (Acm.type + "" === "HeadOfDepartment")
+                    // {
+                    //     return res.status(403).send("This Academic Member Is The Head Of Department.")
+                    // }
+                    // if (Acm.type + "" === "CourseInstructor")
+                    // {
+                    //     return res.status(403).send("This Academic Member Is A Course Instructor.")
+                    // }
+                    if (!Acm.courses.includes(CourseID + "")) {
+                        console.log(Acm);
+                        return res
+                            .status(403)
+                            .send("This Academic Member Is Not Assigned To This Course.");
+                    }
+                    SlotID = Request.requestedSlot;
+                    var AcmSlot = await slots.findOne({
+                        _id: SlotID,
+                    });
+                    if (!AcmSlot) {
+                        return res.status(404).send("No Slot Exists With This ID.");
+                    }
+                    if (AcmSlot.course + "" != AcmCourse._id + "") {
+                        return res
+                            .status(403)
+                            .send("This Slot Is Not Related To This Course.");
+                    }
+                    if (AcmSlot.memberID) {
+                        return res
+                            .status(403)
+                            .send("This Slot Has Already Been Assigned To An Academic Member.");
+                    }
+    
+                    Acm.schedule.push(AcmSlot._id);
+    
+                    AcmCourse.numberOfSlotsAssigned = AcmCourse.numberOfSlotsAssigned + 1;
+                    AcmCourse.coverage =
+                        AcmCourse.numberOfSlotsAssigned / AcmCourse.numberOfSlotsNeeded;
+    
+                    AcmSlot.memberID = Acm._id;
+    
+                    Request.status = "Accepted";
+                    Request.seen = false
+                    await Request.save();
+                    await AcmCourse.save();
+                    await AcmSlot.save();
+                    await Acm.save();
+    
+                    res.send(
+                        "Request Accepted, Academic member have been Assigned to this Slot."
+                    );
                 }
-                if (request == null)
-                {
-                    res.send("request not found.");
-                    return;
-                }
-                const loggedacm = await academicMember.findOne(
-                {
-                    Memberid: loggedMember._id
-                })
-                const reqmaker = await academicMember.findOne(
-                {
-                    _id: request.memberID
-                })
-                console.log("course iD " + request.courseID)
-                const reqcourse = await courses.findOne(
-                {
-                    _id: request.courseID,
-                })
-                console.log(
-                {
-                    courseCoordinator: loggedacm._id,
-                    asd: reqcourse.courseCoordinator,
-                    flag: reqcourse.courseCoordinator + "" == loggedacm._id + ""
+            } catch (error) {
+                res.status(500).json({
+                    error: error,
                 });
-                if (reqcourse == null)
-                {
-                    res.send("course not found")
-                    return
-                }
-                if (reqcourse.courseCoordinator + "" != loggedacm._id + "")
-                {
-                    res.send("course not related to this course coordinator")
-                    return
-                }
-                const reqSlot = await slots.findOne(
-                    {
-                        _id: request.requestedSlot
-                    })
-                    //check if el wad da by coord el course da
-                if (request.courseID + "" != reqcourse._id + "")
-                {
-                    res.send("course not relasdasdsadated to this course coordinator");
-                    return;
-                }
-                else
-                {
-                    return res.status(403).send("This Slot Has Already Been Assigned To An Academic Member.")
-                }
-
-                Acm.schedule.push(AcmSlot._id);
-
-                AcmCourse.numberOfSlotsAssigned = AcmCourse.numberOfSlotsAssigned + 1;
-                AcmCourse.coverage = AcmCourse.numberOfSlotsAssigned / AcmCourse.numberOfSlotsNeeded;
-
-                AcmSlot.memberID = Acm._id;
-
-                Request.status = "Accepted"
-
-                await Request.save();
-                await AcmCourse.save();
-                await AcmSlot.save();
-                await Acm.save();
-
-                res.send("Request Accepted, Acadmic member have been Assigned to this Slot.");
             }
         }
-        catch (error)
-        {
-            res.status(500).json(
-            {
-                error: error
-            })
-        }
-    });
+    );
+    
 
 
     CourseCoordinatorRouter.route('/RejectSlotLReq/:TAid')
@@ -283,7 +296,8 @@ CourseCoordinatorRouter.route('/acceptlotLinkReq')
                     courseID: CCofCourse._id
                 },
                 {
-                    status: "Rejected"
+                    status: "Rejected",
+                    seen : false
                 }, function(err, res)
                 {
                     if (err) throw err;

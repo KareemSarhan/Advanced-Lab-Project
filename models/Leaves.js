@@ -57,6 +57,11 @@ const Leaves = new mongoose.Schema({
     },
     HodComment: {
         type: String
+    },
+    seen :
+    { 
+   type: Boolean ,
+    default : true
     }
 });
 
