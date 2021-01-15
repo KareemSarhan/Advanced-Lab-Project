@@ -136,8 +136,11 @@ AcademicMemberRouter.route("/viewReplacementReq") //done and written tested..
 				id: CurrentID,
 			});
 			const FID = found._id; //bta3 l ac member obj id
+			const ACID = await academicMember.findOne({
+				Memberid:FID
+			})
 			const REQ = await ReplacementRequest.find({
-				memberID: FID,
+				memberID: ACID,
 			});
 			var ALLREQ = [];
 			for (i = 0; i < REQ.length; i++) {
@@ -181,18 +184,21 @@ AcademicMemberRouter.route("/sendReplacementReq") // done and written  tested ..
 				id: CurrentID,
 			});
 			const FID = found._id;
+			const ACID = await academicMember.findOne({
+				Memberid:FID
+			})
 			const reqSlot = await slots.findOne({
 				_id: req.body.requestedSlot,
 			});
 			if (
-				req.body.requestedID == null ||
+				req.body.requestedID == "" ||
 				!typeof (req.body.requestedID == "string")
 			) {
 				return res.json({
 					msg: "Please provide the member id to send request to!",
 				});
 			} //|| !(validator.isDate(req.body.requestedDay))
-			else if (req.body.requestedDay == null) {
+			else if (req.body.requestedDay == "") {
 				// console.log();
 				return res.json({ msg: "Please provide  the day!" });
 			} else if (
@@ -247,7 +253,7 @@ AcademicMemberRouter.route("/sendReplacementReq") // done and written  tested ..
 				console.log(academicmem._id);
 				const ReplacementReq = new ReplacementRequest({
 					requestID: assignedID,
-					memberID: FID,
+					memberID: ACID._id,
 					requestedID: academicmem._id, //academic member ._id
 					requestedDay: req.body.requestedDay,
 					requestedSlot: req.body.requestedSlot,
@@ -288,7 +294,7 @@ AcademicMemberRouter.route("/sendSlotLinkReq") //done and written  tested..
 			console.log(FoundID);
 
 			if (
-				req.body.courseID == null ||
+				req.body.courseID == "" ||
 				!(typeof req.body.courseID == "string")
 			) {
 				return res.json({
@@ -413,7 +419,7 @@ AcademicMemberRouter.route("/sendChangeDayOffReq") //done and written tested ..
 			console.log("EDKHOLLL TAMIII");
 			console.log(req.body.requestedDay == null);
 			if (
-				req.body.requestedDay == null ||
+				req.body.requestedDay == "" ||
 				!typeof (req.body.requestedDay == "string")
 			) {
 				return res.json({ msg: "Please enter The requested Day!!" });
@@ -552,7 +558,7 @@ AcademicMemberRouter.route("/sendLeaveReq") //donee and written tested..
 				return res.json({ msg: "Please enter the type of leave!!" });
 			} else {
 				if (req.body.Leavetype == "Accidental") {
-					if (req.body.numberOfdays == null) {
+					if (req.body.numberOfdays == "") {
 						return res.json({ msg: "Please enter The number of days!!" });
 					} else {
 						flagAc = true;

@@ -31,6 +31,7 @@ import UpdateSlot from "./components/pages/CC/UpdateSlot";
 import ViewSlotLinkingReq from "./components/pages/CC/ViewSlotLinkinReq";
 import DeleteSlot from "./components/pages/CC/DeleteSlot";
 import RejectSlotLReq from "./components/pages/CC/RejectSlotLinkingReq";
+import AcceptSLotReq from "./components/pages/CC/AcceptSlotLinkingReq";
 import Menu from "./components/layout/Menu";
 import viewCourseMembers from "./components/pages/Hod_Components/ViewCourseMembersModal";
 import acceptDayOffReq from "./components/pages/Hod_Components/acceptDayOffReq";
@@ -135,7 +136,6 @@ class App extends Component {
 						<Route path="/schedule" component={Schedule} />
 						{/* <Route path="/homepage" component={Home} /> */}
 
-						
 						<Route
 							path="/CourseInstructor/ViewMyCourses"
 							component={ViewMyCourses}
@@ -160,9 +160,9 @@ class App extends Component {
 
 						<Route path="/viewSlotLinkingReq/" component={ViewSlotLinkingReq} />
 						<Route path="/RejectSlotLReq/" component={RejectSlotLReq} />
+						<Route path="/AcceptSlotLReq/" component={AcceptSLotReq} />
 						<Route path="/DeleteSlots" component={DeleteSlot} />
 						<Route path="/logout" component={Login} />
-
 					</Router>
 					<br />
 					<br />
