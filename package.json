@@ -36,7 +36,7 @@
 		"node-install": "npm install",
 		"startB": "nodemon server.js",
 		"startF": "npm start --prefix client",
-		"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix"
+		"heroku-postbuild": "cd client && npm install && npm run build "
 	},
 	"repository": {
 		"type": "git",
